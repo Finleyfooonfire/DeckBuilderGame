@@ -15,7 +15,7 @@ public class TCPClient : MonoBehaviour
     void Start()
     {
         client = new TcpClient();
-        client.BeginConnect("10.136.49.121", 7777, OnConnected, null);  // Non-blocking connect to the server
+        client.BeginConnect("10.138.252.152", 7777, OnConnected, null);  // Non-blocking connect to the server
     }
 
     void OnConnected(IAsyncResult ar)
