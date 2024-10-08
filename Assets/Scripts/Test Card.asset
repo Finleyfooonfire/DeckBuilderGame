@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
+  m_Name: Test Card
+  m_EditorClassIdentifier: 
+  faction: Raised Undead
+  description: Using the unstoppable force of death, the Supreme Lord  will attack
+    any living creature to try and satisfy his want of power.
+  cardDamage: 5
+  health: 7
+  manaRequired: 8
+  manaTypeRequired: White
