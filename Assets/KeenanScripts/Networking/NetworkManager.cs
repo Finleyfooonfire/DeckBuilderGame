@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 using System.Net;
 using UnityEngine;
+using TMPro;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] GameObject serverUI;
     [SerializeField] GameObject clientUI;
     [SerializeField] GameObject startButtons;
+    [SerializeField] TMP_InputField IPInput;
+    [SerializeField] GameObject IPButton;
     
 
     public void OnStartGame(bool setHost)
@@ -33,16 +36,20 @@ public class NetworkManager : MonoBehaviour
         throw new System.Exception("No network adapters with an IPv4 address in the system!");
     }
 
+    string deviceIP;
+
     void StartUpNetwork()
     {
+        
         if (isHost)
         {
             server.SetActive(true);
             serverUI.SetActive(true);
             clientUI.SetActive(true);
-            string deviceIP;
-            deviceIP = GetLocalIPAddress();
+            IPInput.gameObject.SetActive(false);
+            IPButton.SetActive(false);
             //Get this device IP and used it to connect the TCPClient to the TCPServer
+            deviceIP = GetLocalIPAddress();
             client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
         }
         else
@@ -50,7 +57,15 @@ public class NetworkManager : MonoBehaviour
             server.SetActive(false);
             serverUI.SetActive(false);
             clientUI.SetActive(true);
-            
+            //Get the IP from the input box and attempt to connect
+            deviceIP = IPInput.text;
         }
+    }
+
+    public void OnConnectButton()
+    {
+        IPInput.gameObject.SetActive(false);
+        IPButton.SetActive(false);
+        client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
     }
 }
