@@ -64,8 +64,8 @@ public class NetworkManager : MonoBehaviour
 
     public void OnConnectButton()
     {
+        client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
         IPInput.gameObject.SetActive(false);
         IPButton.SetActive(false);
-        client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
     }
 }
