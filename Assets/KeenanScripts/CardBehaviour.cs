@@ -1,10 +1,12 @@
 using UnityEngine;
 
+public enum PlayerUser { player1, player2 };
+
 public class CardBehaviour : MonoBehaviour
 {
     [SerializeField] CardStats cardStats;
-    enum Player { player1, player2 };
-    [Tooltip("Assign the player who owns the card")] [SerializeField] Player player;
+    
+    [Tooltip("Assign the player who owns the card")] public PlayerUser player;
 
     // matt modifications 
     public void Attack(CardBehaviour targetCard)
@@ -28,5 +30,6 @@ public class CardBehaviour : MonoBehaviour
     {
         //Select the card.
         Debug.Log("The card \"" + cardStats.name + "\" owned by " + player.ToString() +" has been clicked");
+        FindAnyObjectByType<GameManager>().SelectCard(gameObject);
     }
 }
