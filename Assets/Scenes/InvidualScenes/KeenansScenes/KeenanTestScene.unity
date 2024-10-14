@@ -1294,7 +1294,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
 --- !u!114 &665275432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1513,6 +1513,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeckCard
       objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1648,10 +1652,6 @@ PrefabInstance:
     - target: {fileID: 802171629621821146, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Name
       value: TestCard (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
-      propertyPath: m_Mesh
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7830041327209836040, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1951,8 +1951,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f28cc9d7c84dd4fb17c305a9be31c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1Card: {fileID: 0}
-  targetCard: {fileID: 0}
+  player1Card: {fileID: 7843310562393315686}
+  targetCard: {fileID: 1282457523}
 --- !u!1 &918609958
 GameObject:
   m_ObjectHideFlags: 0
@@ -2318,6 +2318,10 @@ PrefabInstance:
     - target: {fileID: 802171629621821146, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Name
       value: TestCard (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
@@ -3225,6 +3229,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestCard (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3297,6 +3305,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestCard
       objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3357,6 +3369,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7830041327209836040, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
   m_PrefabInstance: {fileID: 1282457521}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1282457523 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+  m_PrefabInstance: {fileID: 1282457521}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61aaf0d7fd4e98e49929cffb84bf1185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1354053900
 GameObject:
   m_ObjectHideFlags: 0
@@ -3413,6 +3436,10 @@ PrefabInstance:
     - target: {fileID: 802171629621821146, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Name
       value: TestCard (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
@@ -3485,6 +3512,10 @@ PrefabInstance:
     - target: {fileID: 802171629621821146, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Name
       value: GraveCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
@@ -4646,6 +4677,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestCard (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+      propertyPath: player
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6665803372338502684, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -4813,6 +4848,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7830041327209836040, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
   m_PrefabInstance: {fileID: 7843310562393315684}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7843310562393315686 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5813878389852120099, guid: 7c23dd6e0b6a33e4db7d7e5b29b8332c, type: 3}
+  m_PrefabInstance: {fileID: 7843310562393315684}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61aaf0d7fd4e98e49929cffb84bf1185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
