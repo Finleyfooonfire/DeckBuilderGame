@@ -3,12 +3,12 @@ using UnityEngine;
 [CreateAssetMenu]
 public class CardStats : ScriptableObject
 {
-    public string faction;
-    [Multiline] public string description;
-    public int cardDamage;
-    public int health;
-    public int manaRequired;
-    public string manaTypeRequired;
+    [field: SerializeField] public string faction { get; private set; }
+    [field: SerializeField][Multiline] public string description { get; private set; }
+    [field: SerializeField] public int cardDamage { get; private set; }
+    [field: SerializeField] public int maxHealth { get; private set; }
+    [field: SerializeField] public int manaRequired { get; private set; }
+    [field: SerializeField] public string manaTypeRequired { get; private set; }
 
-   
+
 }
