@@ -2,22 +2,22 @@ using UnityEngine;
 
 public class CardBehaviour : MonoBehaviour
 {
-    [SerializeField] Card cardStats;
+    [SerializeField] CardStats cardStats;
 
     // matt modifications 
-    public void Attack(Card targetCard)
+    public void Attack(CardBehaviour targetCard)
     {
 
-        targetCard.health -= cardStats.cardDamage;
+        targetCard.cardStats.health -= cardStats.cardDamage;
 
 
-        if (targetCard.health <= 0)
+        if (targetCard.cardStats.health <= 0)
         {
-            Debug.Log($"{targetCard.name} has been defeated by {cardStats.name}!");
+            Debug.Log($"{targetCard.cardStats.name} has been defeated by {cardStats.name}!");
         }
         else
         {
-            Debug.Log($"{targetCard.name} now has {targetCard.health} health remaining.");
+            Debug.Log($"{targetCard.cardStats.name} now has {targetCard.cardStats.health} health remaining.");
         }
     }
     //end

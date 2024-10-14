@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu]
-public class Card : ScriptableObject
+public class CardStats : ScriptableObject
 {
     public string faction;
     [Multiline] public string description;

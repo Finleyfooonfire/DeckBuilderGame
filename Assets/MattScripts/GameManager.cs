@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public Card player1Card;
-    public Card targetCard;  
+    //Keenan modifications
+    public CardBehaviour player1Card;
+    public CardBehaviour targetCard;  
+    //End
 
     public void Player1Attack()
     {
