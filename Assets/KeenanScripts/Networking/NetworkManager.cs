@@ -36,7 +36,8 @@ public class NetworkManager : MonoBehaviour
         throw new System.Exception("No network adapters with an IPv4 address in the system!");
     }
 
-    string deviceIP;
+    public string deviceIP;
+
 
     void StartUpNetwork()
     {
@@ -59,13 +60,22 @@ public class NetworkManager : MonoBehaviour
             clientUI.SetActive(true);
             //Get the IP from the input box and attempt to connect
             deviceIP = IPInput.text;
+            Debug.Log(deviceIP);
         }
     }
 
     public void OnConnectButton()
     {
+        // Update deviceIP right before connection
+        deviceIP = IPInput.text;
+        Debug.Log("Attempting to connect to IP: " + deviceIP);
+
+        // Attempt to connect
         client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
+
+        // Hide input UI after initiating connection
         IPInput.gameObject.SetActive(false);
         IPButton.SetActive(false);
     }
+
 }
