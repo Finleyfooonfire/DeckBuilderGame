@@ -50,7 +50,7 @@ public class NetworkManager : MonoBehaviour
             IPButton.SetActive(false);
             //Get this device IP and used it to connect the TCPClient to the TCPServer
             deviceIP = GetLocalIPAddress();
-            client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
+            //client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);
         }
         else
         {
