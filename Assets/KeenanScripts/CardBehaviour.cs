@@ -4,7 +4,7 @@ public enum PlayerUser { player1, player2 };
 
 public class CardBehaviour : MonoBehaviour
 {
-    [SerializeField] CardStats cardStats;
+    [SerializeField] CardKeenanStats cardStats;
     //Keenan modification: Created a health variable. The health variable in the CardStats ScriptableObject is for max health.
     int health;
     //end
@@ -37,6 +37,6 @@ public class CardBehaviour : MonoBehaviour
     {
         //Select the card.
         Debug.Log("The card \"" + cardStats.name + "\" owned by " + player.ToString() +" has been clicked");
-        FindAnyObjectByType<GameManager>().SelectCard(gameObject);
+        //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
     }
 }

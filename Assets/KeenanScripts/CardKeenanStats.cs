@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu]
-public class CardStats : ScriptableObject
+public class CardKeenanStats : ScriptableObject
 {
     [field: SerializeField] public string faction { get; private set; }
     [field: SerializeField][Multiline] public string description { get; private set; }
