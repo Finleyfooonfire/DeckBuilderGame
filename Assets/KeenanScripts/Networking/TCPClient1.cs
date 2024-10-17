@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using PimDeWitte.UnityMainThreadDispatcher;
+using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 public class TCPClient1 : MonoBehaviour
 {
     private TcpClient client;
@@ -16,9 +19,12 @@ public class TCPClient1 : MonoBehaviour
     
 
     public void OnAttemptConnectToServer(string serverIP)
+
     {
+
         client = new TcpClient();
         client.BeginConnect(serverIP, 7777, OnConnected, null);  // Non-blocking connect to the server
+        Debug.Log(serverIP);    
     }
 
     void OnConnected(IAsyncResult ar)
