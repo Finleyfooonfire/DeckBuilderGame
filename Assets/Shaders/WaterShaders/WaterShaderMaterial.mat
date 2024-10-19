@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7798542348805426286
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 9
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterShaderMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: 50b36d03a9647c8408d49b8b39ae5a42, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2964
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Float: 0.34
+    - _FoamAmount: 0.43
+    - _QueueControl: 0
+    - _QueueOffset: -36
+    - _RefractionAmount: 0.05
+    - _RefractionScale: 4.88
+    - _RefractionScale_2: 2.66
+    - _RefractionSpeed: 0
+    - _RefractionSpeed_2: -0.02
+    - _Water_Depth: 24.25
+    - _foamCutoff: 1.82
+    - _foamScale: 26.4
+    - _foamSpeed: 0.1
+    m_Colors:
+    - _Deep_Water: {r: 0.043857563, g: 0.16981131, b: 0.026432894, a: 0.8862745}
+    - _Shallow_Water: {r: 0.4448202, g: 0.7924528, b: 0.48594746, a: 0}
+    - _foamColour: {r: 0.36245105, g: 0.4245283, b: 0.36287624, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
