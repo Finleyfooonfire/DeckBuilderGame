@@ -11,7 +11,7 @@ public class CardBehaviour : MonoBehaviour
 
     private void Start()
     {
-        health = cardStats.maxHealth;
+        health = cardStats.defenseValue;
     }
 
     [Tooltip("Assign the player who owns the card")] public PlayerUser player;
@@ -19,7 +19,7 @@ public class CardBehaviour : MonoBehaviour
     // matt modifications 
     public void Attack(CardBehaviour targetCard)
     {
-        targetCard.health -= cardStats.cardDamage;
+        targetCard.health -= cardStats.attackValue;
 
 
         if (targetCard.health <= 0)
