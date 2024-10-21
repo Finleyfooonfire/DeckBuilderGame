@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public bool isPlayerCard;
+    public CardStats stats;
     public int manaCost;
     public int attackValue;
     public int defenseValue;

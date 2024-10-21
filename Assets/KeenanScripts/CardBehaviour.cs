@@ -4,7 +4,7 @@ public enum PlayerUser { player1, player2 };
 
 public class CardBehaviour : MonoBehaviour
 {
-    [SerializeField] CardKeenanStats cardStats;
+    [SerializeField] CardStats cardStats;
     //Keenan modification: Created a health variable. The health variable in the CardStats ScriptableObject is for max health.
     int health;
     //end
