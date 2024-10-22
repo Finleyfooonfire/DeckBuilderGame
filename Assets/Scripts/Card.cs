@@ -5,9 +5,12 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public bool isPlayerCard;
-    public int manaCost;
-    public int attackValue;
-    public int defenseValue;
+    //Keenan modification
+    public CardStats stats;
+    [HideInInspector] public int manaCost;
+    [HideInInspector] public int attackValue;
+    [HideInInspector] public int defenseValue;
+    //End
     public bool isInHand = true;
 
     private static Card selectedCard;
@@ -18,6 +21,11 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
+        //Keenan modification
+        manaCost = stats.manaCost;
+        attackValue = stats.attackValue;
+        defenseValue = stats.defenseValue;
+        //End
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
@@ -108,7 +116,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindObjectOfType<Deck>();
+        Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);

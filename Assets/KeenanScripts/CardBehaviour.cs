@@ -4,14 +4,14 @@ public enum PlayerUser { player1, player2 };
 
 public class CardBehaviour : MonoBehaviour
 {
-    [SerializeField] CardKeenanStats cardStats;
+    [SerializeField] CardStats cardStats;
     //Keenan modification: Created a health variable. The health variable in the CardStats ScriptableObject is for max health.
     int health;
     //end
 
     private void Start()
     {
-        health = cardStats.maxHealth;
+        health = cardStats.defenseValue;
     }
 
     [Tooltip("Assign the player who owns the card")] public PlayerUser player;
@@ -19,7 +19,7 @@ public class CardBehaviour : MonoBehaviour
     // matt modifications 
     public void Attack(CardBehaviour targetCard)
     {
-        targetCard.health -= cardStats.cardDamage;
+        targetCard.health -= cardStats.attackValue;
 
 
         if (targetCard.health <= 0)
