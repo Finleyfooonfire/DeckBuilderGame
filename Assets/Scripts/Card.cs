@@ -5,11 +5,9 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public bool isPlayerCard;
-<<<<<<< Updated upstream
-    public int manaCost;
-    public int attackValue;
-    public int defenseValue;
-=======
+
+
+
     //Keenan modification
     public CardStats stats;
     [HideInInspector] public int manaCost;
@@ -20,7 +18,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public string cardName;
     [HideInInspector] public string cardFaction;
     //End
->>>>>>> Stashed changes
+
     public bool isInHand = true;
 
     private static Card selectedCard;
@@ -31,18 +29,17 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
-<<<<<<< Updated upstream
-=======
+
         //Keenan modification
         manaCost = stats.manaCost;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
         //mattmods
-        cardName = stats.description;
+         cardName = stats.description;
         cardFaction = stats.faction;
         //end
->>>>>>> Stashed changes
+
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
