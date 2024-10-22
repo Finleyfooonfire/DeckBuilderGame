@@ -11,6 +11,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
     //End
+    //matt mods
+    [HideInInspector] public string cardName;
+    [HideInInspector] public string cardFaction;
+    //End
     public bool isInHand = true;
 
     private static Card selectedCard;
@@ -26,6 +30,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
+        //mattmods
+        cardName = stats.description;
+        cardFaction = stats.faction;
+        //end
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
@@ -116,7 +124,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
+        Deck playerDeck = FindObjectOfType<Deck>();
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);

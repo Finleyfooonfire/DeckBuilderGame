@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     public Card selectedAttackingCard;
     private int turnsTaken = 0;
     private int damageDealt = 0;
+    //matt additions
+    public string OnTable = "";
+    //end
 
     void Awake()
     {
@@ -180,6 +183,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void onTable()
+    {
+
+    }
+
+
+
    // IEnumerator AITurn()
   //  {
         // Simple AI logic for testing
@@ -197,5 +207,11 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
         SceneManager.LoadScene("ScoreboardScene");
+    }
+
+    //KEENAN: Gets all the cards present.
+    public Card[] GetAllCards()
+    {
+        return FindObjectsByType<Card>(FindObjectsSortMode.InstanceID);
     }
 }
