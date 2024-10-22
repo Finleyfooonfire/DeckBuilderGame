@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     public Card selectedAttackingCard;
     private int turnsTaken = 0;
     private int damageDealt = 0;
+    //matt additions
+    public string OnTable = "";
+    //end
 
     void Awake()
     {
@@ -179,6 +182,13 @@ public class GameManager : MonoBehaviour
             selectedAttackingCard = null;
         }
     }
+
+    public void onTable()
+    {
+
+    }
+
+
 
    // IEnumerator AITurn()
   //  {
