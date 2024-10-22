@@ -198,4 +198,10 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene("ScoreboardScene");
     }
+
+    //KEENAN: Gets all the cards present.
+    public Card[] GetAllCards()
+    {
+        return FindObjectsByType<Card>(FindObjectsSortMode.InstanceID);
+    }
 }
