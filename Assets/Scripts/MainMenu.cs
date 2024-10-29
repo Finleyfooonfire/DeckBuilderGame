@@ -7,6 +7,17 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("LoadingScreen");
     }
+    //Keenan addition.
+    public void OpenLore()
+    {
+        SceneManager.LoadScene("LoreScreen");
+    }
+
+    public void OpenOptions()
+    {
+        SceneManager.LoadScene("Settings");
+    }
+    //End
 
     public void ExitGame()
     {
