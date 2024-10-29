@@ -20,7 +20,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     private static Card selectedCard;
     private static GameObject placementIndicator;
-    private static readonly Vector3 playedScale = new Vector3(1f, 0.1f, 1.5f);
+    private static readonly Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
     private Transform cardPlayArea;
 
@@ -155,8 +155,19 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        //Keenan modification
+        List<RaycastResult> hits = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, hits);
         List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        foreach (var hit in hits)
+        {
+            //Only get UI objects and not all objects.
+            if (hit.gameObject.CompareTag("UI"))
+            {
+                results.Add(hit);
+            }
+        }
+        //END
         return results.Count > 0;
     }
 
