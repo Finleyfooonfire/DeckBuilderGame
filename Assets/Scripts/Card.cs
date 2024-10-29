@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public bool isPlayerCard;
+
+
+
     //Keenan modification
     public CardStats stats;
     [HideInInspector] public int manaCost;
@@ -16,28 +18,28 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public string cardName;
     [HideInInspector] public string cardFaction;
     //End
+
     public bool isInHand = true;
 
     private static Card selectedCard;
     private static GameObject placementIndicator;
-    private static readonly Vector3 playedScale = new Vector3(1f, 0.1f, 1.5f);
+    private static Vector3 playedScale = new Vector3(1f, 0.1f, 1.5f);
 
     private Transform cardPlayArea;
 
-    public Faction faction;
-    public CardType cardType;
-
     void Start()
     {
+
         //Keenan modification
         manaCost = stats.manaCost;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
         //mattmods
-        cardName = stats.description;
+         cardName = stats.description;
         cardFaction = stats.faction;
         //end
+
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
@@ -94,39 +96,24 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void UpdatePlacementIndicator()
     {
-        if (Camera.main == null)
-        {
-            Debug.LogError("No main camera found in the scene!");
-            return;
-        }
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit))
         {
             Vector3 targetPosition = hit.point;
-            targetPosition.y = cardPlayArea.position.y + 0.05f;
+            targetPosition.y = cardPlayArea.position.y + 0.05f; // Above CPA
             placementIndicator.transform.position = targetPosition;
         }
     }
 
     void PlaceCard()
     {
-        if (cardPlayArea == null) return;
-
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cardObject.transform.SetParent(cardPlayArea);
         cardObject.transform.position = placementIndicator.transform.position;
         cardObject.transform.localScale = playedScale;
         cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-        CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
-        cardInfo.manaCost = this.manaCost;
-        cardInfo.attackValue = this.attackValue;
-        cardInfo.defenseValue = this.defenseValue;
-        cardInfo.faction = this.faction;
-        cardInfo.cardType = this.cardType;
 
         Renderer cardRenderer = cardObject.GetComponent<Renderer>();
         Image cardImage = GetComponent<Image>();
@@ -134,6 +121,11 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             cardRenderer.material.color = cardImage.color;
         }
+
+        CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.manaCost = this.manaCost;
+        cardInfo.attackValue = this.attackValue;
+        cardInfo.defenseValue = this.defenseValue;
 
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
@@ -155,33 +147,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
+        System.Collections.Generic.List<RaycastResult> results = new System.Collections.Generic.List<RaycastResult>();
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
         return results.Count > 0;
-    }
-
-    public List<CardInfo> ReadCardsOnTable()
-    {
-        if (cardPlayArea == null)
-        {
-            cardPlayArea = GameObject.Find("CardPlayArea")?.transform;
-            if (cardPlayArea == null)
-            {
-                Debug.LogError("CardPlayArea not found in the scene!");
-                return new List<CardInfo>();
-            }
-        }
-
-        List<CardInfo> cardsOnTable = new List<CardInfo>();
-        foreach (Transform child in cardPlayArea)
-        {
-            CardInfo cardInfo = child.GetComponent<CardInfo>();
-            if (cardInfo != null)
-            {
-                cardsOnTable.Add(cardInfo);
-            }
-        }
-        return cardsOnTable;
     }
 }
 
@@ -190,21 +158,4 @@ public class CardInfo : MonoBehaviour
     public int manaCost;
     public int attackValue;
     public int defenseValue;
-    public Faction faction;
-    public CardType cardType;
-}
-
-public enum Faction
-{
-    Frogs,
-    TheOldMachines,
-    Elf,
-    Undead,
-    Crusaders
-}
-
-public enum CardType
-{
-    Land,
-    Unit
 }

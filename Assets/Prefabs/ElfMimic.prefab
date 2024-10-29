@@ -181,8 +181,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerCard: 0
-  stats: {fileID: 11400000, guid: fe2aa748c72061c48b9d3256a1d9840a, type: 2}
+  stats: {fileID: 11400000, guid: 47a7eaab87bba80409154d68f75bcf93, type: 2}
   manaCost: 0
   attackValue: 0
   defenseValue: 0
+  cardName: 
+  cardFaction: 
   isInHand: 1

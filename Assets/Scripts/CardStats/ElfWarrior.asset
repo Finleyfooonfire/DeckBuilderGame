@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
-  m_Name: Test Card
+  m_Name: ElfWarrior
   m_EditorClassIdentifier: 
-  faction: Raised Undead
-  description: Using the unstoppable force of death, the Supreme Lord  will attack
-    any living creature to try and satisfy his want of power.
-  cardDamage: 5
-  health: 7
-  manaRequired: 8
-  manaTypeRequired: White
+  <faction>k__BackingField: Elves
+  <description>k__BackingField: Elf Warrior
+  <attackValue>k__BackingField: 2
+  <defenseValue>k__BackingField: 8
+  <manaCost>k__BackingField: 5
+  <manaTypeRequired>k__BackingField: Brown

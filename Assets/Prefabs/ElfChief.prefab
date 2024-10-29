@@ -186,6 +186,8 @@ MonoBehaviour:
   manaCost: 0
   attackValue: 0
   defenseValue: 0
+  cardName: 
+  cardFaction: 
   isInHand: 1
 --- !u!114 &1833407405761195565
 MonoBehaviour:
@@ -196,6 +198,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2905175568147425518}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a2126c4e8db2cb419acc79b755c2594, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ba50eb9e69490d45ae9f9705330f674, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamemanager: {fileID: 0}
+  cardcode: {fileID: 0}
