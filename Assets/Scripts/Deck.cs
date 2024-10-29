@@ -29,6 +29,9 @@ public class Deck : MonoBehaviour
             deckCards.Add(card);
             //Keenan remove line: cardObj.SetActive(false);
         }
+        //Keenan addition
+        DistributeHand();
+        //END
     }
 
     public void DrawStartingHand()
@@ -50,9 +53,9 @@ public class Deck : MonoBehaviour
             drawnCard.transform.SetParent(handPosition);
 
             //Keenan addition
-            drawnCard.transform.localPosition = new Vector3();
             drawnCard.transform.rotation = new Quaternion();
-            ///END
+            DistributeHand();
+            //END
 
             //Keenan remove line: drawnCard.gameObject.SetActive(true);
         }
@@ -61,4 +64,15 @@ public class Deck : MonoBehaviour
             Debug.Log("No more cards in the deck!");
         }
     }
+
+    //Keenan addition
+    void DistributeHand()
+    {
+        int cardsInHand = handCards.Count;
+        for (int i = 0; i < cardsInHand; i++)
+        {
+            handCards[i].transform.localPosition = new Vector3((i - cardsInHand/2f), 0, 0);
+        }
+    }
+    //END
 }
