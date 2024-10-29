@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ElfWarrior
   m_EditorClassIdentifier: 
   <faction>k__BackingField: Elves
-  <description>k__BackingField: Elf Warrior
+  <description>k__BackingField: Elven Warrior
   <attackValue>k__BackingField: 2
   <defenseValue>k__BackingField: 8
   <manaCost>k__BackingField: 5

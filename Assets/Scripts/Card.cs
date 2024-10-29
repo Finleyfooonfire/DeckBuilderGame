@@ -130,7 +130,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindObjectOfType<Deck>();
+        Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);

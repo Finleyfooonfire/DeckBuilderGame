@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BowandArrow
   m_EditorClassIdentifier: 
   <faction>k__BackingField: Elves
-  <description>k__BackingField: Bow and Arrow
+  <description>k__BackingField: Bow and arrow MAGIC CARD
   <attackValue>k__BackingField: 0
   <defenseValue>k__BackingField: 0
   <manaCost>k__BackingField: 2

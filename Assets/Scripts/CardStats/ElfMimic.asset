@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ElfMimic
   m_EditorClassIdentifier: 
   <faction>k__BackingField: Elves
-  <description>k__BackingField: Elf Mimic
+  <description>k__BackingField: 'Elf Mimic '
   <attackValue>k__BackingField: 2
   <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 3
