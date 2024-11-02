@@ -10,15 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
-<<<<<<< HEAD:Assets/Scripts/CardStats/Elder Mage.asset
-  m_Name: Elder Mage
-=======
-  m_Name: Test Card
->>>>>>> main:Assets/Scripts/CardStats/Test Card.asset
+  m_Name: Sir Tuppus
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Elves
-  <description>k__BackingField: Elder Mage
-  <attackValue>k__BackingField: 5
-  <defenseValue>k__BackingField: 1
-  <manaCost>k__BackingField: 3
-  <manaTypeRequired>k__BackingField: Brown
+  <faction>k__BackingField: Frogs
+  <description>k__BackingField: Sir Tuppus
+  <attackValue>k__BackingField: 1
+  <defenseValue>k__BackingField: 4
+  <manaCost>k__BackingField: 5
+  <manaTypeRequired>k__BackingField: Green
