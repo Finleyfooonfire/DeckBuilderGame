@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviour
 
     void CoinFlip()
     {
+        //Keenan addition
+        Random.InitState((int)Time.time);
+        //End
         isPlayerTurn = Random.Range(0, 2) == 0;
         UpdateTurn();
     }
