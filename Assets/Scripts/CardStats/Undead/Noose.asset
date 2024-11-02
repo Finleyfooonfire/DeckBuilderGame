@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
-  m_Name: Test Card
+  m_Name: Noose
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Elves
-  <description>k__BackingField: Elder Mage
-  <attackValue>k__BackingField: 5
+  <faction>k__BackingField: Raised Undead
+  <description>k__BackingField: Noose, the sacrificial ghoul
+  <attackValue>k__BackingField: 1
   <defenseValue>k__BackingField: 1
-  <manaCost>k__BackingField: 3
-  <manaTypeRequired>k__BackingField: Brown
+  <manaCost>k__BackingField: 2
+  <manaTypeRequired>k__BackingField: White
