@@ -14,8 +14,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
     //End
     //matt mods
     [HideInInspector] public string cardName;
-    [HideInInspector] public string cardFaction;
     //End
+    [HideInInspector] public string cardFaction;
     public bool isInHand = true;
 
     private static Card selectedCard;
@@ -36,7 +36,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //End
         //mattmods
         cardName = stats.description;
-        cardFaction = stats.faction;
+        cardFaction = stats.faction.ToString();
         //end
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
@@ -116,6 +116,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (cardPlayArea == null) return;
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //Keenan addition
+        cardObject.name = cardName;
+        //END
         cardObject.transform.SetParent(cardPlayArea);
         cardObject.transform.position = placementIndicator.transform.position;
         cardObject.transform.localScale = playedScale;
