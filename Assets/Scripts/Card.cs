@@ -162,7 +162,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         foreach (var hit in hits)
         {
             //Only get UI objects and not all objects.
-            if (hit.gameObject.CompareTag("UI"))
+            if (hit.gameObject.layer.Equals(LayerMask.NameToLayer("UI")))
             {
                 results.Add(hit);
             }
