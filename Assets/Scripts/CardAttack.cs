@@ -1,7 +1,10 @@
 //Keenan Addition
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
-public class CardAttack : MonoBehaviour
+public class CardAttack : MonoBehaviour, IPointerClickHandler
 {
     public void Attack(CardInfo targetCard)
     {
@@ -18,11 +21,16 @@ public class CardAttack : MonoBehaviour
         }
     }
 
-    private void OnMouseDown()
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        //Select the card.
-        Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
-        //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
+        if (GameManager.Instance.isPlayerTurn)
+        {
+            //Select the card.
+            Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
+            //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
+        }
+
     }
 }
 //End
