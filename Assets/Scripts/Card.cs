@@ -203,53 +203,5 @@ public class Card : MonoBehaviour, IPointerClickHandler
     }
 }
 
-public class CardInfo : MonoBehaviour
-{
-    public int manaCost;
-    public int attackValue;
-    public int defenseValue;
-    public Faction faction;
-    public CardType cardType;
-}
+//Keenan modification: Moved to other files
 
-//Keenan Addition
-public class CardAttack : MonoBehaviour
-{
-    public void Attack(CardInfo targetCard)
-    {
-        targetCard.defenseValue -= GetComponent<CardInfo>().attackValue;
-
-
-        if (targetCard.defenseValue <= 0)
-        {
-            Debug.Log($"{targetCard.gameObject.name} has been defeated by {gameObject.name}!");
-        }
-        else
-        {
-            Debug.Log($"{targetCard.gameObject.name} now has {targetCard.defenseValue} health remaining.");
-        }
-    }
-
-    private void OnMouseDown()
-    {
-        //Select the card.
-        Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
-        //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
-    }
-}
-//End
-
-public enum Faction
-{
-    Frogs,
-    TheOldMachines,
-    Elf,
-    Undead,
-    Crusaders
-}
-
-public enum CardType
-{
-    Land,
-    Unit
-}
