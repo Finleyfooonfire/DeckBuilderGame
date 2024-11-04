@@ -131,6 +131,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
 
+        //Keenan Addition
+        CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
+        //End
+
         Renderer cardRenderer = cardObject.GetComponent<Renderer>();
         Image cardImage = GetComponent<Image>();
         if (cardImage != null)
@@ -207,6 +211,13 @@ public class CardInfo : MonoBehaviour
     public Faction faction;
     public CardType cardType;
 }
+
+//Keenan Addition
+public class CardAttack : MonoBehaviour
+{
+
+}
+//End
 
 public enum Faction
 {
