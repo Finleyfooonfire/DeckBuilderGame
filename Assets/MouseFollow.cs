@@ -6,7 +6,7 @@ public class MouseFollow : MonoBehaviour
     public Camera customCamera;
 
     // Custom variable to control the percentage of the screen bounds the cube can move within
-    [Range(0f, 1f)] public float movePercentage = 0.5f;  // 0 = no movement, 1 = full movement within bounds
+    [Range(0f, 1f)] public float movePercentage = 1f;  // 0 = no movement, 1 = full movement within bounds
 
     public Vector3 screenPosition;
     public Vector3 worldPosition;
