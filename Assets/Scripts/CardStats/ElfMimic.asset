@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: ElfMimic
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Elves
-  <description>k__BackingField: Elf Mimic
+  <faction>k__BackingField: 2
+  <description>k__BackingField: 'Elf Mimic '
   <attackValue>k__BackingField: 2
   <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 3

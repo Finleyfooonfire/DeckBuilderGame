@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 146aa9721989b284ca68ae480dc5389b
+<<<<<<<< HEAD:Assets/Scripts/CardStats/Test Card.asset.meta
+guid: 8089aeb0fe5cb5c4283650944c36073f
+========
+guid: b49ec01862975ef4f9d27774d8c8c468
+>>>>>>>> main:Assets/Scripts/CardStats/BowandArrow.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000
