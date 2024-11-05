@@ -133,55 +133,73 @@ static class NetworkSerializer
                 switch (stage)
                 {
                     case Stage.CardPlayAreaCardCount:
+                        //Get the number of cards in the play area
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.CardPlayAreaCardsName:
-
+                        //Get the name of the card
+                        
                         break;
                     case Stage.CardPlayAreaCardsHealth:
+                        //Get the health of the card
 
                         break;
                     case Stage.CardPlayAreaCardsOwner:
+                        //Get the owner of the card
+
                         numberOfCards--;//Reduce the number of cards left to look at.
+                        //If there are more cards left, go back to Stage.CardPlayAreaCardsName
+                        if (numberOfCards > 0)
+                        {
+                            subString = "";
+                            stage = Stage.CardPlayAreaCardsName;
+                            continue;
+                        }
                         break;
                     case Stage.PlayerGraveyardCardCount:
+                        //Get the number of cards in the player's graveyard
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.PlayerGraveyardCards:
-
+                        //Get the cards in the graveyard
                         break;
                     case Stage.PlayerHandCardCount:
+                        //Get the number of cards in the player's hand
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.PlayerHandCards:
-
+                        //Get the cards in the hand
                         break;
                     case Stage.PlayerDeckCardCount:
+                        //Get the number of cards in the player's deck
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.PlayerDeckCards:
-
+                        //Get the cards in the deck
                         break;
                     case Stage.OpponentGraveyardCardCount:
+                        //Get the number of cards in the Opponent's graveyard
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.OpponentGraveyardCards:
-
+                        //Get the cards in the graveyard
                         break;
                     case Stage.OpponentHandCardCount:
+                        //Get the number of cards in the opponent's hand
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.OpponentHandCards:
-
+                        //Get the cards in the hand
                         break;
                     case Stage.OpponentDeckCardCount:
+                        //Get the number of cards in the opponent's deck
                         numberOfCards = int.Parse(subString);
                         break;
                     case Stage.OpponentDeckCards:
-
+                        //Get the cards in the deck
                         break;
                     case Stage.Finished:
-
+                        //The deserialization is finished
                         break;
                 }
                 //Clear the substring and go to the next stage.
