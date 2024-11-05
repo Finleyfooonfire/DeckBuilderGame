@@ -23,10 +23,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private static readonly Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
     private Transform cardPlayArea;
-
-    public Faction faction;
-    public CardType cardType;
-
+    //Keenan modification
+    [HideInInspector] public Faction faction;
+    [HideInInspector] public CardType cardType;
+    //END
     void Start()
     {
         //Keenan modification
@@ -37,6 +37,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //mattmods
         cardName = stats.description;
         cardFaction = stats.faction.ToString();
+        faction = stats.faction;
+        cardType = stats.cardType;
         //end
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
