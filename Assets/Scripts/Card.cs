@@ -14,8 +14,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
     //End
     //matt mods
     [HideInInspector] public string cardName;
-    [HideInInspector] public string cardFaction;
     //End
+    [HideInInspector] public string cardFaction;
     public bool isInHand = true;
 
     private static Card selectedCard;
@@ -23,10 +23,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private static readonly Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
     private Transform cardPlayArea;
-
-    public Faction faction;
-    public CardType cardType;
-
+    //Keenan modification
+    [HideInInspector] public Faction faction;
+    [HideInInspector] public CardType cardType;
+    //END
     void Start()
     {
         //Keenan modification
@@ -36,7 +36,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //End
         //mattmods
         cardName = stats.description;
-        cardFaction = stats.faction;
+        cardFaction = stats.faction.ToString();
+        faction = stats.faction;
+        cardType = stats.cardType;
         //end
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
@@ -116,6 +118,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (cardPlayArea == null) return;
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //Keenan addition
+        cardObject.name = cardName;
+        //END
         cardObject.transform.SetParent(cardPlayArea);
         cardObject.transform.position = placementIndicator.transform.position;
         cardObject.transform.localScale = playedScale;
@@ -127,6 +132,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
+
+        //Keenan Addition
+        CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
+        //End
 
         Renderer cardRenderer = cardObject.GetComponent<Renderer>();
         Image cardImage = GetComponent<Image>();
@@ -162,7 +171,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         foreach (var hit in hits)
         {
             //Only get UI objects and not all objects.
-            if (hit.gameObject.CompareTag("UI"))
+            if (hit.gameObject.layer.Equals(LayerMask.NameToLayer("UI")))
             {
                 results.Add(hit);
             }
@@ -196,26 +205,5 @@ public class Card : MonoBehaviour, IPointerClickHandler
     }
 }
 
-public class CardInfo : MonoBehaviour
-{
-    public int manaCost;
-    public int attackValue;
-    public int defenseValue;
-    public Faction faction;
-    public CardType cardType;
-}
+//Keenan modification: Moved to other files
 
-public enum Faction
-{
-    Frogs,
-    TheOldMachines,
-    Elf,
-    Undead,
-    Crusaders
-}
-
-public enum CardType
-{
-    Land,
-    Unit
-}

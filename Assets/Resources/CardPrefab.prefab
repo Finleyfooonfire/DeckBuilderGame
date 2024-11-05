@@ -70,13 +70,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerCard: 0
-  stats: {fileID: 11400000, guid: 5ce7217a1c21f8942b5a7564224621e2, type: 2}
+  stats: {fileID: 11400000, guid: fe2aa748c72061c48b9d3256a1d9840a, type: 2}
   manaCost: 0
   attackValue: 0
   defenseValue: 0
   cardName: 
   cardFaction: 
   isInHand: 1
+  faction: 0
+  cardType: 0
 --- !u!1 &3183712272066194335
 GameObject:
   m_ObjectHideFlags: 0
