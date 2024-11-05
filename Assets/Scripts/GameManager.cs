@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     public int opponentLife = 20;
     public Transform playerField;
     public Transform opponentField;
-    public Card selectedAttackingCard;
+    public CardAttack selectedAttackingCard;//Keenan modification
     private int turnsTaken = 0;
     private int damageDealt = 0;
     //matt additions
@@ -131,51 +131,40 @@ public class GameManager : MonoBehaviour
         opponentLifeText.text = "Life: " + opponentLife;
     }
 
-    public void SelectAttackingCard(Card card)
+    //Modified by Keenan
+    public void SelectAttackingCard(CardAttack card)
     {
-        if (isPlayerTurn && card.isPlayerCard && !card.isInHand)
+        
+        if (selectedAttackingCard == card)
         {
-            if (selectedAttackingCard == card)
-            {
-                selectedAttackingCard = null;
-            }
-            else
-            {
-                selectedAttackingCard = card;
-            }
+            selectedAttackingCard = null;
         }
+        else
+        {
+            selectedAttackingCard = card;
+        }
+        
     }
 
-    public void Attack(Card targetCard)
+    public void Attack(CardAttack targetCard)
     {
-        if (selectedAttackingCard != null && targetCard != null && !targetCard.isPlayerCard && !targetCard.isInHand)
+        if (selectedAttackingCard != null && targetCard != null)
         {
-            targetCard.defenseValue -= selectedAttackingCard.attackValue;
-            selectedAttackingCard.defenseValue -= targetCard.attackValue;
-
-            damageDealt += selectedAttackingCard.attackValue;
-
-            if (targetCard.defenseValue <= 0)
-            {
-                Destroy(targetCard.gameObject);
-            }
-            if (selectedAttackingCard.defenseValue <= 0)
-            {
-                Destroy(selectedAttackingCard.gameObject);
-            }
+            targetCard.Attack(selectedAttackingCard);
 
             selectedAttackingCard = null;
         }
     }
+    //END
 
     public void AttackPlayerDirectly()
     {
         if (selectedAttackingCard != null)
         {
-            opponentLife -= selectedAttackingCard.attackValue;
+            opponentLife -= selectedAttackingCard.GetComponent<CardInfo>().attackValue;
             UpdateLifeUI();
 
-            damageDealt += selectedAttackingCard.attackValue;
+            damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
 
             if (opponentLife <= 0)
             {
