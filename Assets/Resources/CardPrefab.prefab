@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7830041327209836040}
   - component: {fileID: 3625315969643265155}
-  - component: {fileID: 5813878389852120099}
-  - component: {fileID: 7836810319394267084}
+  - component: {fileID: -4046195803215204134}
   m_Layer: 0
-  m_Name: TestCard
+  m_Name: CardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,21 +57,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5813878389852120099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 802171629621821146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61aaf0d7fd4e98e49929cffb84bf1185, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardStats: {fileID: 11400000, guid: fe2aa748c72061c48b9d3256a1d9840a, type: 2}
-  player: 0
---- !u!114 &7836810319394267084
+--- !u!114 &-4046195803215204134
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,15 +70,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerCard: 0
-  stats: {fileID: 0}
+  stats: {fileID: 11400000, guid: 5ce7217a1c21f8942b5a7564224621e2, type: 2}
   manaCost: 0
   attackValue: 0
   defenseValue: 0
   cardName: 
   cardFaction: 
   isInHand: 1
-  faction: 0
-  cardType: 0
 --- !u!1 &3183712272066194335
 GameObject:
   m_ObjectHideFlags: 0
