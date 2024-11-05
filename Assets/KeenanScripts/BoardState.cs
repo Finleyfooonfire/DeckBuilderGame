@@ -9,10 +9,15 @@ public class BoardState : MonoBehaviour
     Transform board;
     Transform graveyard;
 
-    void Start()
+    //Keenan addition: For debugging
+    float lTime;
+    void Update()
     {
-        
+        if (lTime + 5f >  Time.time) return;
+        Debug.Log(NetworkSerializer.Serialize(gameObject.transform));
+        lTime = Time.time;
     }
+    //END
 
     void OnAddToBoard(int cardSelected)
     {

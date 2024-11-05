@@ -11,7 +11,13 @@ static class NetworkSerializer
         output += "\n";//Separate pieces of data with a '\n'
         foreach (Transform x in cardPlayArea)
         {
-            output += x.GetComponent<Card>().stats.name;
+            //Put the name first then the health of the card then if the player owns the card (inverted).
+            CardInfo cardInfo = x.GetComponent<CardInfo>();
+            output += cardInfo.name;
+            output += "\n";
+            output += cardInfo.defenseValue.ToString();
+            output += "\n";
+            output += (!cardInfo.isPlayerCard).ToString();
             output += "\n";
         }
 
@@ -22,7 +28,7 @@ static class NetworkSerializer
         output += "\n";
         foreach (Transform x in playerGrave)
         {
-            output += x.GetComponent<Card>().stats.name;
+            output += x.GetComponent<CardInfo>().ToString();
             output += "\n";
         }
         //Hand cards
@@ -52,7 +58,7 @@ static class NetworkSerializer
         output += "\n";
         foreach (Transform x in opponentGrave)
         {
-            output += x.GetComponent<Card>().stats.name;
+            output += x.GetComponent<CardInfo>().ToString();
             output += "\n";
         }
         //Hand cards
@@ -84,6 +90,19 @@ static class NetworkSerializer
     static Transform Deserialize(Transform playingField, string input)
     {
         //Convert the string into the game thingy
+        //iterate through the input a character at a time.
+        foreach (char c in input)
+        {
+            //See if any of the characters are special
+            switch (c) {
+                case '\n':
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
         return playingField;
     }
