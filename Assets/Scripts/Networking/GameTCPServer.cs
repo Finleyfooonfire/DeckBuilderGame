@@ -10,7 +10,7 @@ using TMPro;
 
 public class GameTCPServer : MonoBehaviour
 {
-    public TMP_Text displayText;  // Reference to the Text UI component
+    public string networkString;  // Reference to the Text UI component
     private TcpListener server;
     private TcpClient client;
     private NetworkStream stream;
@@ -51,7 +51,7 @@ public class GameTCPServer : MonoBehaviour
             // Update the UI on the main thread
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                displayText.text = message;
+                networkString = message;
             });
 
             // Continue reading data
@@ -66,5 +66,7 @@ public class GameTCPServer : MonoBehaviour
             server.Stop();  // Stop the server on application quit
         }
     }
+
+    
 }
 

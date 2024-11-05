@@ -14,12 +14,11 @@ public class GameTCPClient : MonoBehaviour
     private TcpClient client;
     
 
-    public TMP_InputField inputField;  // Reference to the InputField UI component
+    public string networkString;  // Reference to the InputField UI component
 
     
 
     public void OnAttemptConnectToServer(string serverIP)
-
     {
 
         client = new TcpClient();
@@ -57,14 +56,14 @@ public class GameTCPClient : MonoBehaviour
     {
         if (client.Connected)
         {
-            string messageToSend = inputField.text;
+            string messageToSend = networkString;
             byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length); // Send message to server
 
             Debug.Log("Sent to server: " + messageToSend);
-            inputField.text = ""; // Clear the input field after sending
+            networkString = ""; // Clear the input field after sending
         }
         else
         {
