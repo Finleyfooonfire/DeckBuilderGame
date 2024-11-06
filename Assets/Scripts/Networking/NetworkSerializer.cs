@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.GPUSort;
 static class NetworkSerializer
 {
     //A dictionary of all the card stats

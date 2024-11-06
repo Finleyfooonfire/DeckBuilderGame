@@ -1,29 +1,23 @@
-
 using System;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using PimDeWitte.UnityMainThreadDispatcher;
-using JetBrains.Annotations;
-using System.Diagnostics.Contracts;
 
 public class GameTCPClient : MonoBehaviour
 {
     private TcpClient client;
-    
+
 
     public string networkString;  // Reference to the InputField UI component
 
-    
+
 
     public void OnAttemptConnectToServer(string serverIP)
     {
 
         client = new TcpClient();
         client.BeginConnect(serverIP, 7777, OnConnected, null);  // Non-blocking connect to the server
-        Debug.Log(serverIP);    
+        Debug.Log(serverIP);
     }
 
     void OnConnected(IAsyncResult ar)

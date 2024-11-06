@@ -1,11 +1,9 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
-using PimDeWitte.UnityMainThreadDispatcher;
-using TMPro;
 
 
 public class GameTCPServer : MonoBehaviour
@@ -18,7 +16,7 @@ public class GameTCPServer : MonoBehaviour
 
     void Start()
     {
-        
+
         server = new TcpListener(IPAddress.Any, 7777);
         server.Start();
         Debug.Log("Server started, waiting for client...");
@@ -67,6 +65,6 @@ public class GameTCPServer : MonoBehaviour
         }
     }
 
-    
+
 }
 
