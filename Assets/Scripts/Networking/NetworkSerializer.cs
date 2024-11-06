@@ -1,7 +1,21 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 static class NetworkSerializer
 {
+    //A dictionary of all the card stats
+    private static Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
+
+    static NetworkSerializer()
+    {
+        //Populate the dictionary with the CardStats and their names
+        Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
+        foreach (CardStats item in foundAssets)
+        {
+            cardStatNames.Add(item.name, item);
+        }
+    }
+
     //Convert changes ingame into a string that can be sent on the network.
     public static string Serialize(Transform playingField)
     {
@@ -29,7 +43,7 @@ static class NetworkSerializer
         output += "\n";
         foreach (Transform x in playerGrave)
         {
-            output += x.GetComponent<CardInfo>().ToString();
+            output += x.GetComponent<Card>().ToString();
             output += "\n";
         }
         //Hand cards
@@ -59,7 +73,7 @@ static class NetworkSerializer
         output += "\n";
         foreach (Transform x in opponentGrave)
         {
-            output += x.GetComponent<CardInfo>().ToString();
+            output += x.GetComponent<Card>().ToString();
             output += "\n";
         }
         //Hand cards
@@ -118,6 +132,15 @@ static class NetworkSerializer
 
         //Deserialized data
         int numberOfCards = 0;
+        List<CardInfo> cardsInfo = new List<CardInfo>();
+        //The player's cards
+        List<Card> playerGraveCardList = new List<Card>();
+        List<Card> playerHandCardList = new List<Card>();
+        List<Card> playerDeckCardList = new List<Card>();
+        //The opponent's cards
+        List<Card> opponentGraveCardList = new List<Card>();
+        List<Card> opponentHandCardList = new List<Card>();
+        List<Card> opponentDeckCardList = new List<Card>();
 
         //Convert the string into the game thingy
         //iterate through the input a character at a time.
@@ -127,88 +150,188 @@ static class NetworkSerializer
             {
                 subString += c;
             }
-            else//Once the end is reached, do something. Then go to the next stage
+            else//Once the end is reached: do something. Then go to the next stage
             {
                 //Different things happen depending on the stage that is in progress.
                 switch (stage)
                 {
                     case Stage.CardPlayAreaCardCount:
-                        //Get the number of cards in the play area
+                        //Get the number of cards in the play area and create them
                         numberOfCards = int.Parse(subString);
+                        cardsInfo = playingField.Find("CardPlayArea").GetComponentsInChildren<CardInfo>().ToList();
+                        //Resize the array if the number of CardInfos are incorrect
+                        cardsInfo.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.CardPlayAreaCardsName:
                         //Get the name of the card
-                        
+                        cardsInfo[numberOfCards].name = subString;
+                        stage += 1;
                         break;
                     case Stage.CardPlayAreaCardsHealth:
                         //Get the health of the card
-
+                        cardsInfo[numberOfCards].defenseValue = int.Parse(subString);
+                        stage += 1;
                         break;
                     case Stage.CardPlayAreaCardsOwner:
                         //Get the owner of the card
-
+                        cardsInfo[numberOfCards].isPlayerCard = bool.Parse(subString);
                         numberOfCards--;//Reduce the number of cards left to look at.
-                        //If there are more cards left, go back to Stage.CardPlayAreaCardsName
+                        //If there are more cards left: go back to Stage.CardPlayAreaCardsName
                         if (numberOfCards > 0)
                         {
-                            subString = "";
                             stage = Stage.CardPlayAreaCardsName;
-                            continue;
+                        }
+                        else
+                        {
+                            //Overwrite the playing field
+
+                            //Go to the next stage
+                            stage += 1;
                         }
                         break;
                     case Stage.PlayerGraveyardCardCount:
                         //Get the number of cards in the player's graveyard
                         numberOfCards = int.Parse(subString);
+                        playerGraveCardList = playingField.Find("Player").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
+                        playerGraveCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.PlayerGraveyardCards:
                         //Get the cards in the graveyard
+                        playerGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        playerGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        playerGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        playerGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        playerGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        playerGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.PlayerHandCardCount:
                         //Get the number of cards in the player's hand
                         numberOfCards = int.Parse(subString);
+                        playerHandCardList = playingField.Find("Player").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
+                        playerHandCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.PlayerHandCards:
                         //Get the cards in the hand
+                        playerHandCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        playerHandCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        playerHandCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        playerHandCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        playerHandCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        playerHandCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.PlayerDeckCardCount:
                         //Get the number of cards in the player's deck
                         numberOfCards = int.Parse(subString);
+                        playerDeckCardList = playingField.Find("Player").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
+                        playerDeckCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.PlayerDeckCards:
                         //Get the cards in the deck
+                        playerDeckCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        playerDeckCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        playerDeckCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        playerDeckCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        playerDeckCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        playerDeckCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.OpponentGraveyardCardCount:
                         //Get the number of cards in the Opponent's graveyard
                         numberOfCards = int.Parse(subString);
+                        opponentGraveCardList = playingField.Find("Opponent").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
+                        opponentGraveCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.OpponentGraveyardCards:
                         //Get the cards in the graveyard
+                        opponentGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        opponentGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        opponentGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        opponentGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        opponentGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        opponentGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.OpponentHandCardCount:
                         //Get the number of cards in the opponent's hand
                         numberOfCards = int.Parse(subString);
+                        opponentHandCardList = playingField.Find("Opponent").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
+                        opponentHandCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.OpponentHandCards:
                         //Get the cards in the hand
+                        opponentHandCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        opponentHandCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        opponentHandCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        opponentHandCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        opponentHandCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        opponentHandCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.OpponentDeckCardCount:
                         //Get the number of cards in the opponent's deck
                         numberOfCards = int.Parse(subString);
+                        opponentDeckCardList = playingField.Find("Opponent").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
+                        opponentDeckCardList.Capacity = numberOfCards;
+                        stage += 1;
                         break;
                     case Stage.OpponentDeckCards:
                         //Get the cards in the deck
+                        opponentDeckCardList[numberOfCards].cardName = cardStatNames[subString].name;
+                        opponentDeckCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
+                        opponentDeckCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
+                        opponentDeckCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
+                        opponentDeckCardList[numberOfCards].faction = cardStatNames[subString].faction;
+                        opponentDeckCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
+                        //If there are more cards left: read the rest
+                        numberOfCards--;
+                        if (numberOfCards == 0)
+                        {
+                            stage += 1;
+                        }
                         break;
                     case Stage.Finished:
                         //The deserialization is finished
+
                         break;
                 }
-                //Clear the substring and go to the next stage.
+                //Clear the substring
                 subString = "";
-                stage += 1;
             }
         }
-        
-        
         return playingField;
     }
 }
