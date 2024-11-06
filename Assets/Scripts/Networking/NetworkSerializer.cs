@@ -324,7 +324,105 @@ static class NetworkSerializer
                         }
                         break;
                     case Stage.Finished:
-                        //The deserialization is finished
+                        //The deserialization is finished. Use the data collected to update the playing field.
+                        //Update card play area
+                        Transform cardPlayArea = playingField.Find("CardPlayArea");
+                        //Change the number of cards in the play area to match the new number.
+                        if (cardPlayArea.childCount > cardsInfo.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = cardPlayArea.childCount - cardsInfo.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(cardPlayArea.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (cardPlayArea.childCount < cardsInfo.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            if (cardPlayArea.childCount != 0)
+                            {
+                                GameObject.Instantiate(cardPlayArea.GetChild(0).gameObject, cardPlayArea);
+                            }
+                            else
+                            {
+                                //Based on code in Card.cs
+                                GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                                cardObject.transform.SetParent(cardPlayArea);
+                                cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
+                                cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+                                _ = cardObject.AddComponent<CardInfo>();
+                                _ = cardObject.AddComponent<CardAttack>();
+                                //END
+                            }
+                        }
+
+
+                        int index = 0;
+                        foreach (Transform x in cardPlayArea)
+                        {
+                            CardInfo cardInfo = x.GetComponent<CardInfo>();
+                            cardInfo = cardsInfo[index];
+                            index++;
+                        }
+
+
+                        //Update the player's cards.
+                        Transform playerGrave = playingField.Find("Player").Find("PlayerGrave");
+                        index = 0;
+                        foreach (Transform x in playerGrave)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = playerGraveCardList[index];
+                            index++;
+                        }
+
+                        Transform playerHand = playingField.Find("Player").Find("PlayerHand");
+                        index = 0;
+                        foreach (Transform x in playerHand)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = playerHandCardList[index];
+                            index++;
+                        }
+
+                        Transform playerDeck = playingField.Find("Player").Find("PlayerDeck");
+                        index = 0;
+                        foreach (Transform x in playerDeck)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = playerDeckCardList[index];
+                            index++;
+                        }
+
+                        //Update the opponent's cards.
+                        Transform opponentGrave = playingField.Find("Opponent").Find("OpponentGrave");
+                        index = 0;
+                        foreach (Transform x in opponentGrave)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = opponentGraveCardList[index];
+                            index++;
+                        }
+
+                        Transform opponentHand = playingField.Find("Opponent").Find("OpponentHand");
+                        index = 0;
+                        foreach (Transform x in opponentHand)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = opponentHandCardList[index];
+                            index++;
+                        }
+
+                        Transform opponentDeck = playingField.Find("Opponent").Find("OpponentDeck");
+                        index = 0;
+                        foreach (Transform x in opponentDeck)
+                        {
+                            Card card = x.GetComponent<Card>();
+                            card = opponentDeckCardList[index];
+                            index++;
+                        }
 
                         break;
                 }
