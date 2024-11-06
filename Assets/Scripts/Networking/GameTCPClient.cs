@@ -38,7 +38,7 @@ public class GameTCPClient : MonoBehaviour
     void ReceiveMessages()
     {
         NetworkStream stream = client.GetStream();
-        byte[] data = new byte[256];
+        byte[] data = new byte[512];
 
         stream.BeginRead(data, 0, data.Length, (IAsyncResult ar) =>
         {
