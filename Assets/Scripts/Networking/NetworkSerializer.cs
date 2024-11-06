@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.Rendering.GPUSort;
 static class NetworkSerializer
 {
     //A dictionary of all the card stats
@@ -325,6 +328,7 @@ static class NetworkSerializer
                         break;
                     case Stage.Finished:
                         //The deserialization is finished. Use the data collected to update the playing field.
+                        #region Update CardPlayArea
                         //Update card play area
                         Transform cardPlayArea = playingField.Find("CardPlayArea");
                         //Change the number of cards in the play area to match the new number.
@@ -358,7 +362,6 @@ static class NetworkSerializer
                             }
                         }
 
-
                         int index = 0;
                         foreach (Transform x in cardPlayArea)
                         {
@@ -366,10 +369,26 @@ static class NetworkSerializer
                             cardInfo = cardsInfo[index];
                             index++;
                         }
-
-
+                        #endregion
                         //Update the player's cards.
+                        #region Update PlayerGrave
                         Transform playerGrave = playingField.Find("Player").Find("PlayerGrave");
+                        //Change the number of cards in the player's grave to match the new number.
+                        if (playerGrave.childCount > playerGraveCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = playerGrave.childCount - playerGraveCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(playerGrave.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (playerGrave.childCount < playerGraveCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerGrave);
+                        }
+
                         index = 0;
                         foreach (Transform x in playerGrave)
                         {
@@ -377,8 +396,25 @@ static class NetworkSerializer
                             card = playerGraveCardList[index];
                             index++;
                         }
-
+                        #endregion
+                        #region Update PlayerHand
                         Transform playerHand = playingField.Find("Player").Find("PlayerHand");
+                        //Change the number of cards in the player's hand to match the new number.
+                        if (playerHand.childCount > playerHandCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = playerHand.childCount - playerHandCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(playerHand.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (playerHand.childCount < playerHandCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerHand);
+                        }
+
                         index = 0;
                         foreach (Transform x in playerHand)
                         {
@@ -386,8 +422,25 @@ static class NetworkSerializer
                             card = playerHandCardList[index];
                             index++;
                         }
-
+                        #endregion
+                        #region Update PlayerDeck
                         Transform playerDeck = playingField.Find("Player").Find("PlayerDeck");
+                        //Change the number of cards in the player's deck to match the new number.
+                        if (playerDeck.childCount > playerDeckCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = playerDeck.childCount - playerDeckCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(playerDeck.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (playerDeck.childCount < playerDeckCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerDeck);
+                        }
+
                         index = 0;
                         foreach (Transform x in playerDeck)
                         {
@@ -395,9 +448,27 @@ static class NetworkSerializer
                             card = playerDeckCardList[index];
                             index++;
                         }
-
+                        #endregion
+                        //Update the opponent's cards.
+                        #region Update OpponentGrave
                         //Update the opponent's cards.
                         Transform opponentGrave = playingField.Find("Opponent").Find("OpponentGrave");
+                        //Change the number of cards in the opponent's grave to match the new number.
+                        if (opponentGrave.childCount > opponentGraveCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = opponentGrave.childCount - opponentGraveCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(opponentGrave.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (opponentGrave.childCount < opponentGraveCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentGrave);
+                        }
+
                         index = 0;
                         foreach (Transform x in opponentGrave)
                         {
@@ -405,8 +476,25 @@ static class NetworkSerializer
                             card = opponentGraveCardList[index];
                             index++;
                         }
-
+                        #endregion
+                        #region Update OpponentHand
                         Transform opponentHand = playingField.Find("Opponent").Find("OpponentHand");
+                        //Change the number of cards in the opponent's hand to match the new number.
+                        if (opponentHand.childCount > opponentHandCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = opponentHand.childCount - opponentHandCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(opponentHand.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (opponentHand.childCount < opponentHandCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentHand);
+                        }
+
                         index = 0;
                         foreach (Transform x in opponentHand)
                         {
@@ -414,8 +502,25 @@ static class NetworkSerializer
                             card = opponentHandCardList[index];
                             index++;
                         }
-
+                        #endregion
+                        #region Update OpponentDeck
                         Transform opponentDeck = playingField.Find("Opponent").Find("OpponentDeck");
+                        //Change the number of cards in the opponent's deck to match the new number.
+                        if (opponentDeck.childCount > opponentDeckCardList.Count)
+                        {
+                            //If there are more cards than necessary excess is to be removed
+                            int excess = opponentDeck.childCount - opponentDeckCardList.Count;
+                            for (int i = 0; i < excess; i++)
+                            {
+                                MonoBehaviour.Destroy(opponentDeck.GetChild(0).gameObject);
+                            }
+                        }
+                        else if (opponentDeck.childCount < opponentDeckCardList.Count)
+                        {
+                            //If there are not enough cards, more should be added.
+                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentDeck);
+                        }
+
                         index = 0;
                         foreach (Transform x in opponentDeck)
                         {
@@ -423,6 +528,7 @@ static class NetworkSerializer
                             card = opponentDeckCardList[index];
                             index++;
                         }
+                        #endregion
 
                         break;
                 }
