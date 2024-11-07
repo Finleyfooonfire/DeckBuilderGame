@@ -12,9 +12,8 @@ public class GameTCPClient : MonoBehaviour
 
 
 
-    public void OnAttemptConnectToServer(string serverIP)
+    public void OnAttemptConnectToServer(string serverIP = "127.0.0.1")//IP defaults to localhost
     {
-
         client = new TcpClient();
         client.BeginConnect(serverIP, 7777, OnConnected, null);  // Non-blocking connect to the server
         Debug.Log(serverIP);
@@ -39,7 +38,7 @@ public class GameTCPClient : MonoBehaviour
             int bytesRead = stream.EndRead(ar);
             string message = Encoding.ASCII.GetString(data, 0, bytesRead);
             Debug.Log("Received from server: " + message);
-
+            networkString = message;
 
 
             ReceiveMessages(); // Continue receiving messages

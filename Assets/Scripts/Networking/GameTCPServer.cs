@@ -57,6 +57,11 @@ public class GameTCPServer : MonoBehaviour
         }
     }
 
+    public void SendMessageToClient()
+    {
+
+    }
+
     void OnApplicationQuit()
     {
         if (server != null)

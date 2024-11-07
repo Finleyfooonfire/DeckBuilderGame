@@ -1041,8 +1041,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
+      - m_Target: {fileID: 1147071080}
+        m_TargetAssemblyTypeName: GameNetworkManager, Assembly-CSharp
         m_MethodName: OnStartGame
         m_Mode: 6
         m_Arguments:
@@ -2372,8 +2372,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
+      - m_Target: {fileID: 1147071080}
+        m_TargetAssemblyTypeName: GameNetworkManager, Assembly-CSharp
         m_MethodName: OnStartGame
         m_Mode: 6
         m_Arguments:
@@ -2546,13 +2546,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 735d36fe917aa6c42bde665ab2a4f190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  server: {fileID: 0}
-  client: {fileID: 0}
-  serverUI: {fileID: 0}
-  clientUI: {fileID: 0}
-  startButtons: {fileID: 0}
-  IPInput: {fileID: 0}
-  IPButton: {fileID: 0}
+  server: {fileID: 1354053900}
+  client: {fileID: 998664686}
+  startButtons: {fileID: 90935821}
+  serverUI: {fileID: 157612362}
+  serverIP: {fileID: 0}
+  clientUI: {fileID: 407751975}
+  IPButton: {fileID: 1151616526}
+  IPInput: {fileID: 247807170}
   deviceIP: 
 --- !u!1001 &1150164290
 PrefabInstance:
@@ -2860,8 +2861,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
+      - m_Target: {fileID: 1147071080}
+        m_TargetAssemblyTypeName: GameNetworkManager, Assembly-CSharp
         m_MethodName: OnConnectButton
         m_Mode: 1
         m_Arguments:
@@ -3317,7 +3318,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: This Device's IP
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
