@@ -59,7 +59,21 @@ public class GameTCPServer : MonoBehaviour
 
     public void SendMessageToClient()
     {
+        if (client != null)
+        {
+            string messageToSend = networkString;
+            byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
+            NetworkStream stream = client.GetStream();
+            stream.Write(data, 0, data.Length); // Send message to client
+
+            Debug.Log("Sent to server: " + messageToSend);
+            networkString = ""; // Clear the network string after sending
+        }
+        else
+        {
+            Debug.LogWarning("Client is not connected to the server!");
+        }
     }
 
     void OnApplicationQuit()
