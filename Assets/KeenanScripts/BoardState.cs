@@ -14,7 +14,9 @@ public class BoardState : MonoBehaviour
     void Update()
     {
         if (lTime + 5f >  Time.time) return;
-        Debug.Log(NetworkSerializer.Serialize(gameObject.transform));
+        string serializedData = NetworkSerializer.Serialize(gameObject.transform);
+        Debug.Log(serializedData);//Test to see if Serialize works
+        Debug.Log(transform.Equals(NetworkSerializer.Deserialize(transform, serializedData)));//Test to see if Deserialize works
         lTime = Time.time;
     }
     //END

@@ -123,7 +123,7 @@ static class NetworkSerializer
         OpponentDeckCards = 16,
         Finished = 17,
     }
-    static Transform Deserialize(Transform playingField, string input)
+    public static Transform Deserialize(Transform playingField, string input)
     {
         //Initialize deserialize function variables
         Stage stage = Stage.None;
