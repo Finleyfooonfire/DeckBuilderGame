@@ -1,16 +1,14 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
-using PimDeWitte.UnityMainThreadDispatcher;
-using TMPro;
 
 
 public class GameTCPServer : MonoBehaviour
 {
-    public TMP_Text displayText;  // Reference to the Text UI component
+    public string networkString;  // Reference to the Text UI component
     private TcpListener server;
     private TcpClient client;
     private NetworkStream stream;
@@ -18,7 +16,7 @@ public class GameTCPServer : MonoBehaviour
 
     void Start()
     {
-        
+
         server = new TcpListener(IPAddress.Any, 7777);
         server.Start();
         Debug.Log("Server started, waiting for client...");
@@ -51,11 +49,30 @@ public class GameTCPServer : MonoBehaviour
             // Update the UI on the main thread
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                displayText.text = message;
+                networkString = message;
             });
 
             // Continue reading data
             stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+        }
+    }
+
+    public void SendMessageToClient()
+    {
+        if (client != null)
+        {
+            string messageToSend = networkString;
+            byte[] data = Encoding.ASCII.GetBytes(messageToSend);
+
+            NetworkStream stream = client.GetStream();
+            stream.Write(data, 0, data.Length); // Send message to client
+
+            Debug.Log("Sent to server: " + messageToSend);
+            networkString = ""; // Clear the network string after sending
+        }
+        else
+        {
+            Debug.LogWarning("Client is not connected to the server!");
         }
     }
 
@@ -66,5 +83,7 @@ public class GameTCPServer : MonoBehaviour
             server.Stop();  // Stop the server on application quit
         }
     }
+
+
 }
 

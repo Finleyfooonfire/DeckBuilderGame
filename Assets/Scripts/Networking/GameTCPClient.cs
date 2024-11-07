@@ -1,30 +1,22 @@
-
 using System;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using PimDeWitte.UnityMainThreadDispatcher;
-using JetBrains.Annotations;
-using System.Diagnostics.Contracts;
 
 public class GameTCPClient : MonoBehaviour
 {
     private TcpClient client;
-    
 
-    public TMP_InputField inputField;  // Reference to the InputField UI component
 
-    
+    public string networkString;  // Reference to the InputField UI component
 
-    public void OnAttemptConnectToServer(string serverIP)
 
+
+    public void OnAttemptConnectToServer(string serverIP = "127.0.0.1")//IP defaults to localhost
     {
-
         client = new TcpClient();
         client.BeginConnect(serverIP, 7777, OnConnected, null);  // Non-blocking connect to the server
-        Debug.Log(serverIP);    
+        Debug.Log(serverIP);
     }
 
     void OnConnected(IAsyncResult ar)
@@ -39,14 +31,14 @@ public class GameTCPClient : MonoBehaviour
     void ReceiveMessages()
     {
         NetworkStream stream = client.GetStream();
-        byte[] data = new byte[256];
+        byte[] data = new byte[512];
 
         stream.BeginRead(data, 0, data.Length, (IAsyncResult ar) =>
         {
             int bytesRead = stream.EndRead(ar);
             string message = Encoding.ASCII.GetString(data, 0, bytesRead);
             Debug.Log("Received from server: " + message);
-
+            networkString = message;
 
 
             ReceiveMessages(); // Continue receiving messages
@@ -57,14 +49,14 @@ public class GameTCPClient : MonoBehaviour
     {
         if (client.Connected)
         {
-            string messageToSend = inputField.text;
+            string messageToSend = networkString;
             byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length); // Send message to server
 
             Debug.Log("Sent to server: " + messageToSend);
-            inputField.text = ""; // Clear the input field after sending
+            networkString = ""; // Clear the input field after sending
         }
         else
         {
