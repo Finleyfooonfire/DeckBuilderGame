@@ -6,6 +6,7 @@ public class PlayingFieldSynch : MonoBehaviour
     [SerializeField] GameTCPServer server;
 
     GameManager manager;
+    Transform playingField;
 
     bool isHost;
 
@@ -13,6 +14,7 @@ public class PlayingFieldSynch : MonoBehaviour
     {
         //Set isHost to true if the server is active.
         isHost = server.isActiveAndEnabled;
+        playingField = transform;
     }
 
     //Depending on whose turn it is, the device is to send or recieve data.
@@ -23,11 +25,11 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             if (isHost)
             {
-                server.networkString = NetworkSerializer.Serialize(transform);
+                server.networkString = NetworkSerializer.Serialize(playingField);
             }
             else
             {
-                client.networkString = NetworkSerializer.Serialize(transform);
+                client.networkString = NetworkSerializer.Serialize(playingField);
             }
         }
         //Recieve data and do things with it
@@ -35,11 +37,11 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             if (isHost)
             {
-                transform = NetworkSerializer.Deserialize(transform, server.networkString);
+                NetworkSerializer.Deserialize(ref playingField, server.networkString);
             }
             else
             {
-                transform = NetworkSerializer.Deserialize(transform, client.networkString);
+                NetworkSerializer.Deserialize(ref playingField, client.networkString);
             }
         }
     }
