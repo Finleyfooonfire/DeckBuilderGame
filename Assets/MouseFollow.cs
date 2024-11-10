@@ -16,6 +16,8 @@ public class MouseFollow : MonoBehaviour
     private float cameraHeight;
     private float cameraWidth;
 
+    public Vector3 startPosition = new Vector3(0f, 0f, 0f);
+
     void Start()
     {
         // Check if the custom camera is assigned
@@ -25,6 +27,9 @@ public class MouseFollow : MonoBehaviour
         }
 
         // Calculate the camera bounds
+
+        transform.position = startPosition;
+
         UpdateCameraBounds();
     }
 
