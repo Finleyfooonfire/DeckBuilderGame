@@ -31,7 +31,9 @@ public class GameManager : MonoBehaviour
     //matt additions
     public string OnTable = "";
     //end
-
+    //Keenan addition
+    PlayingFieldSynch synch;
+    //END 
     void Awake()
     {
         if (Instance == null)
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
         UpdateLifeUI();
         UpdateManaUI();
 
@@ -65,6 +68,9 @@ public class GameManager : MonoBehaviour
 
     void UpdateTurn()
     {
+        //Keenan addition
+        synch.SendSynchroniseDevices();
+        //END
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);

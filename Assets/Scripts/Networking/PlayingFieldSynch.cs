@@ -9,40 +9,47 @@ public class PlayingFieldSynch : MonoBehaviour
     Transform playingField;
 
     bool isHost;
+    bool setUp;
 
     void Start()
     {
         //Set isHost to true if the server is active.
         isHost = server.isActiveAndEnabled;
+        manager = GameManager.Instance;
         playingField = transform;
+        setUp = true;
     }
 
+
     //Depending on whose turn it is, the device is to send or recieve data.
-    public void SynchroniseDevices()
+    public void SendSynchroniseDevices()
     {
+        if (!setUp) return;
+
         //Send data
-        if (manager.isPlayerTurn)
+        if (isHost)
         {
-            if (isHost)
-            {
-                server.networkString = NetworkSerializer.Serialize(playingField);
-            }
-            else
-            {
-                client.networkString = NetworkSerializer.Serialize(playingField);
-            }
+            server.networkString = NetworkSerializer.Serialize(playingField);
         }
-        //Recieve data and do things with it
         else
         {
-            if (isHost)
-            {
-                NetworkSerializer.Deserialize(ref playingField, server.networkString);
-            }
-            else
-            {
-                NetworkSerializer.Deserialize(ref playingField, client.networkString);
-            }
+            client.networkString = NetworkSerializer.Serialize(playingField);
+        }
+        
+    }
+    
+    public void RecieveSynchroniseDevices()
+    {
+        if (!setUp) return;
+        
+        //Recieve data and do things with it
+        if (isHost)
+        {
+            NetworkSerializer.Deserialize(ref playingField, server.networkString);
+        }
+        else
+        {
+            NetworkSerializer.Deserialize(ref playingField, client.networkString);
         }
     }
 }

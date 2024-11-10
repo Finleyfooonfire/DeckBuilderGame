@@ -28,7 +28,7 @@ static class NetworkSerializer
         {
             //Put the name first then the health of the card then if the player owns the card (inverted).
             CardInfo cardInfo = x.GetComponent<CardInfo>();
-            output += cardInfo.name;
+            output += cardInfo.gameObject.name;
             output += "\n";
             output += cardInfo.defenseValue.ToString();
             output += "\n";

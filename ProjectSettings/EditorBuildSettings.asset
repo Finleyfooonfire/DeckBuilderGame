@@ -4,6 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/InvidualScenes/KeenansScenes/KeenanGameScene.unity
+    guid: 0b190eaa6ddb7a54ca6253f79c0205dd
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

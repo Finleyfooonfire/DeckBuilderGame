@@ -13,6 +13,7 @@ public class GameTCPServer : MonoBehaviour
     private TcpClient client;
     private NetworkStream stream;
     private byte[] buffer = new byte[1024];  // Buffer to store received data
+    PlayingFieldSynch synch;
 
     void Start()
     {
@@ -23,6 +24,7 @@ public class GameTCPServer : MonoBehaviour
 
         // Accept client connection asynchronously
         server.BeginAcceptTcpClient(OnClientConnected, null);
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
     }
 
     void OnClientConnected(IAsyncResult ar)
@@ -55,6 +57,11 @@ public class GameTCPServer : MonoBehaviour
             // Continue reading data
             stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
         }
+
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            synch.RecieveSynchroniseDevices();
+        });
     }
 
     public void SendMessageToClient()

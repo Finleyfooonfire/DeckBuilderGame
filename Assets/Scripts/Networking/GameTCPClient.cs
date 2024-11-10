@@ -10,7 +10,11 @@ public class GameTCPClient : MonoBehaviour
 
     public string networkString;  // Reference to the InputField UI component
 
-
+    PlayingFieldSynch synch;
+    private void Start()
+    {
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
+    }
 
     public void OnAttemptConnectToServer(string serverIP = "127.0.0.1")//IP defaults to localhost
     {
@@ -43,6 +47,8 @@ public class GameTCPClient : MonoBehaviour
 
             ReceiveMessages(); // Continue receiving messages
         }, null);
+
+        synch.RecieveSynchroniseDevices();
     }
 
     public void SendMessageToServer()
