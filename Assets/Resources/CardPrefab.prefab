@@ -76,7 +76,7 @@ MonoBehaviour:
   defenseValue: 0
   cardName: 
   cardFaction: 
-  isInHand: 1
+  isInHand: 0
   faction: 0
   cardType: 0
 --- !u!1 &3183712272066194335

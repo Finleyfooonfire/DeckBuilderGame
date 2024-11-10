@@ -9,11 +9,6 @@ public class BoardState : MonoBehaviour
     Transform board;
     Transform graveyard;
 
-    void Start()
-    {
-        
-    }
-
     void OnAddToBoard(int cardSelected)
     {
        hand.GetChild(cardSelected).parent = board;
