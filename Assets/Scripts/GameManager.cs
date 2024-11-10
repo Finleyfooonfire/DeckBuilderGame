@@ -53,9 +53,25 @@ public class GameManager : MonoBehaviour
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
-
-        CoinFlip();
     }
+
+    //Call this when the client and server are connected.
+    //Keenan modification
+    public void StartGame(bool isHost)
+    {
+        //Only if the user is a server. Do the coinflip and tell the other device the outcome.
+        if (isHost)
+        {
+            CoinFlip();
+        }
+        //Otherwise get who starts via the network.
+        else
+        {
+            synch.RecieveSynchroniseDevices();
+            UpdateTurn();
+        }
+    }
+    //End
 
     void CoinFlip()
     {
@@ -68,9 +84,6 @@ public class GameManager : MonoBehaviour
 
     void UpdateTurn()
     {
-        //Keenan addition
-        synch.SendSynchroniseDevices();
-        //END
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -108,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             DrawCard();
         }
-
+        //Keenan addition
+        synch.SendSynchroniseDevices();
+        //END
         UpdateTurn();
     }
 

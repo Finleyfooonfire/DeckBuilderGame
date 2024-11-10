@@ -1,3 +1,4 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Net.Sockets;
 using System.Text;
@@ -29,6 +30,14 @@ public class GameTCPClient : MonoBehaviour
         {
             Debug.Log("Connected to server!");
             ReceiveMessages(); // Start receiving messages
+
+
+            //Keenan addition:
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                GameManager.Instance.StartGame(true);
+            });
+            //End
         }
     }
 
