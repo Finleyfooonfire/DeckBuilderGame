@@ -36,6 +36,13 @@ public class GameTCPServer : MonoBehaviour
 
         // Start reading data from the client asynchronously
         stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+
+        //Keenan addition:
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            GameManager.Instance.StartGame(true);
+        });
+        //End
     }
 
     void OnDataReceived(IAsyncResult ar)

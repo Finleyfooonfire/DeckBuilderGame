@@ -1,15 +1,27 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-static class NetworkSerializer
+class NetworkSerializer
 {
-    //A dictionary of all the card stats
-    private static Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
+    private static NetworkSerializer instance;
+    public static NetworkSerializer Instance 
+    { 
+        get 
+        {
+            if (instance == null)
+                instance = new NetworkSerializer();
+            return instance;
+        }
+    }
 
-    static NetworkSerializer()
+    //A dictionary of all the card stats
+    private Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
+
+    NetworkSerializer()
     {
         //Populate the dictionary with the CardStats and their names
-        Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
+        UnityEngine.Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
         foreach (CardStats item in foundAssets)
         {
             cardStatNames.Add(item.name, item);
@@ -17,9 +29,11 @@ static class NetworkSerializer
     }
 
     //Convert changes ingame into a string that can be sent on the network.
-    public static string Serialize(Transform playingField)
+    public string Serialize(Transform playingField)
     {
         string output = "";
+        //Whose turn is it? 1 for the opponent, 0 for us.
+        output += Convert.ToInt32(!GameManager.Instance.isPlayerTurn).ToString();
         //Get the number of cards in each area and then add the card data.
         Transform cardPlayArea = playingField.Find("CardPlayArea");
         output += cardPlayArea.childCount.ToString();
@@ -105,25 +119,26 @@ static class NetworkSerializer
     private enum Stage
     {
         None = 0,
-        CardPlayAreaCardCount = 1,
-        CardPlayAreaCardsName = 2,
-        CardPlayAreaCardsHealth = 3,
-        CardPlayAreaCardsOwner = 4,
-        PlayerGraveyardCardCount = 5,
-        PlayerGraveyardCards = 6,
-        PlayerHandCardCount = 7,
-        PlayerHandCards = 8,
-        PlayerDeckCardCount = 9,
-        PlayerDeckCards = 10,
-        OpponentGraveyardCardCount = 11,
-        OpponentGraveyardCards = 12,
-        OpponentHandCardCount = 13,
-        OpponentHandCards = 14,
-        OpponentDeckCardCount = 15,
-        OpponentDeckCards = 16,
-        Finished = 17,
+        PlayerTurn = 1,
+        CardPlayAreaCardCount = 2,
+        CardPlayAreaCardsName = 3,
+        CardPlayAreaCardsHealth = 4,
+        CardPlayAreaCardsOwner = 5,
+        PlayerGraveyardCardCount = 6,
+        PlayerGraveyardCards = 7,
+        PlayerHandCardCount = 8,
+        PlayerHandCards = 9,
+        PlayerDeckCardCount = 10,
+        PlayerDeckCards = 11,
+        OpponentGraveyardCardCount = 12,
+        OpponentGraveyardCards = 13,
+        OpponentHandCardCount = 14,
+        OpponentHandCards = 15,
+        OpponentDeckCardCount = 16,
+        OpponentDeckCards = 17,
+        Finished = 18,
     }
-    public static void Deserialize(ref Transform playingField, string input)
+    public void Deserialize(ref Transform playingField, string input)
     {
         //Initialize deserialize function variables
         Stage stage = Stage.None;
@@ -155,6 +170,11 @@ static class NetworkSerializer
                 //Different things happen depending on the stage that is in progress.
                 switch (stage)
                 {
+                    case Stage.PlayerTurn:
+                        //Get whose turn it is.
+                        GameManager.Instance.isPlayerTurn = (int.Parse(subString)==1);
+                        stage += 1;
+                        break;
                     case Stage.CardPlayAreaCardCount:
                         //Get the number of cards in the play area and create them
                         numberOfCards = int.Parse(subString);
