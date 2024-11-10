@@ -19,18 +19,19 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < 20; i++)
         {
-            //Keenan modification
             GameObject cardObj = Instantiate(Resources.Load("CardPrefab"), transform) as GameObject;
             cardObj.transform.localPosition = new Vector3();
             cardObj.transform.localRotation = Quaternion.Euler(0, 0, 180);
-            //End
+
             Card card = cardObj.GetComponent<Card>();
             card.isPlayerCard = isPlayerDeck;
             deckCards.Add(card);
-            //Keenan remove line: cardObj.SetActive(false);
         }
-        //Keenan addition
-        DistributeHand();
+        Debug.Log("Deck initialized with " + deckCards.Count + " cards.");
+    
+
+    //Keenan addition
+    DistributeHand();
         //END
     }
 
@@ -42,25 +43,37 @@ public class Deck : MonoBehaviour
         }
     }
 
+
+ 
     public void DrawCard()
     {
-        if (deckCards.Count > 0)
-        {
-            Card drawnCard = deckCards[0];
-            deckCards.RemoveAt(0);
-            handCards.Add(drawnCard);
-            drawnCard.isInHand = true;
+      
 
-            drawnCard.transform.SetParent(handPosition);
+            //matt additions
+       if (deckCards.Count == 0)
+            {
+                //RefillDeck();
+            }
 
-            //Keenan addition
-            drawnCard.transform.rotation = new Quaternion();
-            DistributeHand();
+       if (deckCards.Count > 0)
+            {
+
+                Card drawnCard = deckCards[0];
+                deckCards.RemoveAt(0);
+                handCards.Add(drawnCard);
+                drawnCard.isInHand = true;
+
+                drawnCard.transform.SetParent(handPosition);
+
+                //Keenan addition
+                drawnCard.transform.rotation = new Quaternion();
+                DistributeHand();
+            }
             //END
 
             //Keenan remove line: drawnCard.gameObject.SetActive(true);
-        }
-        else
+        
+       else
         {
             Debug.Log("No more cards in the deck!");
         }

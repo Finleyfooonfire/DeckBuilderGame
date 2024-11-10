@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
+            Debug.Log("turn");
         }
         else
         {
