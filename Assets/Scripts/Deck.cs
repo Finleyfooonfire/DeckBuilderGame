@@ -49,6 +49,7 @@ public class Deck : MonoBehaviour
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
             handCards.Add(drawnCard);
+            drawnCard.isInHand = true;
 
             drawnCard.transform.SetParent(handPosition);
 

@@ -25,13 +25,15 @@ public class GameManager : MonoBehaviour
     public int opponentLife = 20;
     public Transform playerField;
     public Transform opponentField;
-    public Card selectedAttackingCard;
+    public CardAttack selectedAttackingCard;//Keenan modification
     private int turnsTaken = 0;
     private int damageDealt = 0;
     //matt additions
     public string OnTable = "";
     //end
-
+    //Keenan addition
+    PlayingFieldSynch synch;
+    //END 
     void Awake()
     {
         if (Instance == null)
@@ -46,13 +48,30 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
         UpdateLifeUI();
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
-
-        CoinFlip();
     }
+
+    //Call this when the client and server are connected.
+    //Keenan modification
+    public void StartGame(bool isHost)
+    {
+        //Only if the user is a server. Do the coinflip and tell the other device the outcome.
+        if (isHost)
+        {
+            CoinFlip();
+        }
+        //Otherwise get who starts via the network.
+        else
+        {
+            synch.RecieveSynchroniseDevices();
+            UpdateTurn();
+        }
+    }
+    //End
 
     void CoinFlip()
     {
@@ -102,7 +121,9 @@ public class GameManager : MonoBehaviour
         {
             DrawCard();
         }
-
+        //Keenan addition
+        synch.SendSynchroniseDevices();
+        //END
         UpdateTurn();
     }
 
@@ -131,51 +152,40 @@ public class GameManager : MonoBehaviour
         opponentLifeText.text = "Life: " + opponentLife;
     }
 
-    public void SelectAttackingCard(Card card)
+    //Modified by Keenan
+    public void SelectAttackingCard(CardAttack card)
     {
-        if (isPlayerTurn && card.isPlayerCard && !card.isInHand)
+        
+        if (selectedAttackingCard == card)
         {
-            if (selectedAttackingCard == card)
-            {
-                selectedAttackingCard = null;
-            }
-            else
-            {
-                selectedAttackingCard = card;
-            }
+            selectedAttackingCard = null;
         }
+        else
+        {
+            selectedAttackingCard = card;
+        }
+        
     }
 
-    public void Attack(Card targetCard)
+    public void Attack(CardAttack targetCard)
     {
-        if (selectedAttackingCard != null && targetCard != null && !targetCard.isPlayerCard && !targetCard.isInHand)
+        if (selectedAttackingCard != null && targetCard != null)
         {
-            targetCard.defenseValue -= selectedAttackingCard.attackValue;
-            selectedAttackingCard.defenseValue -= targetCard.attackValue;
-
-            damageDealt += selectedAttackingCard.attackValue;
-
-            if (targetCard.defenseValue <= 0)
-            {
-                Destroy(targetCard.gameObject);
-            }
-            if (selectedAttackingCard.defenseValue <= 0)
-            {
-                Destroy(selectedAttackingCard.gameObject);
-            }
+            targetCard.Attack(selectedAttackingCard);
 
             selectedAttackingCard = null;
         }
     }
+    //END
 
     public void AttackPlayerDirectly()
     {
         if (selectedAttackingCard != null)
         {
-            opponentLife -= selectedAttackingCard.attackValue;
+            opponentLife -= selectedAttackingCard.GetComponent<CardInfo>().attackValue;
             UpdateLifeUI();
 
-            damageDealt += selectedAttackingCard.attackValue;
+            damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
 
             if (opponentLife <= 0)
             {
