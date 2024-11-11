@@ -53,6 +53,15 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(EndTurn);
     }
 
+    //Recieve updates constantly
+    private void Update()
+    {
+        if (synch != null)
+        {
+            synch.RecieveSynchroniseDevices();
+        }
+    }
+
     //Call this when the client and server are connected.
     //Keenan modification
     public void StartGame(bool isHost)

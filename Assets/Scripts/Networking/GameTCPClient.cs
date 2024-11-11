@@ -17,14 +17,7 @@ public class GameTCPClient : MonoBehaviour
         synch = FindAnyObjectByType<PlayingFieldSynch>();
     }
 
-    //Recieve updates constantly
-    private void Update()
-    {
-        if (synch != null)
-        {
-            synch.RecieveSynchroniseDevices();
-        }
-    }
+    
 
     public void OnAttemptConnectToServer(string serverIP = "127.0.0.1")//IP defaults to localhost
     {

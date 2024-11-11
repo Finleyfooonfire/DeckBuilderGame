@@ -41,14 +41,15 @@ public class PlayingFieldSynch : MonoBehaviour
     public void RecieveSynchroniseDevices()
     {
         if (!setUp) return;
-        
         //Recieve data and do things with it
         if (isHost)
         {
+            Debug.Log("SERVER::"+server.networkString);
             NetworkSerializer.Instance.Deserialize(ref playingField, server.networkString);
         }
         else
         {
+            Debug.Log("CLIENT::" + client.networkString);
             NetworkSerializer.Instance.Deserialize(ref playingField, client.networkString);
         }
     }
