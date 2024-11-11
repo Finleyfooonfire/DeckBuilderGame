@@ -53,11 +53,9 @@ public class GameTCPClient : MonoBehaviour
             Debug.Log("Received from server: " + message);
             networkString = message;
 
-
+            synch.RecieveSynchroniseDevices();
             ReceiveMessages(); // Continue receiving messages
         }, null);
-
-        synch.RecieveSynchroniseDevices();
     }
 
     public void SendMessageToServer()
