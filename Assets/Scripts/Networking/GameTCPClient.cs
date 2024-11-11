@@ -29,15 +29,15 @@ public class GameTCPClient : MonoBehaviour
         if (client.Connected)
         {
             Debug.Log("Connected to server!");
-            ReceiveMessages(); // Start receiving messages
-
 
             //Keenan addition:
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                GameManager.Instance.StartGame(true);
+                GameManager.Instance.StartGame(false);
             });
             //End
+
+            ReceiveMessages(); // Start receiving messages
         }
     }
 
