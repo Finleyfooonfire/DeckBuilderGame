@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "New Card", menuName = "Card/Stats", order = 1)]
 public class CardStats : ScriptableObject
 {
     [field: SerializeField] public Faction faction { get; private set; }
@@ -11,4 +11,6 @@ public class CardStats : ScriptableObject
     [field: SerializeField] public string manaTypeRequired { get; private set; }
     [field: SerializeField] public CardType cardType { get; private set; }
 
+    // Add a prefab field to specify the card's prefab in the editor
+    [field: SerializeField] public GameObject cardPrefab { get; private set; }
 }
