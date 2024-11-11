@@ -142,7 +142,7 @@ class NetworkSerializer
     public void Deserialize(ref Transform playingField, string input)
     {
         // Initialize deserialize function variables
-        Stage stage = Stage.None;
+        Stage stage = Stage.PlayerTurn;
         int itemCount = 0;
         string subString = "";
 
@@ -158,8 +158,6 @@ class NetworkSerializer
         List<Card> opponentHandCardList = new List<Card>();
         List<Card> opponentDeckCardList = new List<Card>();
 
-        stage = Stage.PlayerTurn;
-
         Debug.Log("Starting deserialization.");
 
         // Iterate through the input one character at a time
@@ -172,48 +170,69 @@ class NetworkSerializer
             else // Once the end is reached, process the substring
             {
                 Debug.Log($"Processing stage: {stage} with data: {subString}");
+
                 // Different actions occur depending on the current stage
                 switch (stage)
                 {
                     case Stage.PlayerTurn:
                         GameManager.Instance.isPlayerTurn = (int.Parse(subString) == 1);
                         Debug.Log($"Player turn set to: {GameManager.Instance.isPlayerTurn}");
-                        stage += 1;
+                        stage = Stage.CardPlayAreaCardCount;
                         break;
 
                     case Stage.CardPlayAreaCardCount:
                         numberOfCards = int.Parse(subString);
                         Debug.Log($"Card play area count: {numberOfCards}");
+
+                        // Retrieve CardInfo components and adjust the list count
                         cardsInfo = playingField.Find("CardPlayArea").GetComponentsInChildren<CardInfo>().ToList();
-                        cardsInfo.Capacity = numberOfCards;
-                        stage += 1;
+
+                        // Resize the list if needed
+                        if (cardsInfo.Count != numberOfCards)
+                        {
+                            Debug.LogWarning($"Adjusting cardsInfo list from {cardsInfo.Count} to match the expected count: {numberOfCards}");
+                            while (cardsInfo.Count < numberOfCards) cardsInfo.Add(new CardInfo());
+                            while (cardsInfo.Count > numberOfCards) cardsInfo.RemoveAt(cardsInfo.Count - 1);
+                        }
+
+                        Debug.Log($"cardsInfo list now has {cardsInfo.Count} items.");
+                        stage = Stage.CardPlayAreaCardsName;
                         break;
 
                     case Stage.CardPlayAreaCardsName:
-                        Debug.Log($"Setting card name: {subString} at index {numberOfCards}");
-                        cardsInfo[numberOfCards].name = subString;
-                        stage += 1;
+                        if (cardsInfo.Count > 0 && numberOfCards > 0)
+                        {
+                            cardsInfo[cardsInfo.Count - numberOfCards].name = subString;
+                            Debug.Log($"Set card name: {cardsInfo[cardsInfo.Count - numberOfCards].name}");
+                            stage = Stage.CardPlayAreaCardsHealth;
+                        }
                         break;
 
                     case Stage.CardPlayAreaCardsHealth:
-                        Debug.Log($"Setting card health: {subString} for {cardsInfo[numberOfCards].name}");
-                        cardsInfo[numberOfCards].defenseValue = int.Parse(subString);
-                        stage += 1;
+                        if (cardsInfo.Count > 0 && numberOfCards > 0)
+                        {
+                            cardsInfo[cardsInfo.Count - numberOfCards].defenseValue = int.Parse(subString);
+                            Debug.Log($"Set card health: {cardsInfo[cardsInfo.Count - numberOfCards].defenseValue}");
+                            stage = Stage.CardPlayAreaCardsOwner;
+                        }
                         break;
 
                     case Stage.CardPlayAreaCardsOwner:
-                        cardsInfo[numberOfCards].isPlayerCard = bool.Parse(subString);
-                        Debug.Log($"Setting card owner to {(cardsInfo[numberOfCards].isPlayerCard ? "Player" : "Opponent")} for card {cardsInfo[numberOfCards].name}");
-                        numberOfCards--;
+                        if (cardsInfo.Count > 0 && numberOfCards > 0)
+                        {
+                            cardsInfo[cardsInfo.Count - numberOfCards].isPlayerCard = bool.Parse(subString);
+                            Debug.Log($"Set card owner to {(cardsInfo[cardsInfo.Count - numberOfCards].isPlayerCard ? "Player" : "Opponent")} for card {cardsInfo[cardsInfo.Count - numberOfCards].name}");
 
-                        if (numberOfCards > 0)
-                        {
-                            stage = Stage.CardPlayAreaCardsName;
-                        }
-                        else
-                        {
-                            Debug.Log("Finished setting play area cards.");
-                            stage += 1;
+                            numberOfCards--;
+                            if (numberOfCards > 0)
+                            {
+                                stage = Stage.CardPlayAreaCardsName;
+                            }
+                            else
+                            {
+                                Debug.Log("Finished setting play area cards.");
+                                stage = Stage.PlayerGraveyardCardCount;
+                            }
                         }
                         break;
 
@@ -221,31 +240,38 @@ class NetworkSerializer
                         numberOfCards = int.Parse(subString);
                         Debug.Log($"Player graveyard card count: {numberOfCards}");
                         playerGraveCardList = playingField.Find("Player").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
-                        playerGraveCardList.Capacity = numberOfCards;
-                        stage += 1;
+
+                        // Resize the list if needed
+                        while (playerGraveCardList.Count < numberOfCards) playerGraveCardList.Add(new Card());
+                        while (playerGraveCardList.Count > numberOfCards) playerGraveCardList.RemoveAt(playerGraveCardList.Count - 1);
+
+                        Debug.Log($"playerGraveCardList now has {playerGraveCardList.Count} items.");
+                        stage = Stage.PlayerGraveyardCards;
                         break;
 
                     case Stage.PlayerGraveyardCards:
-                        var graveCard = playerGraveCardList[numberOfCards];
-                        graveCard.cardName = cardStatNames[subString].name;
-                        graveCard.manaCost = cardStatNames[subString].manaCost;
-                        graveCard.attackValue = cardStatNames[subString].attackValue;
-                        graveCard.defenseValue = cardStatNames[subString].defenseValue;
-                        graveCard.faction = cardStatNames[subString].faction;
-                        graveCard.cardType = cardStatNames[subString].cardType;
-                        Debug.Log($"Set player graveyard card: {graveCard.cardName} with stats: Mana {graveCard.manaCost}, Attack {graveCard.attackValue}, Defense {graveCard.defenseValue}");
-
-                        numberOfCards--;
-                        if (numberOfCards == 0)
+                        if (playerGraveCardList.Count > 0 && numberOfCards > 0)
                         {
-                            Debug.Log("Finished setting player graveyard cards.");
-                            stage += 1;
+                            var graveCard = playerGraveCardList[playerGraveCardList.Count - numberOfCards];
+                            graveCard.cardName = cardStatNames[subString].name;
+                            graveCard.manaCost = cardStatNames[subString].manaCost;
+                            graveCard.attackValue = cardStatNames[subString].attackValue;
+                            graveCard.defenseValue = cardStatNames[subString].defenseValue;
+                            graveCard.faction = cardStatNames[subString].faction;
+                            graveCard.cardType = cardStatNames[subString].cardType;
+                            Debug.Log($"Set player graveyard card: {graveCard.cardName} with stats: Mana {graveCard.manaCost}, Attack {graveCard.attackValue}, Defense {graveCard.defenseValue}");
+
+                            numberOfCards--;
+                            if (numberOfCards == 0)
+                            {
+                                Debug.Log("Finished setting player graveyard cards.");
+                                stage = Stage.PlayerHandCardCount;
+                            }
                         }
                         break;
-
                     case Stage.PlayerHandCardCount:
                         numberOfCards = int.Parse(subString);
-                        Debug.Log($"Player hand card count: {numberOfCards}");
+                        //Debug.Log($"Player hand card count: {numberOfCards}");
                         playerHandCardList = playingField.Find("Player").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
                         playerHandCardList.Capacity = numberOfCards;
                         stage += 1;
@@ -259,19 +285,19 @@ class NetworkSerializer
                         handCard.defenseValue = cardStatNames[subString].defenseValue;
                         handCard.faction = cardStatNames[subString].faction;
                         handCard.cardType = cardStatNames[subString].cardType;
-                        Debug.Log($"Set player hand card: {handCard.cardName} with stats: Mana {handCard.manaCost}, Attack {handCard.attackValue}, Defense {handCard.defenseValue}");
+                   // Debug.Log($"Set player hand card: {handCard.cardName} with stats: Mana {handCard.manaCost}, Attack {handCard.attackValue}, Defense {handCard.defenseValue}");
 
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {
-                            Debug.Log("Finished setting player hand cards.");
+                        Debug.Log("Finished setting player hand cards.");
                             stage += 1;
                         }
                         break;
 
                     case Stage.PlayerDeckCardCount:
                         numberOfCards = int.Parse(subString);
-                        Debug.Log($"Player deck card count: {numberOfCards}");
+                  //  Debug.Log($"Player deck card count: {numberOfCards}");
                         playerDeckCardList = playingField.Find("Player").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
                         playerDeckCardList.Capacity = numberOfCards;
                         stage += 1;
@@ -285,19 +311,19 @@ class NetworkSerializer
                         deckCard.defenseValue = cardStatNames[subString].defenseValue;
                         deckCard.faction = cardStatNames[subString].faction;
                         deckCard.cardType = cardStatNames[subString].cardType;
-                        Debug.Log($"Set player deck card: {deckCard.cardName} with stats: Mana {deckCard.manaCost}, Attack {deckCard.attackValue}, Defense {deckCard.defenseValue}");
+                  // Debug.Log($"Set player deck card: {deckCard.cardName} with stats: Mana {deckCard.manaCost}, Attack {deckCard.attackValue}, Defense {deckCard.defenseValue}");
 
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {
-                            Debug.Log("Finished setting player deck cards.");
+                         Debug.Log("Finished setting player deck cards.");
                             stage += 1;
                         }
                         break;
 
                     case Stage.OpponentGraveyardCardCount:
                         numberOfCards = int.Parse(subString);
-                        Debug.Log($"Opponent graveyard card count: {numberOfCards}");
+                       //Debug.Log($"Opponent graveyard card count: {numberOfCards}");
                         opponentGraveCardList = playingField.Find("Opponent").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
                         opponentGraveCardList.Capacity = numberOfCards;
                         stage += 1;
@@ -311,7 +337,7 @@ class NetworkSerializer
                         opponentGraveCard.defenseValue = cardStatNames[subString].defenseValue;
                         opponentGraveCard.faction = cardStatNames[subString].faction;
                         opponentGraveCard.cardType = cardStatNames[subString].cardType;
-                        Debug.Log($"Set opponent graveyard card: {opponentGraveCard.cardName} with stats: Mana {opponentGraveCard.manaCost}, Attack {opponentGraveCard.attackValue}, Defense {opponentGraveCard.defenseValue}");
+                     //Debug.Log($"Set opponent graveyard card: {opponentGraveCard.cardName} with stats: Mana {opponentGraveCard.manaCost}, Attack {opponentGraveCard.attackValue}, Defense {opponentGraveCard.defenseValue}");
 
                  
 
