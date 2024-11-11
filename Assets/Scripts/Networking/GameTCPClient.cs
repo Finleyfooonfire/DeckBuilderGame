@@ -40,6 +40,14 @@ public class GameTCPClient : MonoBehaviour
             //End
 
             ReceiveMessages(); // Start receiving messages
+
+
+            //Keenan addition:
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                GameManager.Instance.StartGame(true);
+            });
+            //End
         }
     }
 
