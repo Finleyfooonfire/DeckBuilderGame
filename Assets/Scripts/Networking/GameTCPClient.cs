@@ -6,7 +6,8 @@ using UnityEngine;
 public class GameTCPClient : MonoBehaviour
 {
     private TcpClient client;
-    public string networkString;  // Reference to the InputField UI component
+    public string networkStringOut;
+    public string networkStringIn;
     PlayingFieldSynch synch;
 
     private void Start()
@@ -58,7 +59,7 @@ public class GameTCPClient : MonoBehaviour
 
                 string message = Encoding.ASCII.GetString(data, 0, bytesRead);
                 Debug.Log("Received from server: " + message);
-                networkString = message;
+                networkStringIn = message;
 
                 // Continue receiving messages
                 ReceiveMessages();
@@ -80,7 +81,7 @@ public class GameTCPClient : MonoBehaviour
 
         try
         {
-            if (string.IsNullOrEmpty(networkString))
+            if (string.IsNullOrEmpty(networkStringOut))
             {
                 Debug.LogWarning("No message to send. networkString is empty.");
                 return;
@@ -89,10 +90,10 @@ public class GameTCPClient : MonoBehaviour
             NetworkStream stream = client.GetStream();
             if (stream.CanWrite)
             {
-                byte[] data = Encoding.ASCII.GetBytes(networkString);
+                byte[] data = Encoding.ASCII.GetBytes(networkStringOut);
                 stream.Write(data, 0, data.Length);
-                Debug.Log("Sent to server: " + networkString);
-                networkString = ""; // Clear message after sending
+                Debug.Log("Sent to server: " + networkStringOut);
+                networkStringOut = ""; // Clear message after sending
             }
             else
             {

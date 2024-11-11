@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class GameTCPServer : MonoBehaviour
 {
-    public string networkString;  // Reference to the Text UI component
+    public string networkStringOut;
+    public string networkStringIn;
     private TcpListener server;
     private TcpClient client;
     private NetworkStream stream;
@@ -74,7 +75,7 @@ public class GameTCPServer : MonoBehaviour
                 // Update the UI on the main thread
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    networkString = message;
+                    networkStringIn = message;
                 });
 
                 // Continue reading data from the client
@@ -121,7 +122,7 @@ public class GameTCPServer : MonoBehaviour
         {
             try
             {
-                string messageToSend = networkString;
+                string messageToSend = networkStringOut;
                 byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
                 // Write the data to the stream
@@ -129,7 +130,7 @@ public class GameTCPServer : MonoBehaviour
                 Debug.Log("Sent message to client: " + messageToSend);
 
                 // Clear the network string after sending
-                networkString = "";
+                networkStringOut = "";
             }
             catch (Exception ex)
             {

@@ -29,11 +29,11 @@ public class PlayingFieldSynch : MonoBehaviour
         //Send data
         if (isHost)
         {
-            server.networkString = NetworkSerializer.Instance.Serialize(playingField);
+            server.networkStringOut = NetworkSerializer.Instance.Serialize(playingField);
         }
         else
         {
-            client.networkString = NetworkSerializer.Instance.Serialize(playingField);
+            client.networkStringOut = NetworkSerializer.Instance.Serialize(playingField);
         }
         
     }
@@ -45,12 +45,12 @@ public class PlayingFieldSynch : MonoBehaviour
         if (isHost)
         {
             //Debug.Log("SERVER::"+server.networkString);
-            NetworkSerializer.Instance.Deserialize(ref playingField, server.networkString);
+            NetworkSerializer.Instance.Deserialize(ref playingField, server.networkStringIn);
         }
         else
         {
             //Debug.Log("CLIENT::" + client.networkString);
-            NetworkSerializer.Instance.Deserialize(ref playingField, client.networkString);
+            NetworkSerializer.Instance.Deserialize(ref playingField, client.networkStringIn);
         }
     }
 }
