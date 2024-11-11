@@ -6,7 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/InvidualScenes/KeenansScenes/KeenanGameScene.unity
-    guid: 0b190eaa6ddb7a54ca6253f79c0205dd
+    path: Assets/Scenes/MainMenu.unity
+    guid: b1b26480ba718244a99a1c605542e61b
+  - enabled: 1
+    path: Assets/Scenes/LoadingScreen.unity
+    guid: 3f399ae9aeba1ba428fd0b1531067467
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: bd4954a3a7b6a9744b848111b5c41b78
+  - enabled: 1
+    path: Assets/Scenes/LoreScreen.unity
+    guid: 40caae2d0e5f9d945b22960b21907a84
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

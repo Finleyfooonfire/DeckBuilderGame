@@ -17,6 +17,15 @@ public class GameTCPClient : MonoBehaviour
         synch = FindAnyObjectByType<PlayingFieldSynch>();
     }
 
+    //Recieve updates constantly
+    private void Update()
+    {
+        if (synch != null)
+        {
+            synch.RecieveSynchroniseDevices();
+        }
+    }
+
     public void OnAttemptConnectToServer(string serverIP = "127.0.0.1")//IP defaults to localhost
     {
         client = new TcpClient();
@@ -29,6 +38,14 @@ public class GameTCPClient : MonoBehaviour
         if (client.Connected)
         {
             Debug.Log("Connected to server!");
+
+            //Keenan addition:
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                GameManager.Instance.StartGame(false);
+            });
+            //End
+
             ReceiveMessages(); // Start receiving messages
 
 
@@ -53,11 +70,8 @@ public class GameTCPClient : MonoBehaviour
             Debug.Log("Received from server: " + message);
             networkString = message;
 
-
             ReceiveMessages(); // Continue receiving messages
         }, null);
-
-        synch.RecieveSynchroniseDevices();
     }
 
     public void SendMessageToServer()
