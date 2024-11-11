@@ -7,12 +7,14 @@ public class RollingBanner : MonoBehaviour
 {
     public ScrollRect scrollRect;        // The ScrollRect component controlling the scrolling
     public RectTransform content;        // The Content of the ScrollRect (the container of stories)
-    public float scrollSpeed = 200f;     // How fast the banner scrolls
+    public float scrollSpeed = 2f;       // Speed at which the banner scrolls (lower value = slower)
     public float displayTime = 5f;       // Time to display each story
     public float smallerScale = 0.8f;    // Scale factor for the side stories
     public float storySpacing = 300f;    // Space between stories
 
     public Transform storyParent;        // The parent object that holds all the story prefabs
+
+    public float scaleTransitionDuration = 1f; // Customizable duration for scaling transition
 
     private GameObject[] storyPrefabs;   // Array to store the actual story prefabs
     private string[] storyTitles;        // Array to store the titles of the stories
@@ -21,6 +23,8 @@ public class RollingBanner : MonoBehaviour
     private GameObject leftStoryObj;     // The story to the left
     private GameObject mainStoryObj;     // The currently displayed main story canvas panel
     private GameObject rightStoryObj;    // The story to the right
+
+    private float currentScrollTime = 0f; // Track current scroll time for smooth animation
 
     void Start()
     {
@@ -72,8 +76,8 @@ public class RollingBanner : MonoBehaviour
             // Wait for the display time (let the user read the current story)
             yield return new WaitForSeconds(displayTime);
 
-            // Scroll the current stories to the left
-            yield return StartCoroutine(ScrollStoriesLeft());
+            // Scroll the current stories to the left with smooth animation
+            yield return StartCoroutine(SmoothScrollStoriesLeft());
 
             // Move to the next story
             currentStoryIndex = (currentStoryIndex + 1) % storyPrefabs.Length; // Loop back after the last story
@@ -110,36 +114,90 @@ public class RollingBanner : MonoBehaviour
         rightStoryObj.transform.localScale = new Vector3(smallerScale, smallerScale, 1); // Smaller size
     }
 
-    // Coroutine to handle scrolling the stories to the left
-    IEnumerator ScrollStoriesLeft()
+    // Coroutine to handle smooth scrolling of the stories to the left
+    IEnumerator SmoothScrollStoriesLeft()
     {
-        // Move the content to the left (scroll it)
-        float targetPosition = content.anchoredPosition.x - storySpacing; // Move the content off the screen by the width of one story
+        float startPosition = content.anchoredPosition.x;
+        float targetPosition = startPosition - storySpacing;
 
-        // Scroll the content gradually to the left
-        while (content.anchoredPosition.x > targetPosition)
+        float journeyLength = Mathf.Abs(targetPosition - startPosition);
+        float journeyStartTime = Time.time;
+
+        // Smoothly animate the content position
+        while (Mathf.Abs(content.anchoredPosition.x - targetPosition) > 0.1f)
         {
-            content.anchoredPosition = new Vector2(content.anchoredPosition.x - scrollSpeed * Time.deltaTime, content.anchoredPosition.y);
+            float journeyProgress = (Time.time - journeyStartTime) * scrollSpeed / journeyLength;
+            float newPosition = Mathf.Lerp(startPosition, targetPosition, Mathf.SmoothStep(0f, 1f, journeyProgress));
+
+            content.anchoredPosition = new Vector2(newPosition, content.anchoredPosition.y);
+
             yield return null;
         }
 
-        // After scrolling out of view, reset the content position for the next set of stories
+        // Ensure content ends exactly at the target position
+        content.anchoredPosition = new Vector2(targetPosition, content.anchoredPosition.y);
+
+        // Reset the content position for the next set of stories
         content.anchoredPosition = new Vector2(0, content.anchoredPosition.y); // Reset to the center
 
-        // Reset the positions of the panels so that the next panel can show up correctly
+        // Reset the positions and scaling of the panels so that the next panel can show up correctly
         ResetPanelPositions();
     }
 
-    // Reset the panel positions for the next scroll
+    // Reset the panel positions for the next scroll and scale them smoothly
     void ResetPanelPositions()
     {
-        // Move the left panel to the far left
-        leftStoryObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(-storySpacing, 0);
-        // Move the right panel to the far right
-        rightStoryObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(storySpacing, 0);
+        // Smoothly transition the left and right panels to their positions and scales
+        StartCoroutine(SmoothPanelTransition());
+    }
 
-        // Scale down the left and right panels for smaller size
-        leftStoryObj.transform.localScale = new Vector3(smallerScale, smallerScale, 1);
-        rightStoryObj.transform.localScale = new Vector3(smallerScale, smallerScale, 1);
+    // Smoothly transition the left and right panels to their positions and scales
+    IEnumerator SmoothPanelTransition()
+    {
+        // Transition the left panel to its target position and scale
+        Vector3 leftStartPos = leftStoryObj.transform.localPosition;
+        Vector3 leftTargetPos = new Vector3(-storySpacing, 0, 0);
+        Vector3 leftStartScale = new Vector3(smallerScale, smallerScale, 1);
+        Vector3 leftTargetScale = Vector3.one;
+
+        float leftJourneyStartTime = Time.time;
+        float leftJourneyLength = Vector3.Distance(leftStartPos, leftTargetPos);
+
+        // Transition the left panel position and scale
+        while (Vector3.Distance(leftStoryObj.transform.localPosition, leftTargetPos) > 0.1f)
+        {
+            float journeyProgress = (Time.time - leftJourneyStartTime) * scrollSpeed / leftJourneyLength;
+            leftStoryObj.transform.localPosition = Vector3.Lerp(leftStartPos, leftTargetPos, Mathf.SmoothStep(0f, 1f, journeyProgress));
+            leftStoryObj.transform.localScale = Vector3.Lerp(leftStartScale, leftTargetScale, Mathf.SmoothStep(0f, 1f, journeyProgress));
+
+            yield return null;
+        }
+
+        // Ensure the left panel ends at the exact target position and scale
+        leftStoryObj.transform.localPosition = leftTargetPos;
+        leftStoryObj.transform.localScale = leftTargetScale;
+
+        // Transition the right panel to its target position and scale
+        Vector3 rightStartPos = rightStoryObj.transform.localPosition;
+        Vector3 rightTargetPos = new Vector3(storySpacing, 0, 0);
+        Vector3 rightStartScale = new Vector3(smallerScale, smallerScale, 1);
+        Vector3 rightTargetScale = Vector3.one;
+
+        float rightJourneyStartTime = Time.time;
+        float rightJourneyLength = Vector3.Distance(rightStartPos, rightTargetPos);
+
+        // Transition the right panel position
+        while (Vector3.Distance(rightStoryObj.transform.localPosition, rightTargetPos) > 0.1f)
+        {
+            float journeyProgress = (Time.time - rightJourneyStartTime) * scrollSpeed / rightJourneyLength;
+            rightStoryObj.transform.localPosition = Vector3.Lerp(rightStartPos, rightTargetPos, Mathf.SmoothStep(0f, 1f, journeyProgress));
+            rightStoryObj.transform.localScale = Vector3.Lerp(rightStartScale, rightTargetScale, Mathf.SmoothStep(0f, 1f, journeyProgress));
+
+            yield return null;
+        }
+
+        // Ensure the right panel ends at the exact target position and scale
+        rightStoryObj.transform.localPosition = rightTargetPos;
+        rightStoryObj.transform.localScale = rightTargetScale;
     }
 }
