@@ -13,6 +13,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
         if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
         {
             Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
+            Destroy(targetCard.gameObject);//The target card has reached 0 health so it shall die.
         }
         else
         {

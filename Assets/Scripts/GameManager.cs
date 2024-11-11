@@ -178,9 +178,10 @@ public class GameManager : MonoBehaviour
     {
         if (selectedAttackingCard != null && targetCard != null)
         {
-            targetCard.Attack(selectedAttackingCard);
+            selectedAttackingCard.Attack(targetCard);
 
             selectedAttackingCard = null;
+            targetCard = null;
         }
     }
     //END
