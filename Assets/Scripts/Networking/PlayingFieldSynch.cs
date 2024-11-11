@@ -44,12 +44,12 @@ public class PlayingFieldSynch : MonoBehaviour
         //Recieve data and do things with it
         if (isHost)
         {
-            Debug.Log("SERVER::"+server.networkString);
+            //Debug.Log("SERVER::"+server.networkString);
             NetworkSerializer.Instance.Deserialize(ref playingField, server.networkString);
         }
         else
         {
-            Debug.Log("CLIENT::" + client.networkString);
+            //Debug.Log("CLIENT::" + client.networkString);
             NetworkSerializer.Instance.Deserialize(ref playingField, client.networkString);
         }
     }

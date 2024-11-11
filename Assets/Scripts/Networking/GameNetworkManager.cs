@@ -2,6 +2,7 @@ using System.Net.Sockets;
 using System.Net;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameNetworkManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GameNetworkManager : MonoBehaviour
     [SerializeField] GameObject clientUI;
     [SerializeField] GameObject IPButton;
     [SerializeField] TMP_InputField IPInput;
+    public bool Turn;
     
     //What happens when the user clicks on the start as host or start as client buttons.
     public void OnStartGame(bool setHost)
@@ -21,6 +23,8 @@ public class GameNetworkManager : MonoBehaviour
         startButtons.SetActive(false);
         isHost = setHost;
         StartUpNetwork();
+       
+    
     }
 
     //Gets the local IP address
@@ -82,6 +86,9 @@ public class GameNetworkManager : MonoBehaviour
 
         // Hide client connect UI after initiating connection
         clientUI.gameObject.SetActive(false);
+        Turn = true;
+        Debug.Log(Turn);
+        //SceneManager.LoadScene("GameScene"/*, LoadSceneMode.Additive*/);
     }
 
 }

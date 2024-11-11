@@ -34,6 +34,7 @@ class NetworkSerializer
         string output = "";
         //Whose turn is it? 1 for the opponent, 0 for us.
         output += Convert.ToInt32(!GameManager.Instance.isPlayerTurn).ToString();
+        output += "\n";
         //Get the number of cards in each area and then add the card data.
         Transform cardPlayArea = playingField.Find("CardPlayArea");
         output += cardPlayArea.childCount.ToString();
@@ -140,158 +141,180 @@ class NetworkSerializer
     }
     public void Deserialize(ref Transform playingField, string input)
     {
-        //Initialize deserialize function variables
+        // Initialize deserialize function variables
         Stage stage = Stage.None;
         int itemCount = 0;
         string subString = "";
 
-        //Deserialized data
+        // Deserialized data
         int numberOfCards = 0;
         List<CardInfo> cardsInfo = new List<CardInfo>();
-        //The player's cards
+        // The player's cards
         List<Card> playerGraveCardList = new List<Card>();
         List<Card> playerHandCardList = new List<Card>();
         List<Card> playerDeckCardList = new List<Card>();
-        //The opponent's cards
+        // The opponent's cards
         List<Card> opponentGraveCardList = new List<Card>();
         List<Card> opponentHandCardList = new List<Card>();
         List<Card> opponentDeckCardList = new List<Card>();
 
-        //Convert the string into the game thingy
-        //iterate through the input a character at a time.
+        stage = Stage.PlayerTurn;
+
+        Debug.Log("Starting deserialization.");
+
+        // Iterate through the input one character at a time
         foreach (char c in input)
         {
-            if (c != '\n')//Build up the substring until it reaches the end.
+            if (c != '\n') // Build up the substring until it reaches the end
             {
                 subString += c;
             }
-            else//Once the end is reached: do something. Then go to the next stage
+            else // Once the end is reached, process the substring
             {
-                //Different things happen depending on the stage that is in progress.
+                Debug.Log($"Processing stage: {stage} with data: {subString}");
+                // Different actions occur depending on the current stage
                 switch (stage)
                 {
                     case Stage.PlayerTurn:
-                        //Get whose turn it is.
-                        GameManager.Instance.isPlayerTurn = (int.Parse(subString)==1);
+                        GameManager.Instance.isPlayerTurn = (int.Parse(subString) == 1);
+                        Debug.Log($"Player turn set to: {GameManager.Instance.isPlayerTurn}");
                         stage += 1;
                         break;
+
                     case Stage.CardPlayAreaCardCount:
-                        //Get the number of cards in the play area and create them
                         numberOfCards = int.Parse(subString);
+                        Debug.Log($"Card play area count: {numberOfCards}");
                         cardsInfo = playingField.Find("CardPlayArea").GetComponentsInChildren<CardInfo>().ToList();
-                        //Resize the array if the number of CardInfos are incorrect
                         cardsInfo.Capacity = numberOfCards;
                         stage += 1;
                         break;
+
                     case Stage.CardPlayAreaCardsName:
-                        //Get the name of the card
+                        Debug.Log($"Setting card name: {subString} at index {numberOfCards}");
                         cardsInfo[numberOfCards].name = subString;
                         stage += 1;
                         break;
+
                     case Stage.CardPlayAreaCardsHealth:
-                        //Get the health of the card
+                        Debug.Log($"Setting card health: {subString} for {cardsInfo[numberOfCards].name}");
                         cardsInfo[numberOfCards].defenseValue = int.Parse(subString);
                         stage += 1;
                         break;
+
                     case Stage.CardPlayAreaCardsOwner:
-                        //Get the owner of the card
                         cardsInfo[numberOfCards].isPlayerCard = bool.Parse(subString);
-                        numberOfCards--;//Reduce the number of cards left to look at.
-                        //If there are more cards left: go back to Stage.CardPlayAreaCardsName
+                        Debug.Log($"Setting card owner to {(cardsInfo[numberOfCards].isPlayerCard ? "Player" : "Opponent")} for card {cardsInfo[numberOfCards].name}");
+                        numberOfCards--;
+
                         if (numberOfCards > 0)
                         {
                             stage = Stage.CardPlayAreaCardsName;
                         }
                         else
                         {
-                            //Overwrite the playing field
-
-                            //Go to the next stage
+                            Debug.Log("Finished setting play area cards.");
                             stage += 1;
                         }
                         break;
+
                     case Stage.PlayerGraveyardCardCount:
-                        //Get the number of cards in the player's graveyard
                         numberOfCards = int.Parse(subString);
+                        Debug.Log($"Player graveyard card count: {numberOfCards}");
                         playerGraveCardList = playingField.Find("Player").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
                         playerGraveCardList.Capacity = numberOfCards;
                         stage += 1;
                         break;
+
                     case Stage.PlayerGraveyardCards:
-                        //Get the cards in the graveyard
-                        playerGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
+                        var graveCard = playerGraveCardList[numberOfCards];
+                        graveCard.cardName = cardStatNames[subString].name;
+                        graveCard.manaCost = cardStatNames[subString].manaCost;
+                        graveCard.attackValue = cardStatNames[subString].attackValue;
+                        graveCard.defenseValue = cardStatNames[subString].defenseValue;
+                        graveCard.faction = cardStatNames[subString].faction;
+                        graveCard.cardType = cardStatNames[subString].cardType;
+                        Debug.Log($"Set player graveyard card: {graveCard.cardName} with stats: Mana {graveCard.manaCost}, Attack {graveCard.attackValue}, Defense {graveCard.defenseValue}");
+
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {
+                            Debug.Log("Finished setting player graveyard cards.");
                             stage += 1;
                         }
                         break;
+
                     case Stage.PlayerHandCardCount:
-                        //Get the number of cards in the player's hand
                         numberOfCards = int.Parse(subString);
+                        Debug.Log($"Player hand card count: {numberOfCards}");
                         playerHandCardList = playingField.Find("Player").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
                         playerHandCardList.Capacity = numberOfCards;
                         stage += 1;
                         break;
+
                     case Stage.PlayerHandCards:
-                        //Get the cards in the hand
-                        playerHandCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerHandCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerHandCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerHandCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerHandCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerHandCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
+                        var handCard = playerHandCardList[numberOfCards];
+                        handCard.cardName = cardStatNames[subString].name;
+                        handCard.manaCost = cardStatNames[subString].manaCost;
+                        handCard.attackValue = cardStatNames[subString].attackValue;
+                        handCard.defenseValue = cardStatNames[subString].defenseValue;
+                        handCard.faction = cardStatNames[subString].faction;
+                        handCard.cardType = cardStatNames[subString].cardType;
+                        Debug.Log($"Set player hand card: {handCard.cardName} with stats: Mana {handCard.manaCost}, Attack {handCard.attackValue}, Defense {handCard.defenseValue}");
+
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {
+                            Debug.Log("Finished setting player hand cards.");
                             stage += 1;
                         }
                         break;
+
                     case Stage.PlayerDeckCardCount:
-                        //Get the number of cards in the player's deck
                         numberOfCards = int.Parse(subString);
+                        Debug.Log($"Player deck card count: {numberOfCards}");
                         playerDeckCardList = playingField.Find("Player").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
                         playerDeckCardList.Capacity = numberOfCards;
                         stage += 1;
                         break;
+
                     case Stage.PlayerDeckCards:
-                        //Get the cards in the deck
-                        playerDeckCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerDeckCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerDeckCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerDeckCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerDeckCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerDeckCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
+                        var deckCard = playerDeckCardList[numberOfCards];
+                        deckCard.cardName = cardStatNames[subString].name;
+                        deckCard.manaCost = cardStatNames[subString].manaCost;
+                        deckCard.attackValue = cardStatNames[subString].attackValue;
+                        deckCard.defenseValue = cardStatNames[subString].defenseValue;
+                        deckCard.faction = cardStatNames[subString].faction;
+                        deckCard.cardType = cardStatNames[subString].cardType;
+                        Debug.Log($"Set player deck card: {deckCard.cardName} with stats: Mana {deckCard.manaCost}, Attack {deckCard.attackValue}, Defense {deckCard.defenseValue}");
+
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {
+                            Debug.Log("Finished setting player deck cards.");
                             stage += 1;
                         }
                         break;
+
                     case Stage.OpponentGraveyardCardCount:
-                        //Get the number of cards in the Opponent's graveyard
                         numberOfCards = int.Parse(subString);
+                        Debug.Log($"Opponent graveyard card count: {numberOfCards}");
                         opponentGraveCardList = playingField.Find("Opponent").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
                         opponentGraveCardList.Capacity = numberOfCards;
                         stage += 1;
                         break;
+
                     case Stage.OpponentGraveyardCards:
-                        //Get the cards in the graveyard
-                        opponentGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        opponentGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        opponentGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        opponentGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        opponentGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        opponentGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
+                        var opponentGraveCard = opponentGraveCardList[numberOfCards];
+                        opponentGraveCard.cardName = cardStatNames[subString].name;
+                        opponentGraveCard.manaCost = cardStatNames[subString].manaCost;
+                        opponentGraveCard.attackValue = cardStatNames[subString].attackValue;
+                        opponentGraveCard.defenseValue = cardStatNames[subString].defenseValue;
+                        opponentGraveCard.faction = cardStatNames[subString].faction;
+                        opponentGraveCard.cardType = cardStatNames[subString].cardType;
+                        Debug.Log($"Set opponent graveyard card: {opponentGraveCard.cardName} with stats: Mana {opponentGraveCard.manaCost}, Attack {opponentGraveCard.attackValue}, Defense {opponentGraveCard.defenseValue}");
+
+                 
+
                         numberOfCards--;
                         if (numberOfCards == 0)
                         {

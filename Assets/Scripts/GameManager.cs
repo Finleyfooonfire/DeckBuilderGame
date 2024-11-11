@@ -69,7 +69,9 @@ public class GameManager : MonoBehaviour
         //Only if the user is a server. Do the coinflip and tell the other device the outcome.
         if (isHost)
         {
-            CoinFlip();
+            //CoinFlip(); 
+          
+           
         }
         //Otherwise get who starts via the network.
         else
@@ -80,17 +82,18 @@ public class GameManager : MonoBehaviour
     }
     //End
 
-    void CoinFlip()
-    {
+    //void CoinFlip()
+    //{
         //Keenan addition
-        Random.InitState((int)Time.time);
+        //Random.InitState((int)Time.time);
         //End
-        isPlayerTurn = Random.Range(0, 2) == 0;
-        UpdateTurn();
-    }
+        //isPlayerTurn = Random.Range(0, 2) == 0;
+        //UpdateTurn();
+   // }
 
     void UpdateTurn()
     {
+        Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -101,6 +104,7 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
+            Debug.Log("YOUR TURN");
         }
         else
         {
@@ -111,6 +115,7 @@ public class GameManager : MonoBehaviour
             opponentDeck.DrawCard();
 
             statusText.text = "Opponent's Turn";
+            Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -120,6 +125,7 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         isPlayerTurn = !isPlayerTurn;
+        Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
         UpdateTurn();

@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public class GameTCPServer : MonoBehaviour
 {
@@ -17,94 +17,144 @@ public class GameTCPServer : MonoBehaviour
 
     void Start()
     {
+        // Initialize and start the server
+        try
+        {
+            server = new TcpListener(IPAddress.Any, 7777);
+            server.Start();
+            Debug.Log("Server started, waiting for client...");
 
-        server = new TcpListener(IPAddress.Any, 7777);
-        server.Start();
-        Debug.Log("Server started, waiting for client...");
-
-        // Accept client connection asynchronously
-        server.BeginAcceptTcpClient(OnClientConnected, null);
-        synch = FindAnyObjectByType<PlayingFieldSynch>();
+            // Begin accepting client connections asynchronously
+            server.BeginAcceptTcpClient(OnClientConnected, null);
+            synch = FindAnyObjectByType<PlayingFieldSynch>();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to start server: " + ex.Message);
+        }
     }
 
     void OnClientConnected(IAsyncResult ar)
     {
-        client = server.EndAcceptTcpClient(ar);
-        Debug.Log("Client connected!");
-
-        stream = client.GetStream();
-
-        //Keenan addition:
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        try
         {
-            GameManager.Instance.StartGame(true);
-        });
-        //End
+            client = server.EndAcceptTcpClient(ar);
+            Debug.Log("Client connected!");
 
-        // Start reading data from the client asynchronously
-        stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+            stream = client.GetStream();
 
-        //Keenan addition:
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            // Ensure the GameManager starts the game on the main thread
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                GameManager.Instance.StartGame(true);
+            });
+
+            // Start reading data from the client asynchronously
+            Debug.Log("Beginning to read data from client...");
+            stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+        }
+        catch (Exception ex)
         {
-            GameManager.Instance.StartGame(true);
-        });
-        //End
+            Debug.LogError("Error on client connection: " + ex.Message);
+        }
     }
 
     void OnDataReceived(IAsyncResult ar)
     {
-        int bytesRead = stream.EndRead(ar);
-
-        if (bytesRead > 0)
+        try
         {
-            // Convert the byte data into a string
-            string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            Debug.Log("Received message: " + message);
+            int bytesRead = stream.EndRead(ar);
 
-            // Update the UI on the main thread
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            if (bytesRead > 0)
             {
-                networkString = message;
-            });
+                // Convert the byte data into a string and log it
+                string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                Debug.Log("Received message from client: " + message);
 
-            // Continue reading data
-            stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+                // Update the UI on the main thread
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    networkString = message;
+                });
+
+                // Continue reading data from the client
+                stream.BeginRead(buffer, 0, buffer.Length, OnDataReceived, null);
+            }
+            else
+            {
+                // Client has disconnected
+                Debug.LogWarning("Client has disconnected. Stopping read.");
+                stream.Close();
+                client.Close();
+                client = null;
+
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    Debug.Log("Client disconnected, waiting for a new client...");
+                    server.BeginAcceptTcpClient(OnClientConnected, null);
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error in data reception: " + ex.Message);
+            if (client != null)
+            {
+                client.Close();
+                client = null;
+            }
         }
 
+        // Execute any synchronized device update, if needed
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            synch.RecieveSynchroniseDevices();
+            if (synch != null)
+            {
+                synch.RecieveSynchroniseDevices();
+            }
         });
     }
 
     public void SendMessageToClient()
     {
-        if (client != null)
+        if (client != null && stream != null && stream.CanWrite)
         {
-            string messageToSend = networkString;
-            byte[] data = Encoding.ASCII.GetBytes(messageToSend);
+            try
+            {
+                string messageToSend = networkString;
+                byte[] data = Encoding.ASCII.GetBytes(messageToSend);
 
-            NetworkStream stream = client.GetStream();
-            stream.Write(data, 0, data.Length); // Send message to client
+                // Write the data to the stream
+                stream.Write(data, 0, data.Length);
+                Debug.Log("Sent message to client: " + messageToSend);
 
-            Debug.Log("Sent to server: " + messageToSend);
-            networkString = ""; // Clear the network string after sending
+                // Clear the network string after sending
+                networkString = "";
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error sending message to client: " + ex.Message);
+            }
         }
         else
         {
-            Debug.LogWarning("Client is not connected to the server!");
+            Debug.LogWarning("Client is not connected or stream is not writable.");
         }
     }
 
     void OnApplicationQuit()
     {
+        // Properly stop the server and close client connection on quit
         if (server != null)
         {
-            server.Stop();  // Stop the server on application quit
+            server.Stop();
+            Debug.Log("Server stopped.");
+        }
+
+        if (client != null)
+        {
+            client.Close();
+            Debug.Log("Client connection closed on application quit.");
         }
     }
-
-
 }
-
