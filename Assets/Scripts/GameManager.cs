@@ -1,9 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -155,7 +153,7 @@ public class GameManager : MonoBehaviour
     //Modified by Keenan
     public void SelectAttackingCard(CardAttack card)
     {
-        
+
         if (selectedAttackingCard == card)
         {
             selectedAttackingCard = null;
@@ -164,7 +162,7 @@ public class GameManager : MonoBehaviour
         {
             selectedAttackingCard = card;
         }
-        
+
     }
 
     public void Attack(CardAttack targetCard)
@@ -203,15 +201,15 @@ public class GameManager : MonoBehaviour
 
 
 
-   // IEnumerator AITurn()
-  //  {
-        // Simple AI logic for testing
-      //  yield return new WaitForSeconds(2f);
+    // IEnumerator AITurn()
+    //  {
+    // Simple AI logic for testing
+    //  yield return new WaitForSeconds(2f);
 
-  //      Debug.Log("AI forfeits its turn.");
+    //      Debug.Log("AI forfeits its turn.");
 
-   //     EndTurn();
-  //  }
+    //     EndTurn();
+    //  }
 
     public void GameOver(bool playerWon)
     {
