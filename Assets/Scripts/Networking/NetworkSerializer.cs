@@ -34,6 +34,7 @@ class NetworkSerializer
         string output = "";
         //Whose turn is it? 1 for the opponent, 0 for us.
         output += Convert.ToInt32(!GameManager.Instance.isPlayerTurn).ToString();
+        output += "\n";
         //Get the number of cards in each area and then add the card data.
         Transform cardPlayArea = playingField.Find("CardPlayArea");
         output += cardPlayArea.childCount.ToString();
