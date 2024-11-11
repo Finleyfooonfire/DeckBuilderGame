@@ -2565,7 +2565,7 @@ MonoBehaviour:
   client: {fileID: 998664686}
   startButtons: {fileID: 90935821}
   serverUI: {fileID: 157612362}
-  serverIP: {fileID: 0}
+  serverIP: {fileID: 1482033594}
   clientUI: {fileID: 407751975}
   IPButton: {fileID: 1151616526}
   IPInput: {fileID: 247807170}
