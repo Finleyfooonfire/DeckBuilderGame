@@ -5,19 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: b1b26480ba718244a99a1c605542e61b
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LoadingScreen.unity
     guid: 3f399ae9aeba1ba428fd0b1531067467
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/GameScene.unity
-    guid: 412a542dfbc1a414d8ea21551afe205e
-  - enabled: 0
+    guid: 8689fed005390b8438e6ee564ecbc2ae
+  - enabled: 1
     path: Assets/Scenes/LoreScreen.unity
     guid: 40caae2d0e5f9d945b22960b21907a84
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/InvidualScenes/KeenansScenes/KeenanSingleplayer.unity
     guid: 0b190eaa6ddb7a54ca6253f79c0205dd
   m_configObjects: {}
