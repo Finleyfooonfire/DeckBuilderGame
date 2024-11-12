@@ -10,11 +10,11 @@ public class GameNetworkManager : MonoBehaviour
     [SerializeField] GameObject server;
     [SerializeField] GameObject client;
     [SerializeField] GameObject startButtons;
-    [SerializeField] GameObject serverUI;
-    [SerializeField] TMP_Text serverIP;
+    //[SerializeField] GameObject serverUI;
+    //[SerializeField] TMP_Text serverIP;
     [SerializeField] GameObject clientUI;
     [SerializeField] GameObject IPButton;
-    [SerializeField] TMP_InputField IPInput;
+    //[SerializeField] TMP_InputField IPInput;
     public bool Turn;
     
     //What happens when the user clicks on the start as host or start as client buttons.
@@ -27,6 +27,7 @@ public class GameNetworkManager : MonoBehaviour
     
     }
 
+    /*
     //Gets the local IP address
     string GetLocalIPAddress()
     {
@@ -42,7 +43,7 @@ public class GameNetworkManager : MonoBehaviour
     }
 
     public string deviceIP;
-
+    */
 
     void StartUpNetwork()
     {
@@ -51,32 +52,36 @@ public class GameNetworkManager : MonoBehaviour
         {
             //The host is the server.
             server.SetActive(true);
-            serverUI.SetActive(true);
+            //serverUI.SetActive(true);
             client.SetActive(false);
             clientUI.SetActive(false);
+            /*
             //Get this device IP and use it to show the device's IP
             deviceIP = GetLocalIPAddress();
             Debug.Log("Your device's IP is: " + deviceIP);
             serverIP.text = "Your device's IP is: " + deviceIP;
+            */
         }
         else//What happens if the user is a client.
         {
             //The client is only a client.
             server.SetActive(false);
-            serverUI.SetActive(false);
+            //serverUI.SetActive(false);
             client.SetActive(true);
             clientUI.SetActive(true);
+            /*
             //Get the IP from the input box and attempt to connect
             deviceIP = IPInput.text;
             Debug.Log(deviceIP);
+            */
         }
     }
 
     public void OnConnectButton()
     {
         // Update deviceIP right before connection
-        deviceIP = IPInput.text;
-        Debug.Log("Attempting to connect to IP: " + (deviceIP != "" ? deviceIP : "127.0.0.1"));
+        //deviceIP = IPInput.text;
+        Debug.Log("Attempting to connect to Server:"/* + (deviceIP != "" ? deviceIP : "127.0.0.1")*/);
 
         
 
