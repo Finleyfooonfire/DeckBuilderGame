@@ -135,7 +135,21 @@ class NetworkSerializer
     //Cards that have been added to the deck
     List<Card> CardsAddedToDeck(ref DataStreamReader reader)
     {
-        throw new NotImplementedException();
+        List<Card> cardsAdded = new List<Card>();
+        //The first byte stores the number of cards to look for.
+        byte cards = reader.ReadByte();
+        for (int i = 0; i < cards; i++)
+        {
+            Card card = new Card();
+            card.manaCost = reader.ReadByte();
+            card.attackValue = reader.ReadByte();
+            card.defenseValue = reader.ReadByte();
+            card.cardName = reader.ReadFixedString32().ToString();
+            card.faction = (Faction)reader.ReadByte();
+            card.cardType = (CardType)reader.ReadByte();
+            cardsAdded.Add(card);
+        }
+        return cardsAdded;
     }
     //Cards that have moved from the deck to the hand
     List<Card> CardsMovedFromDeckToHand(ref DataStreamReader reader)
