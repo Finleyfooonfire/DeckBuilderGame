@@ -62,7 +62,7 @@ public class GameServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     //Get the game updates from the client
-                    NetworkSerializer.Instance.Deserialize(ref playingField, stream);
+                    NetworkSerializer.Instance.Deserialize(ref playingField, ref stream);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
