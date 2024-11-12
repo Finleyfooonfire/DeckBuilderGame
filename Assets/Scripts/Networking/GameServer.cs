@@ -1,10 +1,8 @@
-using Unity.Networking.Transport;
-using System.Text;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using Unity.Collections;
-using Unity.VisualScripting;
+using Unity.Networking.Transport;
+using UnityEngine;
 
+///TODO: Sending card data between client and host: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
 public class GameServer : MonoBehaviour
 {
     NetworkDriver m_Driver;
@@ -76,11 +74,11 @@ public class GameServer : MonoBehaviour
         }
     }
 
-    void SendToClient()
+    public void SendToClient()
     {
         //Send an update to the client.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
-        NetworkSerializer.Instance.Serialize(playingField, writer);
+        NetworkSerializer.Instance.Serialize(playingField, ref writer);
         m_Driver.EndSend(writer);
     }
 }

@@ -1,8 +1,7 @@
 using Unity.Networking.Transport;
-using System.Text;
-using System;
 using UnityEngine;
 
+///TODO: Sending card data between client and host: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
 public class GameClient : MonoBehaviour
 {
     NetworkDriver m_Driver;
@@ -37,7 +36,7 @@ public class GameClient : MonoBehaviour
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
-                Debug.Log("We are now connected to the server.");;
+                Debug.Log("We are now connected to the server."); ;
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
@@ -52,11 +51,11 @@ public class GameClient : MonoBehaviour
         }
     }
 
-    void SendToServer()
+    public void SendToServer()
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
-        NetworkSerializer.Instance.Serialize(playingField, writer);
+        NetworkSerializer.Instance.Serialize(playingField, ref writer);
         m_Driver.EndSend(writer);
     }
 }

@@ -30,9 +30,10 @@ class NetworkSerializer
     }
 
     //Convert changes ingame into a string that can be sent on the network.
-    public string Serialize(Transform playingField, DataStreamWriter writer)
+    ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
+    public void Serialize(Transform playingField, ref DataStreamWriter writer)
     {
-        return "";
+        
     }
 
     //Convert a string that can be sent on the network into changes ingame.
@@ -58,6 +59,8 @@ class NetworkSerializer
         OpponentDeckCards = 17,
         Finished = 18,
     }
+
+    ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
     public void Deserialize(ref Transform playingField, DataStreamReader reader)
     {
        
