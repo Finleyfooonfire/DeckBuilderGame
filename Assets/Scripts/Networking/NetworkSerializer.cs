@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 class NetworkSerializer
 {
     private static NetworkSerializer instance;
-    public static NetworkSerializer Instance 
-    { 
-        get 
+    public static NetworkSerializer Instance
+    {
+        get
         {
             if (instance == null)
                 instance = new NetworkSerializer();
@@ -31,31 +30,46 @@ class NetworkSerializer
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Serialize(Transform playingField, ref DataStreamWriter writer)
+    public void Serialize(List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards, ref DataStreamWriter writer)
     {
-        
+        throw new NotImplementedException();
     }
 
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Deserialize(ref Transform playingField, ref DataStreamReader reader)
+    public (List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards) Deserialize(ref DataStreamReader reader)
     {
-        CardsAddedToDeck(ref reader);
-        CardsMovedFromDeckToHand(ref reader);
-        CardsMovedFromHandToPlayArea(ref reader);
-        CardsKilled(ref reader);
-        CardsRevived(ref reader);
-        
+        return (CardsAddedToDeck(ref reader),
+            CardsMovedFromDeckToHand(ref reader),
+            CardsMovedFromHandToPlayArea(ref reader),
+            CardsKilled(ref reader),
+            CardsRevived(ref reader));
     }
 
     //Cards that have been added to the deck
-    void CardsAddedToDeck(ref DataStreamReader reader) { }
+    List<Card> CardsAddedToDeck(ref DataStreamReader reader)
+    {
+        throw new NotImplementedException();
+    }
     //Cards that have moved from the deck to the hand
-    void CardsMovedFromDeckToHand(ref DataStreamReader reader) { }
+    List<Card> CardsMovedFromDeckToHand(ref DataStreamReader reader)
+    {
+        throw new NotImplementedException();
+    }
     //Cards that have been played
-    void CardsMovedFromHandToPlayArea(ref DataStreamReader reader) { }
+    List<Card> CardsMovedFromHandToPlayArea(ref DataStreamReader reader)
+    {
+        throw new NotImplementedException();
+    }
     //Cards that have lost all health and thus move to the graveyard
-    void CardsKilled(ref DataStreamReader reader) { }
+    List<CardInfo> CardsKilled(ref DataStreamReader reader)
+    {
+        throw new NotImplementedException();
+    }
     //Cards revived from the graveyard and are back in play
-    void CardsRevived(ref DataStreamReader reader) { }
+    List<Card> CardsRevived(ref DataStreamReader reader)
+    {
+        throw new NotImplementedException();
+    }
+
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Networking.Transport;
 using UnityEngine;
@@ -62,7 +63,7 @@ public class GameServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     //Get the game updates from the client
-                    NetworkSerializer.Instance.Deserialize(ref playingField, ref stream);
+                    NetworkSerializer.Instance.Deserialize(ref stream);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -74,11 +75,11 @@ public class GameServer : MonoBehaviour
         }
     }
 
-    public void SendToClient()
+    public void SendToClient(List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards)
     {
         //Send an update to the client.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
-        NetworkSerializer.Instance.Serialize(playingField, ref writer);
+        NetworkSerializer.Instance.Serialize(newCards, drawnCards, playedCards, killedCards, revivedCards, ref writer);
         m_Driver.EndSend(writer);
     }
 }
