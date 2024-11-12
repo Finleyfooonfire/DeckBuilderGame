@@ -44,7 +44,10 @@ public class GameClient : MonoBehaviour
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
-                Debug.Log("We are now connected to the server."); ;
+                Debug.Log("We are now connected to the server."); 
+                //TEST:
+                playingFieldSynch.Test();
+                //END
             }
             else if (cmd == NetworkEvent.Type.Data)
             {

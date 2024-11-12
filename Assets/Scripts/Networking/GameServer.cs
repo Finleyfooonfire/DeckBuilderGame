@@ -68,7 +68,14 @@ public class GameServer : MonoBehaviour
             NetworkEvent.Type cmd;
             while ((cmd = m_Driver.PopEventForConnection(m_Connections[i], out stream)) != NetworkEvent.Type.Empty)
             {
-                if (cmd == NetworkEvent.Type.Data)
+                if (cmd == NetworkEvent.Type.Connect)
+                {
+                    Debug.Log("Client has connected");
+                    //TEST:
+                    playingFieldSynch.Test();
+                    //END
+                }
+                else if (cmd == NetworkEvent.Type.Data)
                 {
                     /*//TEST:
                     Debug.Log("Server recieved: " + stream.ReadFixedString32());
