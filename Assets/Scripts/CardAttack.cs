@@ -31,7 +31,14 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
             //If they are the player's card, set as an attacking card.
             if (GetComponent<CardInfo>().isPlayerCard)
             {
-                FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
+                if (FindAnyObjectByType<GameManager>().selectedAttackingCard != this)
+                {
+                    FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
+                }
+                else
+                {
+                    FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
+                }
             }
             //If not, set as the attacked card
             else

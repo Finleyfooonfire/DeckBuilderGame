@@ -227,7 +227,8 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
-        SceneManager.LoadScene("ScoreboardScene");
+        //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
+        SceneManager.LoadScene("MainMenu"); //Temporary
     }
 
     //KEENAN: Gets all the cards present.
