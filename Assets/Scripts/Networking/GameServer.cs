@@ -56,11 +56,11 @@ public class GameServer : MonoBehaviour
         }
 
 
-        //TEST: Send to client
+        /*//TEST: Send to client
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
         writer.WriteFixedString32("Hello from server");
         m_Driver.EndSend(writer);
-        //END
+        //END*/
 
         for (int i = 0; i < m_Connections.Length; i++)
         {
@@ -70,12 +70,12 @@ public class GameServer : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
-                    //TEST:
+                    /*//TEST:
                     Debug.Log("Server recieved: " + stream.ReadFixedString32());
-                    //END
+                    //END*/
 
                     //Get the game updates from the client
-                    //playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                    playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
