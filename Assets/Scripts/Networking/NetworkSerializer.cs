@@ -2,6 +2,25 @@ using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+
+public struct CardsChange
+{
+    public List<Card> newCards;
+    public List<Card> drawnCards;
+    public List<Card> playedCards;
+    public List<CardInfo> killedCards;
+    public List<Card> revivedCards;
+
+    public CardsChange(List<Card> newCardsIn, List<Card> drawnCardsIn, List<Card> playedCardsIn, List<CardInfo> killedCardsIn, List<Card> revivedCardsIn)
+    {
+        newCards = newCardsIn;
+        drawnCards = drawnCardsIn;
+        playedCards = playedCardsIn;
+        killedCards = killedCardsIn;
+        revivedCards = revivedCardsIn;
+    }
+}
+
 class NetworkSerializer
 {
     private static NetworkSerializer instance;
@@ -30,16 +49,16 @@ class NetworkSerializer
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Serialize(List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards, ref DataStreamWriter writer)
+    public void Serialize(CardsChange cardsChange, ref DataStreamWriter writer)
     {
         throw new NotImplementedException();
     }
 
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public (List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards) Deserialize(ref DataStreamReader reader)
+    public CardsChange Deserialize(ref DataStreamReader reader)
     {
-        return (CardsAddedToDeck(ref reader),
+        return new CardsChange(CardsAddedToDeck(ref reader),
             CardsMovedFromDeckToHand(ref reader),
             CardsMovedFromHandToPlayArea(ref reader),
             CardsKilled(ref reader),

@@ -11,7 +11,7 @@ public class PlayingFieldSynch : MonoBehaviour
     }
 
     //Called by the client/server when data is recieved and acts upon it.
-    public void Recieve((List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards) recievedCardsUpdate)
+    public void Recieve(CardsChange recievedCardsUpdate)
     {
         throw new System.NotImplementedException();
     }

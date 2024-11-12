@@ -75,11 +75,11 @@ public class GameServer : MonoBehaviour
         }
     }
 
-    public void SendToClient(List<Card> newCards, List<Card> drawnCards, List<Card> playedCards, List<CardInfo> killedCards, List<Card> revivedCards)
+    public void SendToClient(CardsChange cardsChange)
     {
         //Send an update to the client.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
-        NetworkSerializer.Instance.Serialize(newCards, drawnCards, playedCards, killedCards, revivedCards, ref writer);
+        NetworkSerializer.Instance.Serialize(cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }
 }
