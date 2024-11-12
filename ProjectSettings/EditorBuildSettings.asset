@@ -17,8 +17,11 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Connection.unity
     guid: 76646c541c5caf647bf9f562c1d6bac4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScene.unity
     guid: 8689fed005390b8438e6ee564ecbc2ae
+  - enabled: 1
+    path: Assets/Scenes/InvidualScenes/KeenansScenes/Current/KeenanNetworkingScene.unity
+    guid: ec4c25b3bf045164dba599758202d719
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

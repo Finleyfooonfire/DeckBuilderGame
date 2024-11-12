@@ -12,8 +12,8 @@ public class GameNetworkManager : MonoBehaviour
     [SerializeField] GameObject startButtons;
     //[SerializeField] GameObject serverUI;
     //[SerializeField] TMP_Text serverIP;
-    [SerializeField] GameObject clientUI;
-    [SerializeField] GameObject IPButton;
+    //[SerializeField] GameObject clientUI;
+    //[SerializeField] GameObject IPButton;
     //[SerializeField] TMP_InputField IPInput;
     public bool Turn;
     
@@ -54,7 +54,7 @@ public class GameNetworkManager : MonoBehaviour
             server.SetActive(true);
             //serverUI.SetActive(true);
             client.SetActive(false);
-            clientUI.SetActive(false);
+            //clientUI.SetActive(false);
             /*
             //Get this device IP and use it to show the device's IP
             deviceIP = GetLocalIPAddress();
@@ -68,7 +68,7 @@ public class GameNetworkManager : MonoBehaviour
             server.SetActive(false);
             //serverUI.SetActive(false);
             client.SetActive(true);
-            clientUI.SetActive(true);
+            //clientUI.SetActive(true);
             /*
             //Get the IP from the input box and attempt to connect
             deviceIP = IPInput.text;
@@ -77,11 +77,12 @@ public class GameNetworkManager : MonoBehaviour
         }
     }
 
+    /*
     public void OnConnectButton()
     {
         // Update deviceIP right before connection
-        //deviceIP = IPInput.text;
-        Debug.Log("Attempting to connect to Server:"/* + (deviceIP != "" ? deviceIP : "127.0.0.1")*/);
+        deviceIP = IPInput.text;
+        Debug.Log("Attempting to connect to Server:" + (deviceIP != "" ? deviceIP : "127.0.0.1"));
 
         
 
@@ -89,7 +90,7 @@ public class GameNetworkManager : MonoBehaviour
         clientUI.gameObject.SetActive(false);
         Turn = true;
         Debug.Log(Turn);
-        //SceneManager.LoadScene("GameScene"/*, LoadSceneMode.Additive*/);
+        //SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
     }
-
+    */
 }
