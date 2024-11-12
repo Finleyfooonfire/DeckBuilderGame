@@ -36,35 +36,26 @@ class NetworkSerializer
         
     }
 
-    //Convert a string that can be sent on the network into changes ingame.
-    private enum Stage
-    {
-        None = 0,
-        PlayerTurn = 1,
-        CardPlayAreaCardCount = 2,
-        CardPlayAreaCardsName = 3,
-        CardPlayAreaCardsHealth = 4,
-        CardPlayAreaCardsOwner = 5,
-        PlayerGraveyardCardCount = 6,
-        PlayerGraveyardCards = 7,
-        PlayerHandCardCount = 8,
-        PlayerHandCards = 9,
-        PlayerDeckCardCount = 10,
-        PlayerDeckCards = 11,
-        OpponentGraveyardCardCount = 12,
-        OpponentGraveyardCards = 13,
-        OpponentHandCardCount = 14,
-        OpponentHandCards = 15,
-        OpponentDeckCardCount = 16,
-        OpponentDeckCards = 17,
-        Finished = 18,
-    }
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Deserialize(ref Transform playingField, DataStreamReader reader)
+    public void Deserialize(ref Transform playingField, ref DataStreamReader reader)
     {
-       
-
+        CardsAddedToDeck(ref reader);
+        CardsMovedFromDeckToHand(ref reader);
+        CardsMovedFromHandToPlayArea(ref reader);
+        CardsKilled(ref reader);
+        CardsRevived(ref reader);
         
     }
+
+    //Cards that have been added to the deck
+    void CardsAddedToDeck(ref DataStreamReader reader) { }
+    //Cards that have moved from the deck to the hand
+    void CardsMovedFromDeckToHand(ref DataStreamReader reader) { }
+    //Cards that have been played
+    void CardsMovedFromHandToPlayArea(ref DataStreamReader reader) { }
+    //Cards that have lost all health and thus move to the graveyard
+    void CardsKilled(ref DataStreamReader reader) { }
+    //Cards revived from the graveyard and are back in play
+    void CardsRevived(ref DataStreamReader reader) { }
 }
