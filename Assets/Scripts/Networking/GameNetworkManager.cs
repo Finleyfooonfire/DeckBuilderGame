@@ -78,11 +78,7 @@ public class GameNetworkManager : MonoBehaviour
         deviceIP = IPInput.text;
         Debug.Log("Attempting to connect to IP: " + (deviceIP != "" ? deviceIP : "127.0.0.1"));
 
-        // Attempt to connect. If blank, use default IP (localhost).
-        if (deviceIP != "")
-            client.GetComponent<GameTCPClient>().OnAttemptConnectToServer(deviceIP);
-        else 
-            client.GetComponent<GameTCPClient>().OnAttemptConnectToServer();
+        
 
         // Hide client connect UI after initiating connection
         clientUI.gameObject.SetActive(false);
