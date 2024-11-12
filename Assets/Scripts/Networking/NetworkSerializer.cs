@@ -125,15 +125,15 @@ class NetworkSerializer
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
     public CardsChange Deserialize(ref DataStreamReader reader)
     {
-        return new CardsChange(CardsAddedToDeck(ref reader),
-            CardsMovedFromDeckToHand(ref reader),
-            CardsMovedFromHandToPlayArea(ref reader),
-            CardsKilled(ref reader),
-            CardsRevived(ref reader));
+        return new CardsChange(ReadListOfCard(ref reader),//newCards
+            ReadListOfCard(ref reader),//drawnCards
+            ReadListOfCard(ref reader),//playedCards
+            ReadListOfCardInfo(ref reader),//killedCards
+            ReadListOfCard(ref reader));//revivedCards
     }
 
     //Cards that have been added to the deck
-    List<Card> CardsAddedToDeck(ref DataStreamReader reader)
+    List<Card> ReadListOfCard(ref DataStreamReader reader)
     {
         List<Card> cardsAdded = new List<Card>();
         //The first byte stores the number of cards to look for.
@@ -151,23 +151,9 @@ class NetworkSerializer
         }
         return cardsAdded;
     }
-    //Cards that have moved from the deck to the hand
-    List<Card> CardsMovedFromDeckToHand(ref DataStreamReader reader)
-    {
-        throw new NotImplementedException();
-    }
-    //Cards that have been played
-    List<Card> CardsMovedFromHandToPlayArea(ref DataStreamReader reader)
-    {
-        throw new NotImplementedException();
-    }
+
     //Cards that have lost all health and thus move to the graveyard
-    List<CardInfo> CardsKilled(ref DataStreamReader reader)
-    {
-        throw new NotImplementedException();
-    }
-    //Cards revived from the graveyard and are back in play
-    List<Card> CardsRevived(ref DataStreamReader reader)
+    List<CardInfo> ReadListOfCardInfo(ref DataStreamReader reader)
     {
         throw new NotImplementedException();
     }
