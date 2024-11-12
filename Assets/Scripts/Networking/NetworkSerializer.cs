@@ -8,10 +8,10 @@ public struct CardsChange
     public List<Card> newCards;
     public List<Card> drawnCards;
     public List<Card> playedCards;
-    public List<CardInfo> killedCards;
+    public List<KeyValuePair<string,CardInfo>> killedCards;
     public List<Card> revivedCards;
 
-    public CardsChange(List<Card> newCardsIn, List<Card> drawnCardsIn, List<Card> playedCardsIn, List<CardInfo> killedCardsIn, List<Card> revivedCardsIn)
+    public CardsChange(List<Card> newCardsIn, List<Card> drawnCardsIn, List<Card> playedCardsIn, List<KeyValuePair<string,CardInfo>> killedCardsIn, List<Card> revivedCardsIn)
     {
         newCards = newCardsIn;
         drawnCards = drawnCardsIn;
@@ -97,13 +97,13 @@ class NetworkSerializer
         //Write the cards in the killedCards list
         for (int i = 0; i < cardsChange.killedCards.Count; i++)
         {
-            writer.WriteByte((byte)(cardsChange.killedCards[i].isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.killedCards[i].manaCost);
-            writer.WriteByte((byte)cardsChange.killedCards[i].attackValue);
-            writer.WriteByte((byte)cardsChange.killedCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedCards[i].gameObject.name);
-            writer.WriteByte((byte)cardsChange.killedCards[i].faction);
-            writer.WriteByte((byte)cardsChange.killedCards[i].cardType);
+            writer.WriteByte((byte)(cardsChange.killedCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedCards[i].Key);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.cardType);
         }
 
 
@@ -153,9 +153,22 @@ class NetworkSerializer
     }
 
     //Cards that have lost all health and thus move to the graveyard
-    List<CardInfo> ReadListOfCardInfo(ref DataStreamReader reader)
+    List<KeyValuePair<string, CardInfo>> ReadListOfCardInfo(ref DataStreamReader reader)
     {
-        throw new NotImplementedException();
+        List<KeyValuePair<string,CardInfo>> cardsAdded = new List<KeyValuePair<string, CardInfo>>();
+        //The first byte stores the number of cards to look for.
+        byte cards = reader.ReadByte();
+        for (int i = 0; i < cards; i++)
+        {
+            CardInfo card = new CardInfo();
+            card.manaCost = reader.ReadByte();
+            card.attackValue = reader.ReadByte();
+            card.defenseValue = reader.ReadByte();
+            card.faction = (Faction)reader.ReadByte();
+            card.cardType = (CardType)reader.ReadByte();
+            cardsAdded.Add(new KeyValuePair<string, CardInfo>(reader.ReadFixedString32().ToString(), card));
+        }
+        return cardsAdded;
     }
 
 }
