@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Networking.Transport;
+using Unity.VisualScripting;
 using UnityEngine;
 
 ///TODO: Sending card data between client and host: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
@@ -54,6 +55,13 @@ public class GameServer : MonoBehaviour
             Debug.Log("Accepted a connection.");
         }
 
+
+        //TEST: Send to client
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
+        writer.WriteFixedString32("Hello from server");
+        m_Driver.EndSend(writer);
+        //END
+
         for (int i = 0; i < m_Connections.Length; i++)
         {
             DataStreamReader stream;
@@ -62,8 +70,12 @@ public class GameServer : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
+                    //TEST:
+                    Debug.Log("Server recieved: " + stream.ReadFixedString32());
+                    //END
+
                     //Get the game updates from the client
-                    playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                    //playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -74,6 +86,8 @@ public class GameServer : MonoBehaviour
             }
         }
     }
+
+    
 
     public void SendToClient(CardsChange cardsChange)
     {
