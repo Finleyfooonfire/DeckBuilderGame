@@ -8,7 +8,7 @@ public class GameServer : MonoBehaviour
 {
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
-    [SerializeField] Transform playingField;
+    [SerializeField] PlayingFieldSynch playingFieldSynch;
 
     void Start()
     {
@@ -63,7 +63,7 @@ public class GameServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     //Get the game updates from the client
-                    NetworkSerializer.Instance.Deserialize(ref stream);
+                    playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
