@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 class NetworkSerializer
 {
@@ -29,7 +30,7 @@ class NetworkSerializer
     }
 
     //Convert changes ingame into a string that can be sent on the network.
-    public string Serialize(Transform playingField)
+    public string Serialize(Transform playingField, DataStreamWriter writer)
     {
         return "";
     }
@@ -57,7 +58,7 @@ class NetworkSerializer
         OpponentDeckCards = 17,
         Finished = 18,
     }
-    public void Deserialize(ref Transform playingField, string input)
+    public void Deserialize(ref Transform playingField, DataStreamReader reader)
     {
        
 

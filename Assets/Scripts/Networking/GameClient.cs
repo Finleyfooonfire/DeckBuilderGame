@@ -7,12 +7,12 @@ public class GameClient : MonoBehaviour
 {
     NetworkDriver m_Driver;
     NetworkConnection m_Connection;
-
+    [SerializeField] Transform playingField;
     void Start()
     {
         m_Driver = NetworkDriver.Create();
 
-        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
+        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);//Use localhost
         m_Connection = m_Driver.Connect(endpoint);
     }
 
@@ -37,12 +37,12 @@ public class GameClient : MonoBehaviour
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
-                Debug.Log("We are now connected to the server.");
-
-                uint value = 1;
-                m_Driver.BeginSend(m_Connection, out var writer);
-                writer.WriteUInt(value);
-                m_Driver.EndSend(writer);
+                Debug.Log("We are now connected to the server.");;
+            }
+            else if (cmd == NetworkEvent.Type.Data)
+            {
+                //Get the game updates from the server
+                NetworkSerializer.Instance.Deserialize(ref playingField, stream);
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {
@@ -50,6 +50,14 @@ public class GameClient : MonoBehaviour
                 m_Connection = default;
             }
         }
+    }
+
+    void SendToServer()
+    {
+        //Send an update to the server.
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
+        NetworkSerializer.Instance.Serialize(playingField, writer);
+        m_Driver.EndSend(writer);
     }
 }
 

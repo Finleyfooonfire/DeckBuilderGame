@@ -3,19 +3,20 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Collections;
+using Unity.VisualScripting;
 
 public class GameServer : MonoBehaviour
 {
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
-
+    [SerializeField] Transform playingField;
 
     void Start()
     {
         m_Driver = NetworkDriver.Create();
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
 
-        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(7777);
+        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(7777);//Accept connections.
         if (m_Driver.Bind(endpoint) != 0)
         {
             Debug.LogError("Failed to bind to port 7777.");
@@ -62,13 +63,8 @@ public class GameServer : MonoBehaviour
             {
                 if (cmd == NetworkEvent.Type.Data)
                 {
-                    uint number = stream.ReadUInt();
-                    Debug.Log($"Got {number} from a client, adding 2 to it.");
-                    number += 2;
-
-                    m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i], out var writer);
-                    writer.WriteUInt(number);
-                    m_Driver.EndSend(writer);
+                    //Get the game updates from the client
+                    NetworkSerializer.Instance.Deserialize(ref playingField, stream);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -78,5 +74,13 @@ public class GameServer : MonoBehaviour
                 }
             }
         }
+    }
+
+    void SendToClient()
+    {
+        //Send an update to the client.
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
+        NetworkSerializer.Instance.Serialize(playingField, writer);
+        m_Driver.EndSend(writer);
     }
 }
