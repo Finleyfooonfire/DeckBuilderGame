@@ -8,4 +8,5 @@ public class CardInfo : MonoBehaviour
     public int defenseValue;
     public Faction faction;
     public CardType cardType;
+    public bool exhausted;//Keenan addition
 }

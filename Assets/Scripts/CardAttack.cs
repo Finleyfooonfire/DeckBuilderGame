@@ -5,23 +5,25 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
 {
     bool canAttack;
     int exhaustionTimer;
-    bool exhausted;
 
     private void Start()
     {
         exhaustionTimer = 0;
         canAttack = true;
-        exhausted = false;
+        GetComponent<CardInfo>().exhausted = false;
     }
 
     //Call this at the start of the turn.
     //Checks to see if the card is exhausted.
     public void OnUpdateTurn()
     {
-        canAttack = true;
-        exhausted = exhaustionTimer > 0;
-        exhaustionTimer--;
-        canAttack |= !exhausted;//the card can't attack if exhausted
+        if (GetComponent<CardInfo>().isPlayerCard) 
+        { 
+            canAttack = true;
+            GetComponent<CardInfo>().exhausted = exhaustionTimer > 0;
+            exhaustionTimer--;
+            canAttack |= !(GetComponent<CardInfo>().exhausted);//the card can't attack if exhausted
+        }
     }
 
     public void Attack(CardAttack targetCard)
@@ -31,7 +33,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
             targetCard.GetComponent<CardInfo>().defenseValue -= GetComponent<CardInfo>().attackValue;
 
             //Check to see if the target can retaliate
-            if (!targetCard.exhausted) 
+            if (!targetCard.GetComponent<CardInfo>().exhausted) 
             {
                 GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
             }
