@@ -1,15 +1,46 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using Unity.Collections;
 using UnityEngine;
-static class NetworkSerializer
-{
-    //A dictionary of all the card stats
-    private static Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
 
-    static NetworkSerializer()
+public struct CardsChange
+{
+    public List<Card> newCards;
+    public List<Card> drawnCards;
+    public List<Card> playedCards;
+    public List<KeyValuePair<string,CardInfo>> killedCards;
+    public List<Card> revivedCards;
+
+    public CardsChange(List<Card> newCardsIn, List<Card> drawnCardsIn, List<Card> playedCardsIn, List<KeyValuePair<string,CardInfo>> killedCardsIn, List<Card> revivedCardsIn)
+    {
+        newCards = newCardsIn;
+        drawnCards = drawnCardsIn;
+        playedCards = playedCardsIn;
+        killedCards = killedCardsIn;
+        revivedCards = revivedCardsIn;
+    }
+}
+
+class NetworkSerializer
+{
+    private static NetworkSerializer instance;
+    public static NetworkSerializer Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = new NetworkSerializer();
+            return instance;
+        }
+    }
+
+    //A dictionary of all the card stats
+    private Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
+
+    NetworkSerializer()
     {
         //Populate the dictionary with the CardStats and their names
-        Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
+        UnityEngine.Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
         foreach (CardStats item in foundAssets)
         {
             cardStatNames.Add(item.name, item);
@@ -17,521 +48,127 @@ static class NetworkSerializer
     }
 
     //Convert changes ingame into a string that can be sent on the network.
-    public static string Serialize(Transform playingField)
+    ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
+    public void Serialize(CardsChange cardsChange, ref DataStreamWriter writer)
     {
-        string output = "";
-        //Get the number of cards in each area and then add the card data.
-        Transform cardPlayArea = playingField.Find("CardPlayArea");
-        output += cardPlayArea.childCount.ToString();
-        output += "\n";//Separate pieces of data with a '\n'
-        foreach (Transform x in cardPlayArea)
+        //Write the number of cards in the newCards list
+        writer.WriteByte((byte)cardsChange.newCards.Count);
+        //Write the cards in the newCards list
+        for (int i = 0; i < cardsChange.newCards.Count; i++)
         {
-            //Put the name first then the health of the card then if the player owns the card (inverted).
-            CardInfo cardInfo = x.GetComponent<CardInfo>();
-            output += cardInfo.name;
-            output += "\n";
-            output += cardInfo.defenseValue.ToString();
-            output += "\n";
-            output += (!cardInfo.isPlayerCard).ToString();
-            output += "\n";
+            writer.WriteByte((byte)cardsChange.newCards[i].manaCost);
+            writer.WriteByte((byte)cardsChange.newCards[i].attackValue);
+            writer.WriteByte((byte)cardsChange.newCards[i].defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.newCards[i].cardName);
+            writer.WriteByte((byte)cardsChange.newCards[i].faction);
+            writer.WriteByte((byte)cardsChange.newCards[i].cardType);
         }
 
-        //Serialize all player card stats.
-        //Grave cards
-        Transform playerGrave = playingField.Find("Player").Find("PlayerGrave");
-        output += playerGrave.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in playerGrave)
+        //Write the number of cards in the drawnCards list
+        writer.WriteByte((byte)cardsChange.drawnCards.Count);
+        //Write the cards in the drawnCards list
+        for (int i = 0; i < cardsChange.drawnCards.Count; i++)
         {
-            output += x.GetComponent<Card>().ToString();
-            output += "\n";
-        }
-        //Hand cards
-        Transform playerHand = playingField.Find("Player").Find("PlayerHand");
-        output += playerHand.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in playerHand)
-        {
-            output += x.GetComponent<Card>().stats.name;
-            output += "\n";
-        }
-        //Deck cards
-        Transform playerDeck = playingField.Find("Player").Find("PlayerDeck");
-        output += playerDeck.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in playerDeck)
-        {
-            output += x.GetComponent<Card>().stats.name;
-            output += "\n";
+            writer.WriteByte((byte)cardsChange.drawnCards[i].manaCost);
+            writer.WriteByte((byte)cardsChange.drawnCards[i].attackValue);
+            writer.WriteByte((byte)cardsChange.drawnCards[i].defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.drawnCards[i].cardName);
+            writer.WriteByte((byte)cardsChange.drawnCards[i].faction);
+            writer.WriteByte((byte)cardsChange.drawnCards[i].cardType);
         }
 
 
-        //Serialize all opponent card stats
-        //Grave cards
-        Transform opponentGrave = playingField.Find("Opponent").Find("OpponentGrave");
-        output += opponentGrave.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in opponentGrave)
+        //Write the number of cards in the playedCards list
+        writer.WriteByte((byte)cardsChange.playedCards.Count);
+        //Write the cards in the playedCards list
+        for (int i = 0; i < cardsChange.playedCards.Count; i++)
         {
-            output += x.GetComponent<Card>().ToString();
-            output += "\n";
-        }
-        //Hand cards
-        Transform opponentHand = playingField.Find("Opponent").Find("OpponentHand");
-        output += opponentHand.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in opponentHand)
-        {
-            output += x.GetComponent<Card>().stats.name;
-            output += "\n";
-        }
-        //Deck cards
-        Transform opponentDeck = playingField.Find("Opponent").Find("OpponentDeck");
-        output += opponentDeck.childCount.ToString();
-        output += "\n";
-        foreach (Transform x in opponentDeck)
-        {
-            output += x.GetComponent<Card>().stats.name;
-            output += "\n";
+            writer.WriteByte((byte)cardsChange.playedCards[i].manaCost);
+            writer.WriteByte((byte)cardsChange.playedCards[i].attackValue);
+            writer.WriteByte((byte)cardsChange.playedCards[i].defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.playedCards[i].cardName);
+            writer.WriteByte((byte)cardsChange.playedCards[i].faction);
+            writer.WriteByte((byte)cardsChange.playedCards[i].cardType);
         }
 
 
-        //Conver the data into the string here.
+        //Write the number of cards in the killedCards list
+        writer.WriteByte((byte)cardsChange.killedCards.Count);
+        //Write the cards in the killedCards list
+        for (int i = 0; i < cardsChange.killedCards.Count; i++)
+        {
+            writer.WriteByte((byte)(cardsChange.killedCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedCards[i].Key);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.killedCards[i].Value.cardType);
+        }
 
-        return output;
+
+        //Write the number of cards in the revivedCards list
+        writer.WriteByte((byte)cardsChange.revivedCards.Count);
+        //Write the cards in the revivedCards list
+        for (int i = 0; i < cardsChange.revivedCards.Count; i++)
+        {
+            writer.WriteByte((byte)cardsChange.revivedCards[i].manaCost);
+            writer.WriteByte((byte)cardsChange.revivedCards[i].attackValue);
+            writer.WriteByte((byte)cardsChange.revivedCards[i].defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.newCards[i].cardName);
+            writer.WriteByte((byte)cardsChange.revivedCards[i].faction);
+            writer.WriteByte((byte)cardsChange.revivedCards[i].cardType);
+        }
     }
 
-    //Convert a string that can be sent on the network into changes ingame.
-    private enum Stage
+
+    ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
+    public CardsChange Deserialize(ref DataStreamReader reader)
     {
-        None = 0,
-        CardPlayAreaCardCount = 1,
-        CardPlayAreaCardsName = 2,
-        CardPlayAreaCardsHealth = 3,
-        CardPlayAreaCardsOwner = 4,
-        PlayerGraveyardCardCount = 5,
-        PlayerGraveyardCards = 6,
-        PlayerHandCardCount = 7,
-        PlayerHandCards = 8,
-        PlayerDeckCardCount = 9,
-        PlayerDeckCards = 10,
-        OpponentGraveyardCardCount = 11,
-        OpponentGraveyardCards = 12,
-        OpponentHandCardCount = 13,
-        OpponentHandCards = 14,
-        OpponentDeckCardCount = 15,
-        OpponentDeckCards = 16,
-        Finished = 17,
+        return new CardsChange(ReadListOfCard(ref reader),//newCards
+            ReadListOfCard(ref reader),//drawnCards
+            ReadListOfCard(ref reader),//playedCards
+            ReadListOfCardInfo(ref reader),//killedCards
+            ReadListOfCard(ref reader));//revivedCards
     }
-    public static void Deserialize(ref Transform playingField, string input)
+
+    //Cards that have been added to the deck
+    List<Card> ReadListOfCard(ref DataStreamReader reader)
     {
-        //Initialize deserialize function variables
-        Stage stage = Stage.None;
-        int itemCount = 0;
-        string subString = "";
-
-        //Deserialized data
-        int numberOfCards = 0;
-        List<CardInfo> cardsInfo = new List<CardInfo>();
-        //The player's cards
-        List<Card> playerGraveCardList = new List<Card>();
-        List<Card> playerHandCardList = new List<Card>();
-        List<Card> playerDeckCardList = new List<Card>();
-        //The opponent's cards
-        List<Card> opponentGraveCardList = new List<Card>();
-        List<Card> opponentHandCardList = new List<Card>();
-        List<Card> opponentDeckCardList = new List<Card>();
-
-        //Convert the string into the game thingy
-        //iterate through the input a character at a time.
-        foreach (char c in input)
+        List<Card> cardsAdded = new List<Card>();
+        //The first byte stores the number of cards to look for.
+        byte cards = reader.ReadByte();
+        for (int i = 0; i < cards; i++)
         {
-            if (c != '\n')//Build up the substring until it reaches the end.
-            {
-                subString += c;
-            }
-            else//Once the end is reached: do something. Then go to the next stage
-            {
-                //Different things happen depending on the stage that is in progress.
-                switch (stage)
-                {
-                    case Stage.CardPlayAreaCardCount:
-                        //Get the number of cards in the play area and create them
-                        numberOfCards = int.Parse(subString);
-                        cardsInfo = playingField.Find("CardPlayArea").GetComponentsInChildren<CardInfo>().ToList();
-                        //Resize the array if the number of CardInfos are incorrect
-                        cardsInfo.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.CardPlayAreaCardsName:
-                        //Get the name of the card
-                        cardsInfo[numberOfCards].name = subString;
-                        stage += 1;
-                        break;
-                    case Stage.CardPlayAreaCardsHealth:
-                        //Get the health of the card
-                        cardsInfo[numberOfCards].defenseValue = int.Parse(subString);
-                        stage += 1;
-                        break;
-                    case Stage.CardPlayAreaCardsOwner:
-                        //Get the owner of the card
-                        cardsInfo[numberOfCards].isPlayerCard = bool.Parse(subString);
-                        numberOfCards--;//Reduce the number of cards left to look at.
-                        //If there are more cards left: go back to Stage.CardPlayAreaCardsName
-                        if (numberOfCards > 0)
-                        {
-                            stage = Stage.CardPlayAreaCardsName;
-                        }
-                        else
-                        {
-                            //Overwrite the playing field
-
-                            //Go to the next stage
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.PlayerGraveyardCardCount:
-                        //Get the number of cards in the player's graveyard
-                        numberOfCards = int.Parse(subString);
-                        playerGraveCardList = playingField.Find("Player").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
-                        playerGraveCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.PlayerGraveyardCards:
-                        //Get the cards in the graveyard
-                        playerGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.PlayerHandCardCount:
-                        //Get the number of cards in the player's hand
-                        numberOfCards = int.Parse(subString);
-                        playerHandCardList = playingField.Find("Player").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
-                        playerHandCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.PlayerHandCards:
-                        //Get the cards in the hand
-                        playerHandCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerHandCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerHandCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerHandCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerHandCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerHandCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.PlayerDeckCardCount:
-                        //Get the number of cards in the player's deck
-                        numberOfCards = int.Parse(subString);
-                        playerDeckCardList = playingField.Find("Player").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
-                        playerDeckCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.PlayerDeckCards:
-                        //Get the cards in the deck
-                        playerDeckCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        playerDeckCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        playerDeckCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        playerDeckCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        playerDeckCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        playerDeckCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.OpponentGraveyardCardCount:
-                        //Get the number of cards in the Opponent's graveyard
-                        numberOfCards = int.Parse(subString);
-                        opponentGraveCardList = playingField.Find("Opponent").Find("PlayerGrave").GetComponentsInChildren<Card>().ToList();
-                        opponentGraveCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.OpponentGraveyardCards:
-                        //Get the cards in the graveyard
-                        opponentGraveCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        opponentGraveCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        opponentGraveCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        opponentGraveCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        opponentGraveCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        opponentGraveCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.OpponentHandCardCount:
-                        //Get the number of cards in the opponent's hand
-                        numberOfCards = int.Parse(subString);
-                        opponentHandCardList = playingField.Find("Opponent").Find("PlayerHand").GetComponentsInChildren<Card>().ToList();
-                        opponentHandCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.OpponentHandCards:
-                        //Get the cards in the hand
-                        opponentHandCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        opponentHandCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        opponentHandCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        opponentHandCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        opponentHandCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        opponentHandCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.OpponentDeckCardCount:
-                        //Get the number of cards in the opponent's deck
-                        numberOfCards = int.Parse(subString);
-                        opponentDeckCardList = playingField.Find("Opponent").Find("PlayerDeck").GetComponentsInChildren<Card>().ToList();
-                        opponentDeckCardList.Capacity = numberOfCards;
-                        stage += 1;
-                        break;
-                    case Stage.OpponentDeckCards:
-                        //Get the cards in the deck
-                        opponentDeckCardList[numberOfCards].cardName = cardStatNames[subString].name;
-                        opponentDeckCardList[numberOfCards].manaCost = cardStatNames[subString].manaCost;
-                        opponentDeckCardList[numberOfCards].attackValue = cardStatNames[subString].attackValue;
-                        opponentDeckCardList[numberOfCards].defenseValue = cardStatNames[subString].defenseValue;
-                        opponentDeckCardList[numberOfCards].faction = cardStatNames[subString].faction;
-                        opponentDeckCardList[numberOfCards].cardType = cardStatNames[subString].cardType;
-                        //If there are more cards left: read the rest
-                        numberOfCards--;
-                        if (numberOfCards == 0)
-                        {
-                            stage += 1;
-                        }
-                        break;
-                    case Stage.Finished:
-                        //The deserialization is finished. Use the data collected to update the playing field.
-                        #region Update CardPlayArea
-                        //Update card play area
-                        Transform cardPlayArea = playingField.Find("CardPlayArea");
-                        //Change the number of cards in the play area to match the new number.
-                        if (cardPlayArea.childCount > cardsInfo.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = cardPlayArea.childCount - cardsInfo.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(cardPlayArea.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (cardPlayArea.childCount < cardsInfo.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            if (cardPlayArea.childCount != 0)
-                            {
-                                GameObject.Instantiate(cardPlayArea.GetChild(0).gameObject, cardPlayArea);
-                            }
-                            else
-                            {
-                                //Based on code in Card.cs
-                                GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                                cardObject.transform.SetParent(cardPlayArea);
-                                cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
-                                cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-
-                                _ = cardObject.AddComponent<CardInfo>();
-                                _ = cardObject.AddComponent<CardAttack>();
-                                //END
-                            }
-                        }
-
-                        int index = 0;
-                        foreach (Transform x in cardPlayArea)
-                        {
-                            CardInfo cardInfo = x.GetComponent<CardInfo>();
-                            cardInfo = cardsInfo[index];
-                            index++;
-                        }
-                        #endregion
-                        //Update the player's cards.
-                        #region Update PlayerGrave
-                        Transform playerGrave = playingField.Find("Player").Find("PlayerGrave");
-                        //Change the number of cards in the player's grave to match the new number.
-                        if (playerGrave.childCount > playerGraveCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = playerGrave.childCount - playerGraveCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(playerGrave.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (playerGrave.childCount < playerGraveCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerGrave);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in playerGrave)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = playerGraveCardList[index];
-                            index++;
-                        }
-                        #endregion
-                        #region Update PlayerHand
-                        Transform playerHand = playingField.Find("Player").Find("PlayerHand");
-                        //Change the number of cards in the player's hand to match the new number.
-                        if (playerHand.childCount > playerHandCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = playerHand.childCount - playerHandCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(playerHand.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (playerHand.childCount < playerHandCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerHand);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in playerHand)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = playerHandCardList[index];
-                            index++;
-                        }
-                        #endregion
-                        #region Update PlayerDeck
-                        Transform playerDeck = playingField.Find("Player").Find("PlayerDeck");
-                        //Change the number of cards in the player's deck to match the new number.
-                        if (playerDeck.childCount > playerDeckCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = playerDeck.childCount - playerDeckCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(playerDeck.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (playerDeck.childCount < playerDeckCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), playerDeck);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in playerDeck)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = playerDeckCardList[index];
-                            index++;
-                        }
-                        #endregion
-                        //Update the opponent's cards.
-                        #region Update OpponentGrave
-                        //Update the opponent's cards.
-                        Transform opponentGrave = playingField.Find("Opponent").Find("OpponentGrave");
-                        //Change the number of cards in the opponent's grave to match the new number.
-                        if (opponentGrave.childCount > opponentGraveCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = opponentGrave.childCount - opponentGraveCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(opponentGrave.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (opponentGrave.childCount < opponentGraveCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentGrave);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in opponentGrave)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = opponentGraveCardList[index];
-                            index++;
-                        }
-                        #endregion
-                        #region Update OpponentHand
-                        Transform opponentHand = playingField.Find("Opponent").Find("OpponentHand");
-                        //Change the number of cards in the opponent's hand to match the new number.
-                        if (opponentHand.childCount > opponentHandCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = opponentHand.childCount - opponentHandCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(opponentHand.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (opponentHand.childCount < opponentHandCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentHand);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in opponentHand)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = opponentHandCardList[index];
-                            index++;
-                        }
-                        #endregion
-                        #region Update OpponentDeck
-                        Transform opponentDeck = playingField.Find("Opponent").Find("OpponentDeck");
-                        //Change the number of cards in the opponent's deck to match the new number.
-                        if (opponentDeck.childCount > opponentDeckCardList.Count)
-                        {
-                            //If there are more cards than necessary excess is to be removed
-                            int excess = opponentDeck.childCount - opponentDeckCardList.Count;
-                            for (int i = 0; i < excess; i++)
-                            {
-                                MonoBehaviour.Destroy(opponentDeck.GetChild(0).gameObject);
-                            }
-                        }
-                        else if (opponentDeck.childCount < opponentDeckCardList.Count)
-                        {
-                            //If there are not enough cards, more should be added.
-                            GameObject.Instantiate(Resources.Load("CardPrefab"), opponentDeck);
-                        }
-
-                        index = 0;
-                        foreach (Transform x in opponentDeck)
-                        {
-                            Card card = x.GetComponent<Card>();
-                            card = opponentDeckCardList[index];
-                            index++;
-                        }
-                        #endregion
-
-                        break;
-                }
-                //Clear the substring
-                subString = "";
-            }
+            Card card = new Card();
+            card.manaCost = reader.ReadByte();
+            card.attackValue = reader.ReadByte();
+            card.defenseValue = reader.ReadByte();
+            card.cardName = reader.ReadFixedString32().ToString();
+            card.faction = (Faction)reader.ReadByte();
+            card.cardType = (CardType)reader.ReadByte();
+            cardsAdded.Add(card);
         }
+        return cardsAdded;
     }
+
+    //Cards that have lost all health and thus move to the graveyard
+    List<KeyValuePair<string, CardInfo>> ReadListOfCardInfo(ref DataStreamReader reader)
+    {
+        List<KeyValuePair<string,CardInfo>> cardsAdded = new List<KeyValuePair<string, CardInfo>>();
+        //The first byte stores the number of cards to look for.
+        byte cards = reader.ReadByte();
+        for (int i = 0; i < cards; i++)
+        {
+            CardInfo card = new CardInfo();
+            card.manaCost = reader.ReadByte();
+            card.attackValue = reader.ReadByte();
+            card.defenseValue = reader.ReadByte();
+            card.faction = (Faction)reader.ReadByte();
+            card.cardType = (CardType)reader.ReadByte();
+            cardsAdded.Add(new KeyValuePair<string, CardInfo>(reader.ReadFixedString32().ToString(), card));
+        }
+        return cardsAdded;
+    }
+
 }

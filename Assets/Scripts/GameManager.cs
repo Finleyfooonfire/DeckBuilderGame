@@ -1,9 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -31,7 +29,9 @@ public class GameManager : MonoBehaviour
     //matt additions
     public string OnTable = "";
     //end
-
+    //Keenan addition
+    PlayingFieldSynch synch;
+    //END 
     void Awake()
     {
         if (Instance == null)
@@ -46,25 +46,46 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
         UpdateLifeUI();
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
-
-        CoinFlip();
     }
 
-    void CoinFlip()
+    
+
+    //Call this when the client and server are connected.
+    //Keenan modification
+    public void StartGame(bool isHost)
     {
-        //Keenan addition
-        Random.InitState((int)Time.time);
-        //End
-        isPlayerTurn = Random.Range(0, 2) == 0;
-        UpdateTurn();
+        //Only if the user is a server. Do the coinflip and tell the other device the outcome.
+        if (isHost)
+        {
+            //CoinFlip(); 
+          
+           
+        }
+        //Otherwise get who starts via the network.
+        else
+        {
+            UpdateTurn();
+        }
     }
+    //End
+
+    //void CoinFlip()
+    //{
+        //Keenan addition
+        //Random.InitState((int)Time.time);
+        //End
+        //isPlayerTurn = Random.Range(0, 2) == 0;
+        //UpdateTurn();
+   // }
 
     void UpdateTurn()
     {
+        Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -75,6 +96,7 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
+            Debug.Log("YOUR TURN");
         }
         else
         {
@@ -85,6 +107,7 @@ public class GameManager : MonoBehaviour
             opponentDeck.DrawCard();
 
             statusText.text = "Opponent's Turn";
+            Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -94,6 +117,7 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         isPlayerTurn = !isPlayerTurn;
+        Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
         UpdateTurn();
@@ -102,7 +126,6 @@ public class GameManager : MonoBehaviour
         {
             DrawCard();
         }
-
         UpdateTurn();
     }
 
@@ -134,7 +157,7 @@ public class GameManager : MonoBehaviour
     //Modified by Keenan
     public void SelectAttackingCard(CardAttack card)
     {
-        
+
         if (selectedAttackingCard == card)
         {
             selectedAttackingCard = null;
@@ -143,7 +166,7 @@ public class GameManager : MonoBehaviour
         {
             selectedAttackingCard = card;
         }
-        
+
     }
 
     public void Attack(CardAttack targetCard)
@@ -182,15 +205,15 @@ public class GameManager : MonoBehaviour
 
 
 
-   // IEnumerator AITurn()
-  //  {
-        // Simple AI logic for testing
-      //  yield return new WaitForSeconds(2f);
+    // IEnumerator AITurn()
+    //  {
+    // Simple AI logic for testing
+    //  yield return new WaitForSeconds(2f);
 
-  //      Debug.Log("AI forfeits its turn.");
+    //      Debug.Log("AI forfeits its turn.");
 
-   //     EndTurn();
-  //  }
+    //     EndTurn();
+    //  }
 
     public void GameOver(bool playerWon)
     {

@@ -188,3 +188,5 @@ MonoBehaviour:
   cardName: 
   cardFaction: 
   isInHand: 1
+  faction: 0
+  cardType: 0

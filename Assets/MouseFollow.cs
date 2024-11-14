@@ -6,7 +6,8 @@ public class MouseFollow : MonoBehaviour
     public Camera customCamera;
 
     // Custom variable to control the percentage of the screen bounds the cube can move within
-    [Range(0f, 1f)] public float movePercentage = 1f;  // 0 = no movement, 1 = full movement within bounds
+    [Range(0f, 1f)] public float movePercentageX = 1f;
+    [Range(0f, 1f)] public float movePercentageY = 1f;
 
     public Vector3 screenPosition;
     public Vector3 worldPosition;
@@ -15,6 +16,8 @@ public class MouseFollow : MonoBehaviour
     // Cached camera settings
     private float cameraHeight;
     private float cameraWidth;
+
+    public Vector3 startPosition = new Vector3(0f, 0f, 0f);
 
     void Start()
     {
@@ -25,6 +28,9 @@ public class MouseFollow : MonoBehaviour
         }
 
         // Calculate the camera bounds
+
+        transform.position = startPosition;
+
         UpdateCameraBounds();
     }
 
@@ -69,11 +75,12 @@ public class MouseFollow : MonoBehaviour
     Vector3 ClampPositionWithinBounds(Vector3 targetPosition)
     {
         // Calculate the min and max bounds based on the camera's view size and the movePercentage
-        float minX = customCamera.transform.position.x - cameraWidth * movePercentage;
-        float maxX = customCamera.transform.position.x + cameraWidth * movePercentage;
+        // Calculate the min and max bounds based on the camera's view size and the movePercentage
+        float minX = customCamera.transform.position.x - cameraWidth * movePercentageX;
+        float maxX = customCamera.transform.position.x + cameraWidth * movePercentageX;
 
-        float minY = customCamera.transform.position.y - cameraHeight * movePercentage;
-        float maxY = customCamera.transform.position.y + cameraHeight * movePercentage;
+        float minY = customCamera.transform.position.y - cameraHeight * movePercentageY;
+        float maxY = customCamera.transform.position.y + cameraHeight * movePercentageY;
 
         // Clamp the target position within the bounds
         targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
@@ -81,4 +88,5 @@ public class MouseFollow : MonoBehaviour
 
         return targetPosition;
     }
-}
+
+    }
