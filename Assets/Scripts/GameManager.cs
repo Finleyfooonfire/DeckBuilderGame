@@ -59,18 +59,8 @@ public class GameManager : MonoBehaviour
     //Keenan modification
     public void StartGame(bool isHost)
     {
-        //Only if the user is a server. Do the coinflip and tell the other device the outcome.
-        if (isHost)
-        {
-            //CoinFlip(); 
-          
-           
-        }
-        //Otherwise get who starts via the network.
-        else
-        {
-            UpdateTurn();
-        }
+        isPlayerTurn = isHost;
+        UpdateTurn();
     }
     //End
 
@@ -100,12 +90,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            opponentMana = Mathf.Min(opponentMana + 1, maxMana);
-            UpdateManaUI();
-
-            Deck opponentDeck = GameObject.Find("OpponentDeck").GetComponent<Deck>();
-            opponentDeck.DrawCard();
-
             statusText.text = "Opponent's Turn";
             Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
@@ -120,13 +104,14 @@ public class GameManager : MonoBehaviour
         Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
-        UpdateTurn();
+        //UpdateTurn(); //No need to call this twice
 
         if (isPlayerTurn)
         {
             DrawCard();
         }
         UpdateTurn();
+        synch.Send();//Keenan addition. Send the update to the other device
     }
 
     void DrawCard()

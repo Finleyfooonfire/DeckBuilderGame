@@ -62,7 +62,7 @@ public class PlayingFieldSynch : MonoBehaviour
     }
 
     //Uses the client/server to send data to the other device.
-    void Send()
+    public void Send()
     {
         CardsChange changes = GetCardStatus();
         var client = FindAnyObjectByType<GameClient>();
@@ -82,6 +82,7 @@ public class PlayingFieldSynch : MonoBehaviour
     public void Recieve(CardsChange recievedCardsUpdate)
     {
         SetCardStatus(recievedCardsUpdate);
+        GameManager.Instance.EndTurn();
     }
 
     //Updates the board using the changes recieved.

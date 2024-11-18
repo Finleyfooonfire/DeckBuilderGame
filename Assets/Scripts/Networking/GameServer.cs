@@ -53,6 +53,7 @@ public class GameServer : MonoBehaviour
         {
             m_Connections.Add(c);
             Debug.Log("Accepted a connection.");
+            FindFirstObjectByType<GameManager>().StartGame(true);
         }
 
 
@@ -64,13 +65,10 @@ public class GameServer : MonoBehaviour
             NetworkEvent.Type cmd;
             while ((cmd = m_Driver.PopEventForConnection(m_Connections[i], out stream)) != NetworkEvent.Type.Empty)
             {
-                if (cmd == NetworkEvent.Type.Connect)
-                {
-                    Debug.Log("Client has connected");
-                }
-                else if (cmd == NetworkEvent.Type.Data)
+                if (cmd == NetworkEvent.Type.Data)
                 {
                     //Get the game updates from the client
+                    Debug.Log("Server recieved data");
                     playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)

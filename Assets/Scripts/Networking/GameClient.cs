@@ -40,11 +40,13 @@ public class GameClient : MonoBehaviour
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
-                Debug.Log("We are now connected to the server."); 
+                Debug.Log("We are now connected to the server.");
+                FindFirstObjectByType<GameManager>().StartGame(false);
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
                 //Get the game updates from the server
+                Debug.Log("Client recieved data");
                 playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
