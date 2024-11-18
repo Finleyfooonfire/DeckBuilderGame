@@ -12,29 +12,51 @@ public class PlayingFieldSynch : MonoBehaviour
     [SerializeField] Transform opponentHand;
     [SerializeField] Transform opponentDeck;
 
-    CardsChange prevCardsChange;
+    List<Card> playedCards = new List<Card>();
+    List<KeyValuePair<string, CardInfo>> changedCards = new List<KeyValuePair<string, CardInfo>>();
+    List<KeyValuePair<string, CardInfo>> killedCards = new List<KeyValuePair<string, CardInfo>>();
+    List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
+    List<Card> revivedCards = new List<Card>();
 
-    void Start()
+    //Call these methods to add the change to the log.
+    public void AddPlayedCard(Card playedCard)
     {
-        prevCardsChange = new CardsChange();
+        playedCards.Add(playedCard);
     }
+
+    public void AddChangedCard(GameObject changedCard)
+    {
+        changedCards.Add(new KeyValuePair<string, CardInfo>(changedCard.name, changedCard.GetComponent<CardInfo>()));
+    }
+
+    public void AddKilledCard(GameObject killedCard)
+    {
+        killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+    }
+
+    public void AddKilledFriendlyCard(GameObject killedCard)
+    {
+        killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+    }
+
+    public void AddRevivedCard(Card revivedCard)
+    {
+        revivedCards.Add(revivedCard);
+    }
+
 
     //Returns a CardsChange with all the things that have changed since the start of the turn.
     CardsChange GetCardStatus()
     {
-        List<Card> playedCards = new List<Card>();
-        List<KeyValuePair<string, CardInfo>> changedCards = new List<KeyValuePair<string, CardInfo>>();
-        List<KeyValuePair<string, CardInfo>> killedCards = new List<KeyValuePair<string, CardInfo>>();
-        List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
-        List<Card> revivedCards = new List<Card>();
-
         CardsChange cardsChange;
 
-
-        //Get the changes
-        throw new System.NotImplementedException();
-
         cardsChange = new CardsChange(playedCards, changedCards, killedCards, killedFriendlyCards, revivedCards);
+        //Reset the changes.
+        playedCards.Clear();
+        changedCards.Clear();
+        killedCards.Clear();
+        killedFriendlyCards.Clear();
+        revivedCards.Clear();
         return cardsChange;
     }
 
