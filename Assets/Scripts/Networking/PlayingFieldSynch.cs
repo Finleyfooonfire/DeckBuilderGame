@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 ///TODO: Relating card Changes from client/host into moves: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
@@ -9,15 +10,37 @@ public class PlayingFieldSynch : MonoBehaviour
     //END*/
 
     [SerializeField] Transform cardPlayArea;
+    //Player
+    [SerializeField] Transform playerGrave;
     //Opponent
     [SerializeField] Transform opponentGrave;
     [SerializeField] Transform opponentHand;
     [SerializeField] Transform opponentDeck;
 
+    CardsChange prevCardsChange;
+
+    void Start()
+    {
+        prevCardsChange = new CardsChange();
+    }
+
     //Returns a CardsChange with all the things that have changed since the start of the turn.
     CardsChange GetCardStatus()
     {
+        List<Card> playedCards = new List<Card>();
+        List<KeyValuePair<string, CardInfo>> changedCards = new List<KeyValuePair<string, CardInfo>>();
+        List<KeyValuePair<string, CardInfo>> killedCards = new List<KeyValuePair<string, CardInfo>>();
+        List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
+        List<Card> revivedCards = new List<Card>();
+
+        CardsChange cardsChange;
+
+
+        //Get the changes
         throw new System.NotImplementedException();
+
+        cardsChange = new CardsChange(playedCards, changedCards, killedCards, killedFriendlyCards, revivedCards);
+        return cardsChange;
     }
 
     //Uses the client/server to send data to the other device.
@@ -35,7 +58,6 @@ public class PlayingFieldSynch : MonoBehaviour
             //It is server. Send data.
             FindAnyObjectByType<GameServer>().SendToClient(changes);
         }
-        throw new System.NotImplementedException();
     }
 
     //Called by the client/server when data is recieved and acts upon it.
@@ -47,26 +69,11 @@ public class PlayingFieldSynch : MonoBehaviour
         //END
         */
         SetCardStatus(recievedCardsUpdate);
-
-        throw new System.NotImplementedException();
     }
 
     //Updates the board using the changes recieved.
     void SetCardStatus(CardsChange changeIn)
     {
-        //Add new cards to the deck
-        foreach (var newCard in changeIn.newCards)
-        {
-            opponentDeck.GetComponent<Deck>().deckCards.Add(newCard);
-        }
-
-        //Move cards from the deck to the hand
-        foreach (var newCard in changeIn.drawnCards)
-        {
-            opponentDeck.GetComponent<Deck>().deckCards.Remove(newCard);
-            opponentDeck.GetComponent<Deck>().handCards.Add(newCard);
-        }
-
         //Move cards from the hand to the play area
         foreach (var card in changeIn.playedCards)
         {
@@ -100,10 +107,17 @@ public class PlayingFieldSynch : MonoBehaviour
             oldCard.exhausted = card.Value.exhausted;
         }
 
-        //Update any cards that have been killed.
-        foreach (var card in changeIn.killedCards) 
+        //Update any enemy cards that have been killed.
+        foreach (var card in changeIn.killedCards)
         {
             cardPlayArea.Find(card.Key).SetParent(opponentGrave);
+            cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
+        }
+
+        //Update any friendly cards that have been killed.
+        foreach (var card in changeIn.killedFriendlyCards)
+        {
+            cardPlayArea.Find(card.Key).SetParent(playerGrave);
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
     }

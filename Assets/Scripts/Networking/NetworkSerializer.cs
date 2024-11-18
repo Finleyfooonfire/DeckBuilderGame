@@ -5,22 +5,20 @@ using UnityEngine;
 
 public struct CardsChange
 {
-    public List<Card> newCards;
-    public List<Card> drawnCards;
     public List<Card> playedCards;
     public List<KeyValuePair<string,CardInfo>> changedCards;
     public List<KeyValuePair<string,CardInfo>> killedCards;
+    public List<KeyValuePair<string,CardInfo>> killedFriendlyCards;
     public List<Card> revivedCards;
 
-    public CardsChange(List<Card> newCardsIn, List<Card> drawnCardsIn, 
-        List<Card> playedCardsIn, List<KeyValuePair<string,CardInfo>> killedCardsIn, 
-        List<KeyValuePair<string,CardInfo>> changedCardsIn, List<Card> revivedCardsIn)
+    public CardsChange(List<Card> playedCardsIn, List<KeyValuePair<string,CardInfo>> changedCardsIn,
+         List<KeyValuePair<string, CardInfo>> killedCardsIn, List<KeyValuePair<string, CardInfo>> killedFriendlyCardsIn,
+         List<Card> revivedCardsIn)
     {
-        newCards = newCardsIn;
-        drawnCards = drawnCardsIn;
         playedCards = playedCardsIn;
-        killedCards = killedCardsIn;
         changedCards = changedCardsIn;
+        killedCards = killedCardsIn;
+        killedFriendlyCards = killedFriendlyCardsIn;
         revivedCards = revivedCardsIn;
     }
 }
@@ -55,33 +53,6 @@ class NetworkSerializer
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
     public void Serialize(CardsChange cardsChange, ref DataStreamWriter writer)
     {
-        //Write the number of cards in the newCards list
-        writer.WriteByte((byte)cardsChange.newCards.Count);
-        //Write the cards in the newCards list
-        for (int i = 0; i < cardsChange.newCards.Count; i++)
-        {
-            writer.WriteByte((byte)cardsChange.newCards[i].manaCost);
-            writer.WriteByte((byte)cardsChange.newCards[i].attackValue);
-            writer.WriteByte((byte)cardsChange.newCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.newCards[i].cardName);
-            writer.WriteByte((byte)cardsChange.newCards[i].faction);
-            writer.WriteByte((byte)cardsChange.newCards[i].cardType);
-        }
-
-        //Write the number of cards in the drawnCards list
-        writer.WriteByte((byte)cardsChange.drawnCards.Count);
-        //Write the cards in the drawnCards list
-        for (int i = 0; i < cardsChange.drawnCards.Count; i++)
-        {
-            writer.WriteByte((byte)cardsChange.drawnCards[i].manaCost);
-            writer.WriteByte((byte)cardsChange.drawnCards[i].attackValue);
-            writer.WriteByte((byte)cardsChange.drawnCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.drawnCards[i].cardName);
-            writer.WriteByte((byte)cardsChange.drawnCards[i].faction);
-            writer.WriteByte((byte)cardsChange.drawnCards[i].cardType);
-        }
-
-
         //Write the number of cards in the playedCards list
         writer.WriteByte((byte)cardsChange.playedCards.Count);
         //Write the cards in the playedCards list
@@ -127,6 +98,21 @@ class NetworkSerializer
             writer.WriteByte((byte)(cardsChange.killedCards[i].Value.exhausted ? 1 : 0));
         }
 
+        //Write the number of cards in the killedFriendlyCards list
+        writer.WriteByte((byte)cardsChange.killedFriendlyCards.Count);
+        //Write the cards in the killedFriendlyCards list
+        for (int i = 0; i < cardsChange.killedFriendlyCards.Count; i++)
+        {
+            writer.WriteByte((byte)(cardsChange.killedFriendlyCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.defenseValue);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedFriendlyCards[i].Key);
+            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.killedFriendlyCards[i].Value.exhausted ? 1 : 0));
+        }
+
 
         //Write the number of cards in the revivedCards list
         writer.WriteByte((byte)cardsChange.revivedCards.Count);
@@ -136,7 +122,7 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.revivedCards[i].manaCost);
             writer.WriteByte((byte)cardsChange.revivedCards[i].attackValue);
             writer.WriteByte((byte)cardsChange.revivedCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.newCards[i].cardName);
+            writer.WriteFixedString32((FixedString32Bytes)cardsChange.revivedCards[i].cardName);
             writer.WriteByte((byte)cardsChange.revivedCards[i].faction);
             writer.WriteByte((byte)cardsChange.revivedCards[i].cardType);
         }
@@ -146,11 +132,11 @@ class NetworkSerializer
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
     public CardsChange Deserialize(ref DataStreamReader reader)
     {
-        return new CardsChange(ReadListOfCard(ref reader),//newCards
-            ReadListOfCard(ref reader),//drawnCards
+        return new CardsChange(
             ReadListOfCard(ref reader),//playedCards
             ReadListOfCardInfo(ref reader),//changedCards
             ReadListOfCardInfo(ref reader),//killedCards
+            ReadListOfCardInfo(ref reader),//killedFriendlyCards
             ReadListOfCard(ref reader));//revivedCards
     }
 
