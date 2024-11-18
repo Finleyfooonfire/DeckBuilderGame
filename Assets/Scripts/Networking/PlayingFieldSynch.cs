@@ -116,17 +116,17 @@ public class PlayingFieldSynch : MonoBehaviour
             oldCard.exhausted = card.Value.exhausted;
         }
 
-        //Update any enemy cards that have been killed.
+        //Update any friendly cards that have been killed. (killedCards are friendly cards after being sent over the network)
         foreach (var card in changeIn.killedCards)
         {
-            cardPlayArea.Find(card.Key).SetParent(opponentGrave);
+            cardPlayArea.Find(card.Key).SetParent(playerGrave);
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
 
-        //Update any friendly cards that have been killed.
+        //Update any opponent cards that have been killed. (friendly cards are the opponent's cards after being sent over the network)
         foreach (var card in changeIn.killedFriendlyCards)
         {
-            cardPlayArea.Find(card.Key).SetParent(playerGrave);
+            cardPlayArea.Find(card.Key).SetParent(opponentGrave);
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
     }
