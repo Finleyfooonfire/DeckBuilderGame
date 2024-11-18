@@ -33,18 +33,31 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
             targetCard.GetComponent<CardInfo>().defenseValue -= GetComponent<CardInfo>().attackValue;
 
             //Check to see if the target can retaliate
-            if (!targetCard.GetComponent<CardInfo>().exhausted) 
+            if (!targetCard.GetComponent<CardInfo>().exhausted)
             {
                 GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
+                if (GetComponent<CardInfo>().defenseValue <= 0)
+                {
+                    FindFirstObjectByType<PlayingFieldSynch>().AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
+                    Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    FindFirstObjectByType<PlayingFieldSynch>().AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
+                    Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
+                }
             }
 
             if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
             {
+                FindFirstObjectByType<PlayingFieldSynch>().AddKilledCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
                 Destroy(targetCard.gameObject);//The target card has reached 0 health so it shall die.
             }
             else
             {
+                FindFirstObjectByType<PlayingFieldSynch>().AddChangedCard(targetCard.gameObject);//Keenan addition
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
             }
             exhaustionTimer = 1;

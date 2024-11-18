@@ -19,26 +19,27 @@ public class PlayingFieldSynch : MonoBehaviour
     List<Card> revivedCards = new List<Card>();
 
     //Call these methods to add the change to the log.
+    //Call this when a card has been played
     public void AddPlayedCard(Card playedCard)
     {
         playedCards.Add(playedCard);
     }
-
+    //Call this when a cards stats have changed (i.e. a reduction in the defense value)
     public void AddChangedCard(GameObject changedCard)
     {
         changedCards.Add(new KeyValuePair<string, CardInfo>(changedCard.name, changedCard.GetComponent<CardInfo>()));
     }
-
+    //Call this when an enemy card is killed
     public void AddKilledCard(GameObject killedCard)
     {
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
     }
-
+    //Call this when a player's card is killed
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
     }
-
+    //Call this when a card is revived
     public void AddRevivedCard(Card revivedCard)
     {
         revivedCards.Add(revivedCard);
