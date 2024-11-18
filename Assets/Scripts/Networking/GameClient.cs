@@ -32,11 +32,7 @@ public class GameClient : MonoBehaviour
             return;
         }
 
-        /*//TEST: send to server
-        m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
-        writer.WriteFixedString32("Hello from client");
-        m_Driver.EndSend(writer);
-        //END*/
+        
 
         Unity.Collections.DataStreamReader stream;
         NetworkEvent.Type cmd;
@@ -45,16 +41,9 @@ public class GameClient : MonoBehaviour
             if (cmd == NetworkEvent.Type.Connect)
             {
                 Debug.Log("We are now connected to the server."); 
-                /*//TEST:
-                playingFieldSynch.Test();
-                //END*/
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
-                /*//TEST:
-                Debug.Log("Client recieved: "+ stream.ReadFixedString32());
-                //END*/
-
                 //Get the game updates from the server
                 playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
             }

@@ -4,11 +4,6 @@ using UnityEngine;
 ///TODO: Relating card Changes from client/host into moves: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
 public class PlayingFieldSynch : MonoBehaviour
 {
-    /*//TEST:
-    [SerializeField] TMP_Text textOut;
-    [SerializeField] TMP_Text textIn;
-    //END*/
-
     [SerializeField] Transform cardPlayArea;
     //Player
     [SerializeField] Transform playerGrave;
@@ -63,11 +58,6 @@ public class PlayingFieldSynch : MonoBehaviour
     //Called by the client/server when data is recieved and acts upon it.
     public void Recieve(CardsChange recievedCardsUpdate)
     {
-        /*//TEST:
-        Debug.Log("Recieved data: HASH = "+ recievedCardsUpdate.ToString());
-        textIn.text = "IN: " + recievedCardsUpdate.ToString();
-        //END
-        */
         SetCardStatus(recievedCardsUpdate);
     }
 
@@ -79,9 +69,7 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             opponentDeck.GetComponent<Deck>().handCards.Remove(card);
             GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            //Keenan addition
             cardObject.name = card.cardName;
-            //END
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.position = new Vector3();
             cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
@@ -94,9 +82,7 @@ public class PlayingFieldSynch : MonoBehaviour
             cardInfo.faction = card.faction;
             cardInfo.cardType = card.cardType;
 
-            //Keenan Addition
             CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
-            //End
         }
 
         //Update any cards that have changed. Only the defense value and exhausted variables change.
@@ -121,16 +107,4 @@ public class PlayingFieldSynch : MonoBehaviour
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
     }
-
-    /*
-    public void Test()
-    {
-        //TEST: Test the serializer, client and server.
-        CardsChange test = new CardsChange(new List<Card>(), new List<Card>(), new List<Card>(), new List<KeyValuePair<string, CardInfo>>(), new List<KeyValuePair<string, CardInfo>>(), new List<Card>());
-        FindAnyObjectByType<GameClient>().SendToServer(test);
-        Debug.Log("Sent data: HASH = " + test.ToString());
-        textOut.text = "OUT: " + test.ToString();
-        //END
-    }
-    */
 }
