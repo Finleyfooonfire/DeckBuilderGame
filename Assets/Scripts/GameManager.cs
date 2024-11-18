@@ -110,8 +110,11 @@ public class GameManager : MonoBehaviour
         {
             DrawCard();
         }
+        else 
+        {
+            synch.Send();//Keenan addition. Send the update to the other device
+        }
         UpdateTurn();
-        synch.Send();//Keenan addition. Send the update to the other device
     }
 
     void DrawCard()
