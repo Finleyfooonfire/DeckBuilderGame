@@ -23,7 +23,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private Transform cardPlayArea;
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
-    public float gridScale = 0.25f;
+    public float gridScale = 0.025f;
    // public float gridHeightOffset = 0.33f;
     void Start()
     {
@@ -89,18 +89,18 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (cardPlayArea == null) return;
         Gizmos.color = Color.yellow;
         Vector3 startPosition = cardPlayArea.position - new Vector3(
-            (gridSize.x - 1) * (slotSize.x + slotSpacing.x) / 2,
+            (gridSize.x - 1) * (slotSize.x + slotSpacing.x) * gridScale / 2,
             0,
-            (gridSize.y - 1) * (slotSize.y + slotSpacing.y) / 2);
+            (gridSize.y - 1) * (slotSize.y + slotSpacing.y) * gridScale / 2);
 
         for (int row = 0; row < gridSize.y; row++)
         {
             for (int col = 0; col < gridSize.x; col++)
             {
                 Vector3 slotPosition = startPosition + new Vector3(
-                    col * (slotSize.x + slotSpacing.x),
+                    col * (slotSize.x + slotSpacing.x) * gridScale,
                     0,
-                    row * (slotSize.y + slotSpacing.y));
+                    row * (slotSize.y + slotSpacing.y) * gridScale);
                 Gizmos.DrawWireCube(slotPosition, new Vector3(slotSize.x, 0.1f, slotSize.y));
             }
         }
