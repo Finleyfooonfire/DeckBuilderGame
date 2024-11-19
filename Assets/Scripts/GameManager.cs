@@ -161,9 +161,10 @@ public class GameManager : MonoBehaviour
     {
         if (selectedAttackingCard != null && targetCard != null)
         {
-            targetCard.Attack(selectedAttackingCard);
+            selectedAttackingCard.Attack(targetCard);
 
             selectedAttackingCard = null;
+            targetCard = null;
         }
     }
     //END
@@ -209,7 +210,8 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
-        SceneManager.LoadScene("ScoreboardScene");
+        //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
+        SceneManager.LoadScene("MainMenu"); //Temporary
     }
 
     //KEENAN: Gets all the cards present.
