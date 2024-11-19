@@ -1,15 +1,16 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class DynamicMusicController : MonoBehaviour
 {
-    private AudioSource[] activeTracks;  // Currently active tracks (stems)
-    private bool isTransitioning = false; // Flag to check if we're transitioning between tracks
-    public float fadeDuration = 2f;      // Duration of the fade effect
-    public float minInterval = 3f;       // Minimum interval time to wait before adding/removing tracks
-    public float maxInterval = 7f;       // Maximum interval time to wait before adding/removing tracks
-    public int maxActiveTracks = 3;      // Maximum number of tracks that can play at the same time
+    private List<AudioSource> activeSongs = new List<AudioSource>();  // Tracks that are currently playing
+    private List<AudioSource> loadedSongs = new List<AudioSource>();  // Tracks available to be loaded based on the current screen
+    private bool isTransitioning = false;  // Flag to check if we're transitioning between screens
+    public float fadeDuration = 2f;  // Duration of the fade effect
+    public float minInterval = 3f;   // Minimum interval time to wait before adding/removing tracks
+    public float maxInterval = 7f;   // Maximum interval time to wait before adding/removing tracks
+    public int maxActiveTracks = 3;  // Maximum number of tracks that can play at the same time
 
     // GameObjects that contain AudioSources for each song (Main Menu and Lore)
     public GameObject mainMenuMusicObject;
@@ -36,133 +37,87 @@ public class DynamicMusicController : MonoBehaviour
             return;
         }
 
-        // Initialize the activeTracks array for dynamic management
-        activeTracks = new AudioSource[maxActiveTracks];
+        // Start with the main menu music loaded and activate it
+        LoadMainMenuMusic();
+        SetMusicObjectActive(mainMenuMusicObject, true);
+        SetMusicObjectActive(loreMusicObject, false);
 
-        // Ensure all tracks are initially stopped and not playing
-        foreach (var source in mainMenuAudioSources)
-        {
-            source.volume = 0f;
-            source.Stop();  // Stop all audio sources initially
-        }
-
-        foreach (var source in loreAudioSources)
-        {
-            source.volume = 0f;
-            source.Stop();  // Stop all audio sources initially
-        }
-
-        // Start playing Main Menu music dynamically
-        StartCoroutine(DynamicTrackManager(mainMenuAudioSources));
+        // Start the dynamic track manager for Main Menu music
+        StartCoroutine(DynamicTrackManager());
         Debug.Log("Main Menu music started dynamically.");
     }
 
     // Coroutine that manages adding and removing tracks at random intervals
-    IEnumerator DynamicTrackManager(AudioSource[] sources)
+    IEnumerator DynamicTrackManager()
     {
         Debug.Log("Started DynamicTrackManager for music.");
+
         while (!isTransitioning)
         {
             // Wait for a random interval before adding/removing a track
             float waitTime = Random.Range(minInterval, maxInterval);
-            Debug.Log($"Waiting for {waitTime} seconds before adding/removing a track.");
             yield return new WaitForSeconds(waitTime);
 
             // Randomly decide whether to add or remove a track
-            if (Random.value > 0.5f && GetActiveTrackCount() < maxActiveTracks)
+            if (Random.value > 0.5f && activeSongs.Count < maxActiveTracks)
             {
-                Debug.Log("Adding a random track.");
-                // Add a random track (if not already playing)
-                AddRandomTrack(sources);
+                AddRandomTrack();
             }
             else
             {
-                Debug.Log("Removing a random track.");
-                // Remove a random track (if more than 1 track is active)
-                if (GetActiveTrackCount() > 1)
+                if (activeSongs.Count > 1)  // Ensure we always have at least one track active
                 {
                     RemoveRandomTrack();
                 }
+                else if (activeSongs.Count == 1)
+                {
+                    // If only one track is active, don't remove it, just add another to keep at least one active
+                    AddRandomTrack();
+                }
             }
+
+            // Debug the current state of active and loaded tracks
+            DebugActiveAndLoadedSongs();
         }
     }
 
     // Add a random track to the active list and fade it in
-    void AddRandomTrack(AudioSource[] sources)
+    void AddRandomTrack()
     {
-        int newTrackIndex = Random.Range(0, sources.Length);
-        Debug.Log($"Attempting to add track {newTrackIndex}.");
-        while (IsTrackActive(sources[newTrackIndex]))
-        {
-            newTrackIndex = Random.Range(0, sources.Length);
-            Debug.Log($"Track {newTrackIndex} is already active. Trying again.");
-        }
+        if (loadedSongs.Count == 0) return;
 
-        for (int i = 0; i < activeTracks.Length; i++)
-        {
-            if (activeTracks[i] == null)
-            {
-                activeTracks[i] = sources[newTrackIndex];
-                StartCoroutine(FadeIn(activeTracks[i]));
-                Debug.Log($"Added track {newTrackIndex} to active tracks and started fading in.");
-                break;
-            }
-        }
+        // Pick a random track from the loaded songs
+        int randomIndex = Random.Range(0, loadedSongs.Count);
+        AudioSource track = loadedSongs[randomIndex];
+
+        if (activeSongs.Contains(track)) return; // Don't add a track that's already active
+
+        activeSongs.Add(track);
+        StartCoroutine(FadeIn(track));
+        Debug.Log($"Added track {track.name} to active songs and started fading in.");
     }
 
     // Remove a random active track and fade it out
     void RemoveRandomTrack()
     {
-        int trackIndex = Random.Range(0, activeTracks.Length);
-        while (activeTracks[trackIndex] == null)
-        {
-            trackIndex = Random.Range(0, activeTracks.Length);
-        }
+        if (activeSongs.Count == 0) return;
 
-        Debug.Log($"Removing track {trackIndex} and starting fade out.");
-        StartCoroutine(FadeOut(activeTracks[trackIndex]));
-        activeTracks[trackIndex] = null;
-    }
+        // Pick a random track from the active songs
+        int randomIndex = Random.Range(0, activeSongs.Count);
+        AudioSource track = activeSongs[randomIndex];
 
-    // Check if a specific track is already active
-    bool IsTrackActive(AudioSource track)
-    {
-        foreach (var activeTrack in activeTracks)
-        {
-            if (activeTrack == track)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Get the number of currently active tracks
-    int GetActiveTrackCount()
-    {
-        int count = 0;
-        foreach (var track in activeTracks)
-        {
-            if (track != null)
-            {
-                count++;
-            }
-        }
-        return count;
+        activeSongs.Remove(track);
+        StartCoroutine(FadeOut(track));
+        Debug.Log($"Removed track {track.name} from active songs and started fading out.");
     }
 
     // Fade in the selected track
     IEnumerator FadeIn(AudioSource audioSource)
     {
-        if (audioSource == null)
-        {
-            yield break;
-        }
+        if (audioSource == null) yield break;
 
         audioSource.volume = 0f;
         audioSource.Play();
-        Debug.Log($"Started fading in track {audioSource.name}.");
-
         while (audioSource.volume < 1f)
         {
             audioSource.volume += Time.deltaTime / fadeDuration;
@@ -176,14 +131,9 @@ public class DynamicMusicController : MonoBehaviour
     // Fade out the selected track
     IEnumerator FadeOut(AudioSource audioSource)
     {
-        if (audioSource == null)
-        {
-            yield break;
-        }
+        if (audioSource == null) yield break;
 
         float startVolume = audioSource.volume;
-        Debug.Log($"Started fading out track {audioSource.name}.");
-
         while (audioSource.volume > 0f)
         {
             audioSource.volume -= Time.deltaTime / fadeDuration;
@@ -195,75 +145,103 @@ public class DynamicMusicController : MonoBehaviour
         Debug.Log($"Finished fading out track {audioSource.name}. Track stopped.");
     }
 
-    // Method to transition from Main Menu music to Lore music
+    // Load tracks based on the current screen (Main Menu or Lore)
+    void LoadMainMenuMusic()
+    {
+        loadedSongs.Clear();
+        foreach (var track in mainMenuAudioSources)
+        {
+            loadedSongs.Add(track);
+        }
+        Debug.Log("Main Menu tracks loaded.");
+    }
+
+    void LoadLoreMusic()
+    {
+        loadedSongs.Clear();
+        foreach (var track in loreAudioSources)
+        {
+            loadedSongs.Add(track);
+        }
+        Debug.Log("Lore tracks loaded.");
+    }
+
+    // Set the active state of a music object (main menu or lore music)
+    void SetMusicObjectActive(GameObject musicObject, bool isActive)
+    {
+        musicObject.SetActive(isActive);
+    }
+
+    // Transition from Main Menu music to Lore music
     public void TransitionToLoreMusic()
     {
-        if (isTransitioning)
-        {
-            Debug.Log("Already transitioning. Ignoring request to transition to Lore music.");
-            return;  // Prevent multiple transitions at once
-        }
+        if (isTransitioning) return;
 
         Debug.Log("Transitioning to Lore Music...");
         isTransitioning = true;
 
-        // Fade out all active tracks of the current Main Menu music
-        foreach (var track in activeTracks)
+        // Fade out all active tracks from Main Menu music
+        foreach (var track in activeSongs)
         {
-            if (track != null)
-            {
-                Debug.Log($"Fading out track {track.name}.");
-                StartCoroutine(FadeOut(track));
-            }
+            StartCoroutine(FadeOut(track));
         }
 
-        // Start the dynamic track management for Lore music after a delay to allow for fading
-        StartCoroutine(TransitionToNewMusic(loreAudioSources, mainMenuAudioSources));
+        // Load the Lore music after fading out the Main Menu music
+        StartCoroutine(TransitionToNewMusic(LoadLoreMusic, loreMusicObject, mainMenuMusicObject));
     }
 
-    // Coroutine to handle the transition to the new music (Lore)
-    IEnumerator TransitionToNewMusic(AudioSource[] newMusicSources, AudioSource[] oldMusicSources)
-    {
-        // Wait for the fade-out to finish
-        yield return new WaitForSeconds(fadeDuration);
-
-        // Reset active tracks
-        activeTracks = new AudioSource[maxActiveTracks];
-
-        // Start the dynamic track manager for the new music (Lore)
-        StartCoroutine(DynamicTrackManager(newMusicSources));
-
-        // Make sure Lore music starts playing
-        foreach (var source in newMusicSources)
-        {
-            source.Play();
-            Debug.Log($"Started playing Lore track {source.name}.");
-        }
-    }
-
-    // Method to transition back from Lore music to Main Menu music
+    // Transition from Lore music to Main Menu music
     public void TransitionToMainMenuMusic()
     {
-        if (isTransitioning)
-        {
-            Debug.Log("Already transitioning. Ignoring request to transition to Main Menu music.");
-            return;  // Prevent multiple transitions at once
-        }
+        if (isTransitioning) return;
 
         Debug.Log("Transitioning to Main Menu Music...");
         isTransitioning = true;
 
-        // Fade out all active tracks of the current Lore music
-        foreach (var track in activeTracks)
+        // Fade out all active tracks from Lore music
+        foreach (var track in activeSongs)
         {
-            if (track != null)
-            {
-                Debug.Log($"Fading out track {track.name}.");
-                StartCoroutine(FadeOut(track));
-            }
+            StartCoroutine(FadeOut(track));
         }
 
-        // Start the dynamic track management for Main Menu music after a delay to allow for fading
-        StartCoroutine(TransitionToNewMusic(mainMenuAudioSources, loreAudioSources));
+        // Load the Main Menu music after fading out the Lore music
+        StartCoroutine(TransitionToNewMusic(LoadMainMenuMusic, mainMenuMusicObject, loreMusicObject));
+    }
+
+    // Coroutine to handle transition logic after fading out tracks
+    IEnumerator TransitionToNewMusic(System.Action loadMusicAction, GameObject musicObjectToActivate, GameObject musicObjectToDeactivate)
+    {
+        // Wait for fade-out to complete
+        yield return new WaitForSeconds(fadeDuration);
+
+        // Clear the current active songs
+        activeSongs.Clear();
+
+        // Load the appropriate music for the new screen
+        loadMusicAction();
+
+        // Start adding tracks to the active list from the loaded songs
+        if (loadedSongs.Count > 0)
+        {
+            AddRandomTrack();  // Always add at least one track after transition
+        }
+
+        // Set the music objects active/inactive
+        SetMusicObjectActive(musicObjectToActivate, true);
+        SetMusicObjectActive(musicObjectToDeactivate, false);
+
+        // Restart the dynamic track management for the new music
+        StartCoroutine(DynamicTrackManager());
+        isTransitioning = false;
+    }
+
+    // Debugging function to show both active and loaded tracks
+    void DebugActiveAndLoadedSongs()
+    {
+        string activeSongsNames = string.Join(", ", activeSongs.ConvertAll(track => track.name));
+        string loadedSongsNames = string.Join(", ", loadedSongs.ConvertAll(track => track.name));
+
+        Debug.Log($"Active Tracks: {activeSongsNames}");
+        Debug.Log($"Loaded Tracks: {loadedSongsNames}");
     }
 }
