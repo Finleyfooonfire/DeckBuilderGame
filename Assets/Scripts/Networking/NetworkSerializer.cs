@@ -173,9 +173,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.x);
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.y);
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.z);
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.x);
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.y);
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.z);
         }
     }
 
