@@ -52,6 +52,7 @@ public struct CardInfoStruct
     public Faction faction;
     public CardType cardType;
     public bool exhausted;
+    public Vector3 position;
 }
 
 class NetworkSerializer
@@ -97,6 +98,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.PlayedCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.x);
+            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.y);
+            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.z);
         }
 
 
@@ -113,6 +117,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.ChangedCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.x);
+            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.y);
+            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.z);
         }
 
 
@@ -129,6 +136,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.KilledCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.KilledCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.KilledCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.x);
+            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.y);
+            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.z);
         }
 
         //Write the number of cards in the killedFriendlyCards list
@@ -144,6 +154,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.KilledFriendlyCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.x);
+            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.y);
+            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.z);
         }
 
 
@@ -160,6 +173,9 @@ class NetworkSerializer
             writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.faction);
             writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.cardType);
             writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.x);
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.y);
+            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.position.z);
         }
     }
 
@@ -192,6 +208,10 @@ class NetworkSerializer
             card.faction = (Faction)reader.ReadByte();
             card.cardType = (CardType)reader.ReadByte();
             card.exhausted = reader.ReadByte() == 1;
+            float x = reader.ReadFloat();
+            float y = reader.ReadFloat();
+            float z = reader.ReadFloat();
+            card.position = new Vector3(x, y, x);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }
         return cardsAdded;

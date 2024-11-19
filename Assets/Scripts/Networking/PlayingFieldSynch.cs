@@ -96,7 +96,7 @@ public class PlayingFieldSynch : MonoBehaviour
             GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
-            cardObject.transform.position = new Vector3();
+            cardObject.transform.position = card.Value.position;
             cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
