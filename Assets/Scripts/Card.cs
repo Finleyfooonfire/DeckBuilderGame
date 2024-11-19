@@ -127,6 +127,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
