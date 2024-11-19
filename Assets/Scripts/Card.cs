@@ -163,6 +163,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
@@ -184,7 +185,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Destroy(placementIndicator);
         selectedCard = null;
 
-        Debug.Log($"Card placed successfully at position {cardObject.transform.position}");
+        GameManager.Instance.synch.AddPlayedCard(cardObject);//Keenan addition
+        Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
     Vector3 FindClosestSlot(Vector3 currentPosition)
@@ -201,6 +203,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
             }
         }
         return closestSlot;
+
     }
 
     bool IsPointerOverUIObject()

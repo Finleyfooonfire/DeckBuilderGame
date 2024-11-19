@@ -1,23 +1,67 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class CardAttack : MonoBehaviour, IPointerClickHandler
 {
+    bool canAttack;
+    int exhaustionTimer;
+
+    private void Start()
+    {
+        exhaustionTimer = 0;
+        canAttack = true;
+        GetComponent<CardInfo>().exhausted = false;
+    }
+
+
+    //Call this at the start of the turn.
+    //Checks to see if the card is exhausted.
+    public void OnUpdateTurn()
+    {
+        if (GetComponent<CardInfo>().isPlayerCard) 
+        { 
+            canAttack = true;
+            GetComponent<CardInfo>().exhausted = exhaustionTimer > 0;
+            exhaustionTimer--;
+            canAttack |= !(GetComponent<CardInfo>().exhausted);//the card can't attack if exhausted
+        }
+    }
+
     public void Attack(CardAttack targetCard)
     {
-        targetCard.GetComponent<CardInfo>().defenseValue -= GetComponent<CardInfo>().attackValue;
-
-
-        if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
+        if (canAttack)
         {
-            Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
-            Destroy(targetCard.gameObject);//The target card has reached 0 health so it shall die.
-        }
-        else
-        {
-            Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
+            targetCard.GetComponent<CardInfo>().defenseValue -= GetComponent<CardInfo>().attackValue;
+
+            //Check to see if the target can retaliate
+            if (!targetCard.GetComponent<CardInfo>().exhausted)
+            {
+                GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
+                if (GetComponent<CardInfo>().defenseValue <= 0)
+                {
+                    GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
+                    Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
+                    Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
+                }
+            }
+
+            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
+            {
+                GameManager.Instance.synch.AddKilledCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
+                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
+                Destroy(targetCard.gameObject);//The target card has reached 0 health so it shall die.
+            }
+            else
+            {
+                GameManager.Instance.synch.AddChangedCard(targetCard.gameObject);//Keenan addition
+                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
+            }
+            exhaustionTimer = 1;
         }
     }
 

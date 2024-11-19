@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     public string OnTable = "";
     //end
     //Keenan addition
-    PlayingFieldSynch synch;
+    public PlayingFieldSynch synch { get; private set; }
     //END 
     void Awake()
     {
@@ -53,44 +53,29 @@ public class GameManager : MonoBehaviour
         endTurnButton.onClick.AddListener(EndTurn);
     }
 
-    //Recieve updates constantly
-    private void Update()
-    {
-        if (synch != null)
-        {
-            synch.RecieveSynchroniseDevices();
-        }
-    }
+    
 
     //Call this when the client and server are connected.
     //Keenan modification
     public void StartGame(bool isHost)
     {
-        //Only if the user is a server. Do the coinflip and tell the other device the outcome.
-        if (isHost)
-        {
-            CoinFlip();
-        }
-        //Otherwise get who starts via the network.
-        else
-        {
-            synch.RecieveSynchroniseDevices();
-            UpdateTurn();
-        }
+        isPlayerTurn = isHost;
+        UpdateTurn();
     }
     //End
 
-    void CoinFlip()
-    {
+    //void CoinFlip()
+    //{
         //Keenan addition
-        Random.InitState((int)Time.time);
+        //Random.InitState((int)Time.time);
         //End
-        isPlayerTurn = Random.Range(0, 2) == 0;
-        UpdateTurn();
-    }
+        //isPlayerTurn = Random.Range(0, 2) == 0;
+        //UpdateTurn();
+   // }
 
     void UpdateTurn()
     {
+        Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -101,16 +86,12 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
+            Debug.Log("YOUR TURN");
         }
         else
         {
-            opponentMana = Mathf.Min(opponentMana + 1, maxMana);
-            UpdateManaUI();
-
-            Deck opponentDeck = GameObject.Find("OpponentDeck").GetComponent<Deck>();
-            opponentDeck.DrawCard();
-
             statusText.text = "Opponent's Turn";
+            Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -120,17 +101,19 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         isPlayerTurn = !isPlayerTurn;
+        Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
-        UpdateTurn();
+        //UpdateTurn(); //No need to call this twice
 
         if (isPlayerTurn)
         {
             DrawCard();
         }
-        //Keenan addition
-        synch.SendSynchroniseDevices();
-        //END
+        else 
+        {
+            synch.Send();//Keenan addition. Send the update to the other device
+        }
         UpdateTurn();
     }
 
