@@ -6,6 +6,7 @@ public class LoreMenuTrigger : MonoBehaviour
     public GameObject currentCanvas;  // The current canvas (main menu, for example)
     public GameObject cube;        // The cube that will move
     public Animator cubeAnimator;  // Animator for the cube's movement
+    public GameObject optionsMenu;
 
     // Reference to the animation trigger
     public string cubeAnimationTrigger = "MoveCube";  // The trigger name in the Cube Animator
@@ -63,5 +64,17 @@ public class LoreMenuTrigger : MonoBehaviour
         {
             currentCanvas.SetActive(true);
         }
+    }
+
+    public void OpenOptionsMenu()
+    {
+        optionsMenu.SetActive(true);  // Show the options menu
+        currentCanvas.SetActive(false); //Hides the active canvas
+    }
+
+    public void CloseOptionsMenu()
+    {
+        optionsMenu.SetActive(false); // Hide the options menu
+        currentCanvas.SetActive(true); //Hides the active canvas
     }
 }
