@@ -230,10 +230,13 @@ public class DynamicMusicController : MonoBehaviour
         SetMusicObjectActive(musicObjectToActivate, true);
         SetMusicObjectActive(musicObjectToDeactivate, false);
 
-        // Restart the dynamic track management for the new music
+        // Ensure the DynamicTrackManager coroutine is restarted for the new music
         StartCoroutine(DynamicTrackManager());
+
+        // Set isTransitioning flag to false to allow future transitions
         isTransitioning = false;
     }
+
 
     // Debugging function to show both active and loaded tracks
     void DebugActiveAndLoadedSongs()
