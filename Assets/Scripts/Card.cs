@@ -12,8 +12,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public int defenseValue;
     [HideInInspector] public string cardName;
     public Vector2 gridSize = new Vector2(3, 3);
-    public Vector2 slotSize = new Vector2(2f, 2f);
-    public Vector2 slotSpacing = new Vector2(0.5f, 0.5f);
+    public Vector2 slotSize = new Vector2(1f, 1f);
+    public Vector2 slotSpacing = new Vector2(0.25f, 0.25f);
     private List<Vector3> gridSlots = new List<Vector3>();
     [HideInInspector] public string cardFaction;
     public bool isInHand = true;
@@ -23,7 +23,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private Transform cardPlayArea;
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
-    public float gridScale = 0.5f;
+    public float gridScale = 0.25f;
    // public float gridHeightOffset = 0.33f;
     void Start()
     {
@@ -158,7 +158,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cardObject.name = cardName;
         cardObject.transform.SetParent(cardPlayArea);
-        cardObject.transform.position = closestSlot;
+        closestSlot.y = .1f;
+        cardObject.transform.localPosition = closestSlot;
         cardObject.transform.localScale = playedScale;
         cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
