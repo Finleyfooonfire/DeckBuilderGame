@@ -1622,8 +1622,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 966c377a3bd32b14b899180897a58d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textOut: {fileID: 1559653426}
-  textIn: {fileID: 1584789330}
+  cardPlayArea: {fileID: 337308265}
+  playerGrave: {fileID: 767424198}
+  opponentGrave: {fileID: 766874715}
+  opponentHand: {fileID: 1193296170}
+  opponentDeck: {fileID: 1685135955}
 --- !u!1 &918609958
 GameObject:
   m_ObjectHideFlags: 0

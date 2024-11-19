@@ -157,6 +157,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Destroy(placementIndicator);
         selectedCard = null;
 
+        FindFirstObjectByType<PlayingFieldSynch>().AddPlayedCard(this);//Keenan addition
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
