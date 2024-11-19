@@ -38,26 +38,26 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
                 if (GetComponent<CardInfo>().defenseValue <= 0)
                 {
-                    FindFirstObjectByType<PlayingFieldSynch>().AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
+                    GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
                     Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
                     Destroy(gameObject);
                 }
                 else
                 {
-                    FindFirstObjectByType<PlayingFieldSynch>().AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
+                    GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
                     Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
                 }
             }
 
             if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
             {
-                FindFirstObjectByType<PlayingFieldSynch>().AddKilledCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
+                GameManager.Instance.synch.AddKilledCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
                 Destroy(targetCard.gameObject);//The target card has reached 0 health so it shall die.
             }
             else
             {
-                FindFirstObjectByType<PlayingFieldSynch>().AddChangedCard(targetCard.gameObject);//Keenan addition
+                GameManager.Instance.synch.AddChangedCard(targetCard.gameObject);//Keenan addition
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
             }
             exhaustionTimer = 1;

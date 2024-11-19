@@ -57,7 +57,7 @@ public class GameClient : MonoBehaviour
         }
     }
 
-    public void SendToServer(CardsChange cardsChange)
+    public void SendToServer(CardsChangeIn cardsChange)
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);

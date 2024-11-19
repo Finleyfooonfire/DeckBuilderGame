@@ -3,24 +3,55 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-public struct CardsChange
+public struct CardsChangeIn
 {
-    public List<Card> playedCards;
-    public List<KeyValuePair<string,CardInfo>> changedCards;
-    public List<KeyValuePair<string,CardInfo>> killedCards;
-    public List<KeyValuePair<string,CardInfo>> killedFriendlyCards;
-    public List<Card> revivedCards;
+    public List<KeyValuePair<string, CardInfo>> PlayedCards { get; private set; }
+    public List<KeyValuePair<string,CardInfo>> ChangedCards { get; private set; }
+    public List<KeyValuePair<string,CardInfo>> KilledCards { get; private set; }
+    public List<KeyValuePair<string,CardInfo>> KilledFriendlyCards { get; private set; }
+    public List<KeyValuePair<string, CardInfo>> RevivedCards { get; private set; }
 
-    public CardsChange(List<Card> playedCardsIn, List<KeyValuePair<string,CardInfo>> changedCardsIn,
+    public CardsChangeIn(List<KeyValuePair<string, CardInfo>> playedCardsIn, List<KeyValuePair<string,CardInfo>> changedCardsIn,
          List<KeyValuePair<string, CardInfo>> killedCardsIn, List<KeyValuePair<string, CardInfo>> killedFriendlyCardsIn,
-         List<Card> revivedCardsIn)
+         List<KeyValuePair<string, CardInfo>> revivedCardsIn)
     {
-        playedCards = playedCardsIn;
-        changedCards = changedCardsIn;
-        killedCards = killedCardsIn;
-        killedFriendlyCards = killedFriendlyCardsIn;
-        revivedCards = revivedCardsIn;
+        PlayedCards = playedCardsIn;
+        ChangedCards = changedCardsIn;
+        KilledCards = killedCardsIn;
+        KilledFriendlyCards = killedFriendlyCardsIn;
+        RevivedCards = revivedCardsIn;
     }
+}
+
+public struct CardsChangeOut
+{
+    public List<KeyValuePair<string, CardInfoStruct>> PlayedCards { get; private set; }
+    public List<KeyValuePair<string, CardInfoStruct>> ChangedCards { get; private set; }
+    public List<KeyValuePair<string, CardInfoStruct>> KilledCards { get; private set; }
+    public List<KeyValuePair<string, CardInfoStruct>> KilledFriendlyCards { get; private set; }
+    public List<KeyValuePair<string, CardInfoStruct>> RevivedCards { get; private set; }
+
+    public CardsChangeOut(List<KeyValuePair<string, CardInfoStruct>> playedCardsIn, List<KeyValuePair<string, CardInfoStruct>> changedCardsIn,
+         List<KeyValuePair<string, CardInfoStruct>> killedCardsIn, List<KeyValuePair<string, CardInfoStruct>> killedFriendlyCardsIn,
+         List<KeyValuePair<string, CardInfoStruct>> revivedCardsIn)
+    {
+        PlayedCards = playedCardsIn;
+        ChangedCards = changedCardsIn;
+        KilledCards = killedCardsIn;
+        KilledFriendlyCards = killedFriendlyCardsIn;
+        RevivedCards = revivedCardsIn;
+    }
+}
+
+public struct CardInfoStruct
+{
+    public bool isPlayerCard;
+    public int manaCost;
+    public int attackValue;
+    public int defenseValue;
+    public Faction faction;
+    public CardType cardType;
+    public bool exhausted;
 }
 
 class NetworkSerializer
@@ -51,131 +82,117 @@ class NetworkSerializer
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Serialize(CardsChange cardsChange, ref DataStreamWriter writer)
+    public void Serialize(CardsChangeIn cardsChange, ref DataStreamWriter writer)
     {
         //Write the number of cards in the playedCards list
-        writer.WriteByte((byte)cardsChange.playedCards.Count);
+        writer.WriteByte((byte)cardsChange.PlayedCards.Count);
         //Write the cards in the playedCards list
-        for (int i = 0; i < cardsChange.playedCards.Count; i++)
+        for (int i = 0; i < cardsChange.PlayedCards.Count; i++)
         {
-            writer.WriteByte((byte)cardsChange.playedCards[i].manaCost);
-            writer.WriteByte((byte)cardsChange.playedCards[i].attackValue);
-            writer.WriteByte((byte)cardsChange.playedCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.playedCards[i].cardName);
-            writer.WriteByte((byte)cardsChange.playedCards[i].faction);
-            writer.WriteByte((byte)cardsChange.playedCards[i].cardType);
+            writer.WriteByte((byte)(cardsChange.PlayedCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.defenseValue);
+            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.PlayedCards[i].Key);
+            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.PlayedCards[i].Value.exhausted ? 1 : 0));
         }
 
 
         //Write the number of cards in the changedCards list
-        writer.WriteByte((byte)cardsChange.changedCards.Count);
+        writer.WriteByte((byte)cardsChange.ChangedCards.Count);
         //Write the cards in the killedCards list
-        for (int i = 0; i < cardsChange.changedCards.Count; i++)
+        for (int i = 0; i < cardsChange.ChangedCards.Count; i++)
         {
-            writer.WriteByte((byte)(cardsChange.changedCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.changedCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.changedCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.changedCards[i].Value.defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.changedCards[i].Key);
-            writer.WriteByte((byte)cardsChange.changedCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.changedCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.changedCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteByte((byte)(cardsChange.ChangedCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.defenseValue);
+            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.ChangedCards[i].Key);
+            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.ChangedCards[i].Value.exhausted ? 1 : 0));
         }
 
 
         //Write the number of cards in the killedCards list
-        writer.WriteByte((byte)cardsChange.killedCards.Count);
+        writer.WriteByte((byte)cardsChange.KilledCards.Count);
         //Write the cards in the killedCards list
-        for (int i = 0; i < cardsChange.killedCards.Count; i++)
+        for (int i = 0; i < cardsChange.KilledCards.Count; i++)
         {
-            writer.WriteByte((byte)(cardsChange.killedCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.killedCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.killedCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.killedCards[i].Value.defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedCards[i].Key);
-            writer.WriteByte((byte)cardsChange.killedCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.killedCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.killedCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteByte((byte)(cardsChange.KilledCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.defenseValue);
+            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.KilledCards[i].Key);
+            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.KilledCards[i].Value.exhausted ? 1 : 0));
         }
 
         //Write the number of cards in the killedFriendlyCards list
-        writer.WriteByte((byte)cardsChange.killedFriendlyCards.Count);
+        writer.WriteByte((byte)cardsChange.KilledFriendlyCards.Count);
         //Write the cards in the killedFriendlyCards list
-        for (int i = 0; i < cardsChange.killedFriendlyCards.Count; i++)
+        for (int i = 0; i < cardsChange.KilledFriendlyCards.Count; i++)
         {
-            writer.WriteByte((byte)(cardsChange.killedFriendlyCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.killedFriendlyCards[i].Key);
-            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.killedFriendlyCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.killedFriendlyCards[i].Value.exhausted ? 1 : 0));
+            writer.WriteByte((byte)(cardsChange.KilledFriendlyCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.defenseValue);
+            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.KilledFriendlyCards[i].Key);
+            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.KilledFriendlyCards[i].Value.exhausted ? 1 : 0));
         }
 
 
         //Write the number of cards in the revivedCards list
-        writer.WriteByte((byte)cardsChange.revivedCards.Count);
+        writer.WriteByte((byte)cardsChange.RevivedCards.Count);
         //Write the cards in the revivedCards list
-        for (int i = 0; i < cardsChange.revivedCards.Count; i++)
+        for (int i = 0; i < cardsChange.RevivedCards.Count; i++)
         {
-            writer.WriteByte((byte)cardsChange.revivedCards[i].manaCost);
-            writer.WriteByte((byte)cardsChange.revivedCards[i].attackValue);
-            writer.WriteByte((byte)cardsChange.revivedCards[i].defenseValue);
-            writer.WriteFixedString32((FixedString32Bytes)cardsChange.revivedCards[i].cardName);
-            writer.WriteByte((byte)cardsChange.revivedCards[i].faction);
-            writer.WriteByte((byte)cardsChange.revivedCards[i].cardType);
+            writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.isPlayerCard ? 1 : 0));
+            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.manaCost);
+            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.attackValue);
+            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.defenseValue);
+            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.RevivedCards[i].Key);
+            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.faction);
+            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.cardType);
+            writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.exhausted ? 1 : 0));
         }
     }
 
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public CardsChange Deserialize(ref DataStreamReader reader)
+    public CardsChangeOut Deserialize(ref DataStreamReader reader)
     {
-        return new CardsChange(
-            ReadListOfCard(ref reader),//playedCards
+        return new CardsChangeOut(
+            ReadListOfCardInfo(ref reader),//playedCards
             ReadListOfCardInfo(ref reader),//changedCards
             ReadListOfCardInfo(ref reader),//killedCards
             ReadListOfCardInfo(ref reader),//killedFriendlyCards
-            ReadListOfCard(ref reader));//revivedCards
+            ReadListOfCardInfo(ref reader));//revivedCards
     }
 
-    //Cards that have been added to the deck
-    List<Card> ReadListOfCard(ref DataStreamReader reader)
+    
+    List<KeyValuePair<string, CardInfoStruct>> ReadListOfCardInfo(ref DataStreamReader reader)
     {
-        List<Card> cardsAdded = new List<Card>();
+        List<KeyValuePair<string,CardInfoStruct>> cardsAdded = new List<KeyValuePair<string, CardInfoStruct>>();
         //The first byte stores the number of cards to look for.
         byte cards = reader.ReadByte();
         for (int i = 0; i < cards; i++)
         {
-            Card card = new Card();
+            CardInfoStruct card = new CardInfoStruct();
+            card.isPlayerCard = reader.ReadByte() == 1;
             card.manaCost = reader.ReadByte();
             card.attackValue = reader.ReadByte();
             card.defenseValue = reader.ReadByte();
-            card.cardName = reader.ReadFixedString32().ToString();
-            card.faction = (Faction)reader.ReadByte();
-            card.cardType = (CardType)reader.ReadByte();
-            cardsAdded.Add(card);
-        }
-        return cardsAdded;
-    }
-
-    //Cards that have lost all health and thus move to the graveyard
-    List<KeyValuePair<string, CardInfo>> ReadListOfCardInfo(ref DataStreamReader reader)
-    {
-        List<KeyValuePair<string,CardInfo>> cardsAdded = new List<KeyValuePair<string, CardInfo>>();
-        //The first byte stores the number of cards to look for.
-        byte cards = reader.ReadByte();
-        for (int i = 0; i < cards; i++)
-        {
-            CardInfo card = new CardInfo();
-            card.manaCost = reader.ReadByte();
-            card.attackValue = reader.ReadByte();
-            card.defenseValue = reader.ReadByte();
+            string name = reader.ReadFixedString4096().ToString();
             card.faction = (Faction)reader.ReadByte();
             card.cardType = (CardType)reader.ReadByte();
             card.exhausted = reader.ReadByte() == 1;
-            cardsAdded.Add(new KeyValuePair<string, CardInfo>(reader.ReadFixedString32().ToString(), card));
+            cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }
         return cardsAdded;
     }

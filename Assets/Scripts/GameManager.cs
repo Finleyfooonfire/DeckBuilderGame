@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     public string OnTable = "";
     //end
     //Keenan addition
-    PlayingFieldSynch synch;
+    public PlayingFieldSynch synch { get; private set; }
     //END 
     void Awake()
     {

@@ -12,17 +12,17 @@ public class PlayingFieldSynch : MonoBehaviour
     [SerializeField] Transform opponentHand;
     [SerializeField] Transform opponentDeck;
 
-    List<Card> playedCards = new List<Card>();
+    List<KeyValuePair<string, CardInfo>> playedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> changedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> killedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
-    List<Card> revivedCards = new List<Card>();
+    List<KeyValuePair<string, CardInfo>> revivedCards = new List<KeyValuePair<string, CardInfo>>();
 
     //Call these methods to add the change to the log.
     //Call this when a card has been played
-    public void AddPlayedCard(Card playedCard)
+    public void AddPlayedCard(GameObject playedCard)
     {
-        playedCards.Add(playedCard);
+        playedCards.Add(new KeyValuePair<string, CardInfo>(playedCard.name, playedCard.GetComponent<CardInfo>()));
     }
     //Call this when a cards stats have changed (i.e. a reduction in the defense value)
     public void AddChangedCard(GameObject changedCard)
@@ -40,31 +40,23 @@ public class PlayingFieldSynch : MonoBehaviour
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
     }
     //Call this when a card is revived
-    public void AddRevivedCard(Card revivedCard)
+    public void AddRevivedCard(GameObject revivedCard)
     {
-        revivedCards.Add(revivedCard);
+        revivedCards.Add(new KeyValuePair<string, CardInfo>(revivedCard.name, revivedCard.GetComponent<CardInfo>()));
     }
 
 
     //Returns a CardsChange with all the things that have changed since the start of the turn.
-    CardsChange GetCardStatus()
+    CardsChangeIn GetCardStatus()
     {
-        CardsChange cardsChange;
-
-        cardsChange = new CardsChange(playedCards, changedCards, killedCards, killedFriendlyCards, revivedCards);
-        //Reset the changes.
-        playedCards.Clear();
-        changedCards.Clear();
-        killedCards.Clear();
-        killedFriendlyCards.Clear();
-        revivedCards.Clear();
+        CardsChangeIn cardsChange = new CardsChangeIn(playedCards, changedCards, killedCards, killedFriendlyCards, revivedCards);
         return cardsChange;
     }
 
     //Uses the client/server to send data to the other device.
     public void Send()
     {
-        CardsChange changes = GetCardStatus();
+        CardsChangeIn changes = GetCardStatus();
         var client = FindAnyObjectByType<GameClient>();
         if (client != null)
         {
@@ -78,39 +70,48 @@ public class PlayingFieldSynch : MonoBehaviour
         }
     }
 
+    private void ResetChanges()
+    {
+        //Reset the changes.
+        playedCards.Clear();
+        changedCards.Clear();
+        killedCards.Clear();
+        killedFriendlyCards.Clear();
+        revivedCards.Clear();
+    }
+
     //Called by the client/server when data is recieved and acts upon it.
-    public void Recieve(CardsChange recievedCardsUpdate)
+    public void Recieve(CardsChangeOut recievedCardsUpdate)
     {
         SetCardStatus(recievedCardsUpdate);
         GameManager.Instance.EndTurn();
     }
 
     //Updates the board using the changes recieved.
-    void SetCardStatus(CardsChange changeIn)
+    void SetCardStatus(CardsChangeOut changeIn)
     {
         //Move cards from the hand to the play area
-        foreach (var card in changeIn.playedCards)
+        foreach (var card in changeIn.PlayedCards)
         {
-            opponentDeck.GetComponent<Deck>().handCards.Remove(card);
             GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cardObject.name = card.cardName;
+            cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.position = new Vector3();
             cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
             CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
-            cardInfo.manaCost = card.manaCost;
-            cardInfo.attackValue = card.attackValue;
-            cardInfo.defenseValue = card.defenseValue;
-            cardInfo.faction = card.faction;
-            cardInfo.cardType = card.cardType;
+            cardInfo.manaCost = card.Value.manaCost;
+            cardInfo.attackValue = card.Value.attackValue;
+            cardInfo.defenseValue = card.Value.defenseValue;
+            cardInfo.faction = card.Value.faction;
+            cardInfo.cardType = card.Value.cardType;
 
             CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
         }
 
         //Update any cards that have changed. Only the defense value and exhausted variables change.
-        foreach (var card in changeIn.changedCards)
+        foreach (var card in changeIn.ChangedCards)
         {
             CardInfo oldCard = cardPlayArea.Find(card.Key).GetComponent<CardInfo>();
             oldCard.defenseValue = card.Value.defenseValue;
@@ -118,17 +119,18 @@ public class PlayingFieldSynch : MonoBehaviour
         }
 
         //Update any friendly cards that have been killed. (killedCards are friendly cards after being sent over the network)
-        foreach (var card in changeIn.killedCards)
+        foreach (var card in changeIn.KilledCards)
         {
             cardPlayArea.Find(card.Key).SetParent(playerGrave);
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
 
         //Update any opponent cards that have been killed. (friendly cards are the opponent's cards after being sent over the network)
-        foreach (var card in changeIn.killedFriendlyCards)
+        foreach (var card in changeIn.KilledFriendlyCards)
         {
             cardPlayArea.Find(card.Key).SetParent(opponentGrave);
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
+        ResetChanges();
     }
 }
