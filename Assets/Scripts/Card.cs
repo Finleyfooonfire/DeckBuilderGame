@@ -11,10 +11,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
     [HideInInspector] public string cardName;
-    public Vector2 gridSize = new Vector2(3, 3);
-    public Vector2 slotSize = new Vector2(1f, 1f);
-    public Vector2 slotSpacing = new Vector2(0.25f, 0.25f);
-    private List<Vector3> gridSlots = new List<Vector3>();
+    
     [HideInInspector] public string cardFaction;
     public bool isInHand = true;
     private static Card selectedCard;
@@ -23,8 +20,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private Transform cardPlayArea;
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
-    public float gridScale = 0.025f;
-   // public float gridHeightOffset = 0.33f;
+
+    CardPlayAreaGrid cardPlayAreaGrid;
+    
     void Start()
     {
         manaCost = stats.manaCost;
@@ -40,12 +38,13 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (playAreaObject != null)
         {
             cardPlayArea = playAreaObject.transform;
-            InitializeGrid();  // Only call this if cardPlayArea is not null
         }
         else
         {
             Debug.LogError("CardPlayArea GameObject not found in the scene.");
         }
+
+        cardPlayAreaGrid = playAreaObject.GetComponent<CardPlayAreaGrid>();
     }
 
 
@@ -54,57 +53,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.isPlayerTurn && isPlayerCard && isInHand) SelectCard();
     }
 
-    void InitializeGrid()
-    {
-        if (cardPlayArea == null) return;
-
-        Vector3 startPosition = cardPlayArea.position - new Vector3(
-            (gridSize.x - 1) * (slotSize.x + slotSpacing.x) * gridScale / 2,
-            -1, 
-            (gridSize.y - 1) * (slotSize.y + slotSpacing.y) * gridScale / 2
-        );
-
-     
-        //startPosition.y += gridHeightOffset;
-
-        for (int row = 0; row < gridSize.y; row++)
-        {
-            for (int col = 0; col < gridSize.x; col++)
-            {
-                Vector3 slotPosition = startPosition + new Vector3(
-                    col * (slotSize.x + slotSpacing.x) * gridScale,
-                    0,
-                    row * (slotSize.y + slotSpacing.y) * gridScale);
-                gridSlots.Add(slotPosition);
-            }
-        }
-    }
-
-
-
-
-
-    void OnDrawGizmos()
-    {
-        if (cardPlayArea == null) return;
-        Gizmos.color = Color.yellow;
-        Vector3 startPosition = cardPlayArea.position - new Vector3(
-            (gridSize.x - 1) * (slotSize.x + slotSpacing.x) * gridScale / 2,
-            0,
-            (gridSize.y - 1) * (slotSize.y + slotSpacing.y) * gridScale / 2);
-
-        for (int row = 0; row < gridSize.y; row++)
-        {
-            for (int col = 0; col < gridSize.x; col++)
-            {
-                Vector3 slotPosition = startPosition + new Vector3(
-                    col * (slotSize.x + slotSpacing.x) * gridScale,
-                    0,
-                    row * (slotSize.y + slotSpacing.y) * gridScale);
-                Gizmos.DrawWireCube(slotPosition, new Vector3(slotSize.x, 0.1f, slotSize.y));
-            }
-        }
-    }
+    
 
     void SelectCard()
     {
@@ -151,9 +100,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void PlaceCard()
     {
-        if (cardPlayArea == null || gridSlots.Count == 0) return;
+        if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = FindClosestSlot(placementIndicator.transform.position);
-        gridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
+        cardPlayAreaGrid.GridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cardObject.name = cardName;
@@ -192,9 +141,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     Vector3 FindClosestSlot(Vector3 currentPosition)
     {
-        Vector3 closestSlot = gridSlots[0];
+        Vector3 closestSlot = cardPlayAreaGrid.GridSlots[0];
         float shortestDistance = Vector3.Distance(currentPosition, closestSlot);
-        foreach (Vector3 slot in gridSlots)
+        foreach (Vector3 slot in cardPlayAreaGrid.GridSlots)
         {
             float distance = Vector3.Distance(currentPosition, slot);
             if (distance < shortestDistance)
