@@ -21,6 +21,15 @@ public struct CardsChangeIn
         KilledFriendlyCards = killedFriendlyCardsIn;
         RevivedCards = revivedCardsIn;
     }
+
+    public IEnumerator<List<KeyValuePair<string, CardInfo>>> GetEnumerator()
+    {
+        yield return PlayedCards;
+        yield return ChangedCards;  
+        yield return KilledCards;
+        yield return KilledFriendlyCards;
+        yield return RevivedCards;
+    }
 }
 
 public struct CardsChangeOut
@@ -85,97 +94,25 @@ class NetworkSerializer
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
     public void Serialize(CardsChangeIn cardsChange, ref DataStreamWriter writer)
     {
-        //Write the number of cards in the playedCards list
-        writer.WriteByte((byte)cardsChange.PlayedCards.Count);
-        //Write the cards in the playedCards list
-        for (int i = 0; i < cardsChange.PlayedCards.Count; i++)
+        foreach (var x in cardsChange)
         {
-            writer.WriteByte((byte)(cardsChange.PlayedCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.defenseValue);
-            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.PlayedCards[i].Key);
-            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.PlayedCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.PlayedCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.x);
-            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.y);
-            writer.WriteFloat(cardsChange.PlayedCards[i].Value.gameObject.transform.position.z);
-        }
-
-
-        //Write the number of cards in the changedCards list
-        writer.WriteByte((byte)cardsChange.ChangedCards.Count);
-        //Write the cards in the killedCards list
-        for (int i = 0; i < cardsChange.ChangedCards.Count; i++)
-        {
-            writer.WriteByte((byte)(cardsChange.ChangedCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.defenseValue);
-            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.ChangedCards[i].Key);
-            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.ChangedCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.ChangedCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.x);
-            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.y);
-            writer.WriteFloat(cardsChange.ChangedCards[i].Value.gameObject.transform.position.z);
-        }
-
-
-        //Write the number of cards in the killedCards list
-        writer.WriteByte((byte)cardsChange.KilledCards.Count);
-        //Write the cards in the killedCards list
-        for (int i = 0; i < cardsChange.KilledCards.Count; i++)
-        {
-            writer.WriteByte((byte)(cardsChange.KilledCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.defenseValue);
-            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.KilledCards[i].Key);
-            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.KilledCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.KilledCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.x);
-            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.y);
-            writer.WriteFloat(cardsChange.KilledCards[i].Value.gameObject.transform.position.z);
-        }
-
-        //Write the number of cards in the killedFriendlyCards list
-        writer.WriteByte((byte)cardsChange.KilledFriendlyCards.Count);
-        //Write the cards in the killedFriendlyCards list
-        for (int i = 0; i < cardsChange.KilledFriendlyCards.Count; i++)
-        {
-            writer.WriteByte((byte)(cardsChange.KilledFriendlyCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.defenseValue);
-            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.KilledFriendlyCards[i].Key);
-            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.KilledFriendlyCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.KilledFriendlyCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.x);
-            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.y);
-            writer.WriteFloat(cardsChange.KilledFriendlyCards[i].Value.gameObject.transform.position.z);
-        }
-
-
-        //Write the number of cards in the revivedCards list
-        writer.WriteByte((byte)cardsChange.RevivedCards.Count);
-        //Write the cards in the revivedCards list
-        for (int i = 0; i < cardsChange.RevivedCards.Count; i++)
-        {
-            writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.isPlayerCard ? 1 : 0));
-            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.manaCost);
-            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.attackValue);
-            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.defenseValue);
-            writer.WriteFixedString4096((FixedString4096Bytes)cardsChange.RevivedCards[i].Key);
-            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.faction);
-            writer.WriteByte((byte)cardsChange.RevivedCards[i].Value.cardType);
-            writer.WriteByte((byte)(cardsChange.RevivedCards[i].Value.exhausted ? 1 : 0));
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.x);
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.y);
-            writer.WriteFloat(cardsChange.RevivedCards[i].Value.gameObject.transform.localPosition.z);
+            //Write the number of cards in the list
+            writer.WriteByte((byte)x.Count);
+            //Write the cards in the playedCards list
+            for (int i = 0; i < x.Count; i++)
+            {
+                writer.WriteByte((byte)(x[i].Value.isPlayerCard ? 1 : 0));
+                writer.WriteByte((byte)x[i].Value.manaCost);
+                writer.WriteByte((byte)x[i].Value.attackValue);
+                writer.WriteByte((byte)x[i].Value.defenseValue);
+                writer.WriteFixedString4096((FixedString4096Bytes)x[i].Key);
+                writer.WriteByte((byte)x[i].Value.faction);
+                writer.WriteByte((byte)x[i].Value.cardType);
+                writer.WriteByte((byte)(x[i].Value.exhausted ? 1 : 0));
+                writer.WriteFloat(x[i].Value.gameObject.transform.position.x);
+                writer.WriteFloat(x[i].Value.gameObject.transform.position.y);
+                writer.WriteFloat(x[i].Value.gameObject.transform.position.z);
+            }
         }
     }
 
