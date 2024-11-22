@@ -5,7 +5,7 @@ public class CardPlayAreaGrid : MonoBehaviour
 {
     [SerializeField] Vector2 gridSize = new Vector2(3, 3);
     [SerializeField] Vector2 slotSize = new Vector2(1f, 1f);
-    [SerializeField] Vector2 slotSpacing = new Vector2(0.25f, 0.25f);
+    [SerializeField] Vector2 slotSpacing = new Vector2(45, 45);
     public List<Vector3> GridSlots { get; private set; }  = new List<Vector3>();
     [SerializeField] float gridScale = 0.025f;
     // public float gridHeightOffset = 0.33f;
