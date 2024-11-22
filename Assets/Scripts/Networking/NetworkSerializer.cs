@@ -109,9 +109,9 @@ class NetworkSerializer
                 writer.WriteByte((byte)x[i].Value.faction);
                 writer.WriteByte((byte)x[i].Value.cardType);
                 writer.WriteByte((byte)(x[i].Value.exhausted ? 1 : 0));
-                writer.WriteFloat(x[i].Value.gameObject.transform.position.x);
-                writer.WriteFloat(x[i].Value.gameObject.transform.position.y);
-                writer.WriteFloat(x[i].Value.gameObject.transform.position.z);
+                writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.x);
+                writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.y);
+                writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.z);
             }
         }
     }
@@ -148,7 +148,7 @@ class NetworkSerializer
             float x = reader.ReadFloat();
             float y = reader.ReadFloat();
             float z = reader.ReadFloat();
-            card.position = new Vector3(x, y, x);
+            card.position = new Vector3(x, y, -z);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }
         return cardsAdded;
