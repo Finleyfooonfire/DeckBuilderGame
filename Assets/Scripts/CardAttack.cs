@@ -10,7 +10,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         exhaustionTimer = 0;
-        canAttack = true;
+        canAttack = false;
         GetComponent<CardInfo>().exhausted = false;
     }
 
