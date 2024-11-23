@@ -11,12 +11,18 @@ public class PlayingFieldSynch : MonoBehaviour
     [SerializeField] Transform opponentGrave;
     [SerializeField] Transform opponentHand;
     [SerializeField] Transform opponentDeck;
+    CardPlayAreaGrid cardPlayAreaGrid;
 
     List<KeyValuePair<string, CardInfo>> playedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> changedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> killedCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> revivedCards = new List<KeyValuePair<string, CardInfo>>();
+
+    private void Start()
+    {
+        cardPlayAreaGrid = cardPlayArea.gameObject.GetComponent<CardPlayAreaGrid>();
+    }
 
     //Call these methods to add the change to the log.
     //Call this when a card has been played
@@ -93,12 +99,17 @@ public class PlayingFieldSynch : MonoBehaviour
         //Move cards from the hand to the play area
         foreach (var card in changeIn.PlayedCards)
         {
+            if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
+
             GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.localPosition = card.Value.position;
             cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position);
+            cardPlayAreaGrid.GridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
 
             CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
             cardInfo.manaCost = card.Value.manaCost;

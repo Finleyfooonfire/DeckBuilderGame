@@ -74,4 +74,21 @@ public class CardPlayAreaGrid : MonoBehaviour
             }
         }
     }
+
+    public Vector3 FindClosestSlot(Vector3 currentPosition)
+    {
+        Vector3 closestSlot = GridSlots[0];
+        float shortestDistance = Vector3.Distance(currentPosition, closestSlot);
+        foreach (Vector3 slot in GridSlots)
+        {
+            float distance = Vector3.Distance(currentPosition, slot);
+            if (distance < shortestDistance)
+            {
+                closestSlot = slot;
+                shortestDistance = distance;
+            }
+        }
+        return closestSlot;
+
+    }
 }

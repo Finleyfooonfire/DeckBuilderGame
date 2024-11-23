@@ -94,7 +94,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            Vector3 closestSlot = FindClosestSlot(hit.point);
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(hit.point);
             placementIndicator.transform.position = closestSlot;
         }
     }
@@ -102,7 +102,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     void PlaceCard()
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
-        Vector3 closestSlot = FindClosestSlot(placementIndicator.transform.position);
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position);
         cardPlayAreaGrid.GridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -141,22 +141,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
-    Vector3 FindClosestSlot(Vector3 currentPosition)
-    {
-        Vector3 closestSlot = cardPlayAreaGrid.GridSlots[0];
-        float shortestDistance = Vector3.Distance(currentPosition, closestSlot);
-        foreach (Vector3 slot in cardPlayAreaGrid.GridSlots)
-        {
-            float distance = Vector3.Distance(currentPosition, slot);
-            if (distance < shortestDistance)
-            {
-                closestSlot = slot;
-                shortestDistance = distance;
-            }
-        }
-        return closestSlot;
-
-    }
+    
 
     bool IsPointerOverUIObject()
     {
