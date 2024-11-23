@@ -148,7 +148,7 @@ class NetworkSerializer
             float x = reader.ReadFloat();
             float y = reader.ReadFloat();
             float z = reader.ReadFloat();
-            card.position = new Vector3(x, y, -z);
+            card.position = new Vector3(-x, y, -z);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }
         return cardsAdded;
