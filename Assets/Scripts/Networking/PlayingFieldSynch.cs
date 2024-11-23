@@ -147,5 +147,9 @@ public class PlayingFieldSynch : MonoBehaviour
             cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
         }
         ResetChanges();
+        foreach (Transform card in cardPlayArea)
+        {
+            card.GetComponent<CardAttack>().OnUpdateTurn();
+        }
     }
 }
