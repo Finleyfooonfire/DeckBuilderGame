@@ -39,11 +39,15 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledCard(GameObject killedCard)
     {
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+        killedCard.transform.parent = opponentGrave;
+        killedCard.transform.localPosition = new Vector3();
     }
     //Call this when a player's card is killed
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+        killedCard.transform.parent = playerGrave;
+        killedCard.transform.localPosition = new Vector3();
     }
     //Call this when a card is revived
     public void AddRevivedCard(GameObject revivedCard)
