@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -79,7 +80,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 {
                     FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
                 }
-                else
+                else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard)))//Only attack the enemy directly if no enemy cards are found.
                 {
                     FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
                 }
