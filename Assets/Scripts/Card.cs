@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
@@ -105,7 +106,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardPlayAreaGrid.GridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cardObject.name = cardName;
+        //Give each card a unique name to allow differentiation.
+        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
         cardObject.transform.SetParent(cardPlayArea);
         closestSlot.y = .1f;
         cardObject.transform.localPosition = closestSlot;
