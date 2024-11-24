@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Unity.Networking.Transport;
 using UnityEngine;
 
@@ -8,9 +7,11 @@ public class GameClient : MonoBehaviour
     NetworkDriver m_Driver;
     NetworkConnection m_Connection;
     [SerializeField] PlayingFieldSynch playingFieldSynch;
+    float lastKeepAlive;
 
     void Start()
     {
+        lastKeepAlive = Time.realtimeSinceStartup;
         m_Driver = NetworkDriver.Create();
 
         var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);//Use localhost
@@ -22,6 +23,19 @@ public class GameClient : MonoBehaviour
         m_Driver.Dispose();
     }
 
+    //Send a message to the server every few seconds to keep the connection from timing out.
+    void KeepAlive()
+    {
+        if (Time.realtimeSinceStartup - lastKeepAlive > 15)
+        {
+            Debug.Log("Sending KeepAlive");
+            m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
+            writer.WriteByte((byte)NetMessageType.KeepAlive);
+            m_Driver.EndSend(writer);
+
+            lastKeepAlive = Time.realtimeSinceStartup;
+        }
+    }
 
     void Update()
     {
@@ -29,10 +43,11 @@ public class GameClient : MonoBehaviour
 
         if (!m_Connection.IsCreated)
         {
+            Debug.Log("Lost connection to server");
             return;
         }
 
-        
+        KeepAlive();
 
         Unity.Collections.DataStreamReader stream;
         NetworkEvent.Type cmd;
@@ -47,7 +62,19 @@ public class GameClient : MonoBehaviour
             {
                 //Get the game updates from the server
                 Debug.Log("Client recieved data");
-                playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                NetMessageType msgType = (NetMessageType)stream.ReadByte();
+                switch (msgType)
+                {
+                    case NetMessageType.KeepAlive:
+                        Debug.Log("Still connected");
+                        break;
+                    case NetMessageType.CardChange:
+                        playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                        break;
+                    default:
+                        Debug.Log("Invalid message type");
+                        break;
+                }
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {
@@ -61,6 +88,7 @@ public class GameClient : MonoBehaviour
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
+        writer.WriteByte((byte)NetMessageType.CardChange);
         NetworkSerializer.Instance.Serialize(cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }

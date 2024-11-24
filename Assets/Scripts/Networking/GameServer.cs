@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using Unity.VisualScripting;
 using UnityEngine;
 
 ///TODO: Sending card data between client and host: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
@@ -57,7 +55,7 @@ public class GameServer : MonoBehaviour
         }
 
 
-        
+
 
         for (int i = 0; i < m_Connections.Length; i++)
         {
@@ -69,7 +67,21 @@ public class GameServer : MonoBehaviour
                 {
                     //Get the game updates from the client
                     Debug.Log("Server recieved data");
-                    playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                    NetMessageType msgType = (NetMessageType)stream.ReadByte();
+                    switch (msgType)
+                    {
+                        case NetMessageType.KeepAlive:
+                            m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i], out var writer);
+                            writer.WriteByte((byte)NetMessageType.KeepAlive);
+                            m_Driver.EndSend(writer);
+                            break;
+                        case NetMessageType.CardChange:
+                            playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                            break;
+                        default:
+                            Debug.Log("Invalid message type");
+                            break;
+                    }
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -81,12 +93,13 @@ public class GameServer : MonoBehaviour
         }
     }
 
-    
+
 
     public void SendToClient(CardsChangeIn cardsChange)
     {
         //Send an update to the client.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
+        writer.WriteByte((byte)NetMessageType.CardChange);
         NetworkSerializer.Instance.Serialize(cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }
