@@ -101,7 +101,7 @@ public class PlayingFieldSynch : MonoBehaviour
     void SetCardStatus(CardsChangeOut changeIn)
     {
         //Move cards from the hand to the play area
-        foreach (var card in changeIn.PlayedCards)
+        foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.PlayedCards)
         {
             if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
 
@@ -126,7 +126,7 @@ public class PlayingFieldSynch : MonoBehaviour
         }
 
         //Update any cards that have changed. Only the defense value and exhausted variables change.
-        foreach (var card in changeIn.ChangedCards)
+        foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.ChangedCards)
         {
             CardInfo oldCard = cardPlayArea.Find(card.Key).GetComponent<CardInfo>();
             oldCard.defenseValue = card.Value.defenseValue;
@@ -134,17 +134,20 @@ public class PlayingFieldSynch : MonoBehaviour
         }
 
         //Update any friendly cards that have been killed. (killedCards are friendly cards after being sent over the network)
-        foreach (var card in changeIn.KilledCards)
+        foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledCards)
         {
-            cardPlayArea.Find(card.Key).SetParent(playerGrave);
-            cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
+            Debug.Log(card);
+            Transform killedCard = cardPlayArea.Find(card.Key);
+            killedCard.SetParent(playerGrave);
+            killedCard.localPosition = Vector3.zero;
         }
 
         //Update any opponent cards that have been killed. (friendly cards are the opponent's cards after being sent over the network)
-        foreach (var card in changeIn.KilledFriendlyCards)
+        foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledFriendlyCards)
         {
-            cardPlayArea.Find(card.Key).SetParent(opponentGrave);
-            cardPlayArea.Find(card.Key).transform.localPosition = new Vector3();
+            Transform killedCard = cardPlayArea.Find(card.Key);
+            killedCard.SetParent(opponentGrave);
+            killedCard.localPosition = Vector3.zero;
         }
         ResetChanges();
         foreach (Transform card in cardPlayArea)
