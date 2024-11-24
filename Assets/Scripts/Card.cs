@@ -103,7 +103,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position);
-        cardPlayAreaGrid.GridSlots.Remove(closestSlot); // Occupy this slot so no other card uses it
+        cardPlayAreaGrid.Remove(closestSlot); // Occupy this slot so no other card uses it
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         //Give each card a unique name to allow differentiation.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CardPlayAreaGrid : MonoBehaviour
@@ -6,7 +7,7 @@ public class CardPlayAreaGrid : MonoBehaviour
     [SerializeField] Vector2 gridSize = new Vector2(3, 3);
     [SerializeField] Vector2 slotSize = new Vector2(1f, 1f);
     [SerializeField] Vector2 slotSpacing = new Vector2(45, 45);
-    public List<Vector3> GridSlots { get; private set; }  = new List<Vector3>();
+    public Dictionary<Vector3, bool> GridSlots { get; private set; } = new Dictionary<Vector3, bool>();
     [SerializeField] float gridScale = 0.025f;
     // public float gridHeightOffset = 0.33f;
 
@@ -48,7 +49,7 @@ public class CardPlayAreaGrid : MonoBehaviour
                     col * (slotSize.x + slotSpacing.x) * gridScale,
                     0,
                     row * (slotSize.y + slotSpacing.y) * gridScale);
-                GridSlots.Add(slotPosition);
+                GridSlots.Add(slotPosition, false);
             }
         }
     }
@@ -77,18 +78,29 @@ public class CardPlayAreaGrid : MonoBehaviour
 
     public Vector3 FindClosestSlot(Vector3 currentPosition)
     {
-        Vector3 closestSlot = GridSlots[0];
-        float shortestDistance = Vector3.Distance(currentPosition, closestSlot);
-        foreach (Vector3 slot in GridSlots)
+        KeyValuePair<Vector3, bool> closestSlot = GridSlots.First();
+        float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key);
+        foreach (KeyValuePair<Vector3, bool> slot in GridSlots)
         {
-            float distance = Vector3.Distance(currentPosition, slot);
+            if (slot.Value) continue;//Skip in use slots
+            float distance = Vector3.Distance(currentPosition, slot.Key);
             if (distance < shortestDistance)
             {
                 closestSlot = slot;
                 shortestDistance = distance;
             }
         }
-        return closestSlot;
+        return closestSlot.Key;
 
+    }
+
+    public void Remove(Vector3 slotToRemove)
+    {
+        GridSlots[slotToRemove] = true;
+    }
+
+    public void Free(Vector3 slotToFree)
+    {
+        GridSlots[slotToFree] = false;
     }
 }
