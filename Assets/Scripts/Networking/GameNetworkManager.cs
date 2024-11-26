@@ -3,6 +3,8 @@ using System.Net;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Net.WebSockets;
+using Unity.Networking.Transport;
 
 public class GameNetworkManager : MonoBehaviour
 {
@@ -14,7 +16,7 @@ public class GameNetworkManager : MonoBehaviour
     //[SerializeField] TMP_Text serverIP;
     //[SerializeField] GameObject clientUI;
     //[SerializeField] GameObject IPButton;
-    //[SerializeField] TMP_InputField IPInput;
+    [SerializeField] TMP_InputField IPInput;
     public bool Turn;
     
     //What happens when the user clicks on the start as host or start as client buttons.
@@ -68,6 +70,13 @@ public class GameNetworkManager : MonoBehaviour
             server.SetActive(false);
             //serverUI.SetActive(false);
             client.SetActive(true);
+            var clientScript = client.GetComponent<GameClient>();
+            if (NetworkEndpoint.TryParse(IPInput.text, 7777, out _))
+            {
+                clientScript.ipInput = IPInput.text;
+            }
+            clientScript.StartClient();
+
             //clientUI.SetActive(true);
             /*
             //Get the IP from the input box and attempt to connect
