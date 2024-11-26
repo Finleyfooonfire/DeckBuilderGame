@@ -8,14 +8,20 @@ public class GameClient : MonoBehaviour
     NetworkConnection m_Connection;
     [SerializeField] PlayingFieldSynch playingFieldSynch;
     float lastKeepAlive;
+    public string ipInput = "127.0.0.1";
 
-    void Start()
+    public void StartClient()
     {
         lastKeepAlive = Time.realtimeSinceStartup;
         m_Driver = NetworkDriver.Create();
-
-        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);//Use localhost
-        m_Connection = m_Driver.Connect(endpoint);
+        if (NetworkEndpoint.TryParse(ipInput, 7777, out var endpoint))
+        {
+            m_Connection = m_Driver.Connect(endpoint);
+        }
+        else
+        {
+            Debug.LogError("Unable to connect");
+        }
     }
 
     void OnDestroy()
@@ -71,6 +77,10 @@ public class GameClient : MonoBehaviour
                     case NetMessageType.CardChange:
                         playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
                         break;
+                    case NetMessageType.EndGame:
+                        Debug.Log("Ending game");
+                        FindFirstObjectByType<GameManager>().GameOver(false);
+                        break;
                     default:
                         Debug.Log("Invalid message type");
                         break;
@@ -84,12 +94,20 @@ public class GameClient : MonoBehaviour
         }
     }
 
-    public void SendToServer(CardsChangeIn cardsChange)
+    public void SendToServer(HealthAndMana healthMana, CardsChangeIn cardsChange)
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
         writer.WriteByte((byte)NetMessageType.CardChange);
-        NetworkSerializer.Instance.Serialize(cardsChange, ref writer);
+        NetworkSerializer.Instance.Serialize(healthMana, cardsChange, ref writer);
+        m_Driver.EndSend(writer);
+    }
+
+    public void SendEndGame()
+    {
+        Debug.Log("Sending EndGame");
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
+        writer.WriteByte((byte)NetMessageType.EndGame);
         m_Driver.EndSend(writer);
     }
 }

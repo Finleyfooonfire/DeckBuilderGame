@@ -19,6 +19,8 @@ public class PlayingFieldSynch : MonoBehaviour
     List<KeyValuePair<string, CardInfo>> killedFriendlyCards = new List<KeyValuePair<string, CardInfo>>();
     List<KeyValuePair<string, CardInfo>> revivedCards = new List<KeyValuePair<string, CardInfo>>();
 
+    HealthAndMana healthChange;
+
     private void Start()
     {
         cardPlayAreaGrid = cardPlayArea.gameObject.GetComponent<CardPlayAreaGrid>();
@@ -65,6 +67,11 @@ public class PlayingFieldSynch : MonoBehaviour
         return cardsChange;
     }
 
+    public void SetHealthStatus(HealthAndMana changeIn)
+    {
+        healthChange = changeIn;
+    }
+
     //Uses the client/server to send data to the other device.
     public void Send()
     {
@@ -73,12 +80,29 @@ public class PlayingFieldSynch : MonoBehaviour
         if (client != null)
         {
             //The client exists so Send data.
-            client.SendToServer(changes);
+            client.SendToServer(healthChange, changes);
         }
         else
         {
             //It is server. Send data.
-            FindAnyObjectByType<GameServer>().SendToClient(changes);
+            FindAnyObjectByType<GameServer>().SendToClient(healthChange, changes);
+        }
+    }
+
+    //Uses the client/server to send game end signal to the other device.
+    public void GameEnd()
+    {
+        CardsChangeIn changes = GetCardStatus();
+        var client = FindAnyObjectByType<GameClient>();
+        if (client != null)
+        {
+            //The client exists so Send data.
+            client.SendEndGame();
+        }
+        else
+        {
+            //It is server. Send data.
+            FindAnyObjectByType<GameServer>().SendEndGame();
         }
     }
 
@@ -93,9 +117,10 @@ public class PlayingFieldSynch : MonoBehaviour
     }
 
     //Called by the client/server when data is recieved and acts upon it.
-    public void Recieve(CardsChangeOut recievedCardsUpdate)
+    public void Recieve((HealthAndMana healthMana, CardsChangeOut recievedCardsUpdate) updates)
     {
-        SetCardStatus(recievedCardsUpdate);
+        SetCardStatus(updates.recievedCardsUpdate);
+        UpdateHealthStatus(updates.healthMana);
         GameManager.Instance.EndTurn();
     }
 
@@ -157,5 +182,15 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             card.GetComponent<CardAttack>().OnUpdateTurn();
         }
+    }
+
+    void UpdateHealthStatus(HealthAndMana healthChange)
+    {
+        GameManager manager = FindFirstObjectByType<GameManager>();
+        if (manager == null) return;
+        manager.playerMana = healthChange.playerMana;
+        manager.opponentMana = healthChange.opponentMana;
+        manager.playerLife = healthChange.playerLife;
+        manager.opponentLife = healthChange.opponentLife;
     }
 }

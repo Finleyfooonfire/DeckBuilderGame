@@ -64,6 +64,22 @@ public struct CardInfoStruct
     public Vector3 position;
 }
 
+public struct HealthAndMana
+{
+    public int playerMana { get; private set; }
+    public int opponentMana { get; private set; }
+    public int playerLife { get; private set; }
+    public int opponentLife { get; private set; }
+
+    public HealthAndMana(int playerManaIn, int opponentManaIn, int playerLifeIn, int opponentLifeIn)
+    {
+        playerMana = playerManaIn;
+        opponentMana = opponentManaIn;
+        playerLife = playerLifeIn;
+        opponentLife = opponentLifeIn;
+    }
+}
+
 class NetworkSerializer
 {
     private static NetworkSerializer instance;
@@ -92,8 +108,13 @@ class NetworkSerializer
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Serialize(CardsChangeIn cardsChange, ref DataStreamWriter writer)
+    public void Serialize(HealthAndMana healthMana, CardsChangeIn cardsChange, ref DataStreamWriter writer)
     {
+        writer.WriteByte((byte)healthMana.playerMana);
+        writer.WriteByte((byte)healthMana.opponentMana);
+        writer.WriteByte((byte)healthMana.playerLife);
+        writer.WriteByte((byte)healthMana.opponentLife);
+
         foreach (var x in cardsChange)
         {
             //Write the number of cards in the list
@@ -118,17 +139,27 @@ class NetworkSerializer
 
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public CardsChangeOut Deserialize(ref DataStreamReader reader)
+    public (HealthAndMana healthMana, CardsChangeOut cardsChange) Deserialize(ref DataStreamReader reader)
     {
-        return new CardsChangeOut(
+        return (ReadHealthAndMana(ref reader), new CardsChangeOut(
             ReadListOfCardInfo(ref reader),//playedCards
             ReadListOfCardInfo(ref reader),//changedCards
             ReadListOfCardInfo(ref reader),//killedCards
             ReadListOfCardInfo(ref reader),//killedFriendlyCards
-            ReadListOfCardInfo(ref reader));//revivedCards
+            ReadListOfCardInfo(ref reader))//revivedCards
+            );
     }
 
-    
+    HealthAndMana ReadHealthAndMana(ref DataStreamReader reader)
+    {
+        //The player of one device is the opponent of the other
+        int opponentManaRead = reader.ReadByte();
+        int playerManaRead = reader.ReadByte();
+        int opponentLifeRead = reader.ReadByte();
+        int playerLifeRead = reader.ReadByte();
+        return new HealthAndMana(playerManaRead, opponentManaRead, playerLifeRead, opponentLifeRead);
+    }
+
     List<KeyValuePair<string, CardInfoStruct>> ReadListOfCardInfo(ref DataStreamReader reader)
     {
         List<KeyValuePair<string,CardInfoStruct>> cardsAdded = new List<KeyValuePair<string, CardInfoStruct>>();

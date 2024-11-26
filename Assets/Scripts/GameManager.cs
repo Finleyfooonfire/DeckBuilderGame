@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour
         }
         else 
         {
+            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
             synch.Send();//Keenan addition. Send the update to the other device
         }
         UpdateTurn();
@@ -206,6 +207,10 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
+        if (playerWon)
+        {
+            synch.GameEnd();
+        }
         PlayerPrefs.SetInt("PlayerWon", playerWon ? 1 : 0);
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
