@@ -14,7 +14,7 @@ public class GameClient : MonoBehaviour
     {
         lastKeepAlive = Time.realtimeSinceStartup;
         m_Driver = NetworkDriver.Create();
-        if (NetworkEndpoint.TryParse(ipInput, 7777, out var endpoint))
+        if (NetworkEndpoint.TryParse(ipInput, 45000, out var endpoint))
         {
             m_Connection = m_Driver.Connect(endpoint);
         }
