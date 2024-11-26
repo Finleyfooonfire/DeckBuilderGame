@@ -80,7 +80,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 {
                     FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
                 }
-                else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard)))//Only attack the enemy directly if no enemy cards are found.
+                else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard && info.transform.parent.gameObject.name.Equals("CardPlayArea"))))//Only attack the enemy directly if no enemy cards are found.
                 {
                     FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
                 }
