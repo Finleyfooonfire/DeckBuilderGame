@@ -14,8 +14,14 @@ public class GameClient : MonoBehaviour
     {
         lastKeepAlive = Time.realtimeSinceStartup;
         m_Driver = NetworkDriver.Create();
-        var endpoint = NetworkEndpoint.Parse(ipInput, 7777);
-        m_Connection = m_Driver.Connect(endpoint);
+        if (NetworkEndpoint.TryParse(ipInput, 7777, out var endpoint))
+        {
+            m_Connection = m_Driver.Connect(endpoint);
+        }
+        else
+        {
+            Debug.LogError("Unable to connect");
+        }
     }
 
     void OnDestroy()
