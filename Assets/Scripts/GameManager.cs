@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour
         }
         else 
         {
+            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
             synch.Send();//Keenan addition. Send the update to the other device
         }
         UpdateTurn();

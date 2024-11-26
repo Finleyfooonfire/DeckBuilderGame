@@ -84,12 +84,12 @@ public class GameClient : MonoBehaviour
         }
     }
 
-    public void SendToServer(CardsChangeIn cardsChange)
+    public void SendToServer(HealthAndMana healthMana, CardsChangeIn cardsChange)
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
         writer.WriteByte((byte)NetMessageType.CardChange);
-        NetworkSerializer.Instance.Serialize(cardsChange, ref writer);
+        NetworkSerializer.Instance.Serialize(healthMana, cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }
 }
