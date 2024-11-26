@@ -207,6 +207,10 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
+        if (playerWon)
+        {
+            synch.GameEnd();
+        }
         PlayerPrefs.SetInt("PlayerWon", playerWon ? 1 : 0);
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);

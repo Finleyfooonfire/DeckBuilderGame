@@ -89,6 +89,23 @@ public class PlayingFieldSynch : MonoBehaviour
         }
     }
 
+    //Uses the client/server to send game end signal to the other device.
+    public void GameEnd()
+    {
+        CardsChangeIn changes = GetCardStatus();
+        var client = FindAnyObjectByType<GameClient>();
+        if (client != null)
+        {
+            //The client exists so Send data.
+            client.SendEndGame();
+        }
+        else
+        {
+            //It is server. Send data.
+            FindAnyObjectByType<GameServer>().SendEndGame();
+        }
+    }
+
     private void ResetChanges()
     {
         //Reset the changes.
