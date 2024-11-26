@@ -8,13 +8,13 @@ public class GameClient : MonoBehaviour
     NetworkConnection m_Connection;
     [SerializeField] PlayingFieldSynch playingFieldSynch;
     float lastKeepAlive;
+    public string ipInput = "127.0.0.1";
 
-    void Start()
+    public void StartClient()
     {
         lastKeepAlive = Time.realtimeSinceStartup;
         m_Driver = NetworkDriver.Create();
-
-        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);//Use localhost
+        var endpoint = NetworkEndpoint.Parse(ipInput, 7777);
         m_Connection = m_Driver.Connect(endpoint);
     }
 
