@@ -71,7 +71,7 @@ public class GameNetworkManager : MonoBehaviour
             //serverUI.SetActive(false);
             client.SetActive(true);
             var clientScript = client.GetComponent<GameClient>();
-            if (NetworkEndpoint.TryParse(IPInput.text, 45000, out _))
+            if (NetworkEndpoint.TryParse(IPInput.text, 7777, out _))
             {
                 clientScript.ipInput = IPInput.text;
             }

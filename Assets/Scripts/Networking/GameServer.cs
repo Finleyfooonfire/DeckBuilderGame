@@ -14,10 +14,10 @@ public class GameServer : MonoBehaviour
         m_Driver = NetworkDriver.Create();
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
 
-        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(45000);//Accept connections.
+        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(7777);//Accept connections.
         if (m_Driver.Bind(endpoint) != 0)
         {
-            Debug.LogError("Failed to bind to port 45000.");
+            Debug.LogError("Failed to bind to port 7777.");
             return;
         }
         m_Driver.Listen();
