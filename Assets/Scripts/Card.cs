@@ -94,7 +94,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(hit.point);
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(hit.point, true);
             placementIndicator.transform.position = closestSlot;
         }
     }
@@ -102,8 +102,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
     void PlaceCard()
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
-        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position);
-        cardPlayAreaGrid.Remove(closestSlot); // Occupy this slot so no other card uses it
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
+        cardPlayAreaGrid.Remove(closestSlot, true); // Occupy this slot so no other card uses it
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         //Give each card a unique name to allow differentiation.

@@ -5,9 +5,9 @@ using UnityEngine;
 public class CardPlayAreaGrid : MonoBehaviour
 {
     [SerializeField] Vector2 gridSize = new Vector2(5, 2);
-    [SerializeField] Vector2 slotSize = new Vector2(1f, 1f);
+    [SerializeField] Vector2 slotSize = new Vector2(0.635f, 0.889f);
     [SerializeField] Vector2 slotSpacing = new Vector2(27, 50);
-    public Dictionary<Vector3, bool> GridSlots { get; private set; } = new Dictionary<Vector3, bool>();
+    public Dictionary<KeyValuePair<Vector3, bool>, bool> GridSlots { get; private set; } = new Dictionary<KeyValuePair<Vector3, bool>, bool>();
     [SerializeField] float gridScale = 0.025f;
     // public float gridHeightOffset = 0.33f;
 
@@ -34,7 +34,7 @@ public class CardPlayAreaGrid : MonoBehaviour
 
         Vector3 startPosition = cardPlayArea.position - new Vector3(
             (gridSize.x - 1) * (slotSize.x + slotSpacing.x) * gridScale / 2,
-            -1,
+            -.1f,
             (gridSize.y - 1) * (slotSize.y + slotSpacing.y) * gridScale / 2
         );
 
@@ -49,7 +49,7 @@ public class CardPlayAreaGrid : MonoBehaviour
                     col * (slotSize.x + slotSpacing.x) * gridScale,
                     0,
                     row * (slotSize.y + slotSpacing.y) * gridScale);
-                GridSlots.Add(slotPosition, false);
+                GridSlots.Add(new KeyValuePair<Vector3, bool>(slotPosition, row == 0), false);
             }
         }
     }
@@ -57,50 +57,49 @@ public class CardPlayAreaGrid : MonoBehaviour
     void OnDrawGizmos()
     {
         if (cardPlayArea == null) return;
-        Gizmos.color = Color.yellow;
-        Vector3 startPosition = cardPlayArea.position - new Vector3(
-            (gridSize.x - 1) * (slotSize.x + slotSpacing.x) * gridScale / 2,
-            0,
-            (gridSize.y - 1) * (slotSize.y + slotSpacing.y) * gridScale / 2);
-
-        for (int row = 0; row < gridSize.y; row++)
+        
+        foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
         {
-            for (int col = 0; col < gridSize.x; col++)
+            Vector3 slotPosition = slot.Key.Key;
+            if (slot.Value)
             {
-                Vector3 slotPosition = startPosition + new Vector3(
-                    col * (slotSize.x + slotSpacing.x) * gridScale,
-                    0,
-                    row * (slotSize.y + slotSpacing.y) * gridScale);
-                Gizmos.DrawWireCube(slotPosition, new Vector3(slotSize.x, 0.1f, slotSize.y));
+                Gizmos.color = Color.red;
             }
+            else
+            {
+                Gizmos.color = Color.green;
+            }
+            Debug.Log(slotPosition);
+            Gizmos.DrawWireCube(transform.TransformPoint(slotPosition), new Vector3(slotSize.x, 0.1f, slotSize.y));
+            
         }
     }
 
-    public Vector3 FindClosestSlot(Vector3 currentPosition)
+    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard)
     {
-        KeyValuePair<Vector3, bool> closestSlot = GridSlots.First();
-        float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key);
-        foreach (KeyValuePair<Vector3, bool> slot in GridSlots)
+        KeyValuePair<KeyValuePair<Vector3, bool>, bool> closestSlot = GridSlots.First();
+        float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key.Key);
+        foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
         {
-            if (slot.Value) continue;//Skip in use slots
-            float distance = Vector3.Distance(currentPosition, slot.Key);
+            if (isPlayerCard != slot.Key.Value || slot.Value) continue;//Skip in use slots
+            float distance = Vector3.Distance(currentPosition, slot.Key.Key);
             if (distance < shortestDistance)
             {
                 closestSlot = slot;
                 shortestDistance = distance;
             }
         }
-        return closestSlot.Key;
+        return closestSlot.Key.Key;
 
     }
 
-    public void Remove(Vector3 slotToRemove)
+    public void Remove(Vector3 slotToRemove, bool isPlayerSlot)
     {
-        GridSlots[slotToRemove] = true;
+        GridSlots[new KeyValuePair<Vector3, bool>(slotToRemove, isPlayerSlot)] = true;
     }
 
-    public void Free(Vector3 slotToFree)
+    public void Free(Vector3 slotToFree, bool isPlayerSlot)
     {
-        GridSlots[slotToFree] = false;
+        GridSlots[new KeyValuePair<Vector3, bool>(slotToFree, isPlayerSlot)] = false;
     }
 }

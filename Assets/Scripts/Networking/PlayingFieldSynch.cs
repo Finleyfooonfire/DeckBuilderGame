@@ -41,7 +41,7 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledCard(GameObject killedCard)
     {
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position);
+        cardPlayAreaGrid.Free(killedCard.transform.position, false);
         killedCard.transform.parent = opponentGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -49,7 +49,7 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position);
+        cardPlayAreaGrid.Free(killedCard.transform.position, true);
         killedCard.transform.parent = playerGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -139,8 +139,8 @@ public class PlayingFieldSynch : MonoBehaviour
             cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position);
-            cardPlayAreaGrid.Remove(closestSlot); // Occupy this slot so no other card uses it
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false);
+            cardPlayAreaGrid.Remove(closestSlot, card.Value.isPlayerCard); // Occupy this slot so no other card uses it
 
             CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
             cardInfo.manaCost = card.Value.manaCost;
@@ -164,7 +164,7 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position);
+            cardPlayAreaGrid.Free(killedCard.transform.position, true);
             killedCard.SetParent(playerGrave);
             killedCard.localPosition = Vector3.zero;
         }
@@ -173,7 +173,7 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledFriendlyCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position);
+            cardPlayAreaGrid.Free(killedCard.transform.position, false);
             killedCard.SetParent(opponentGrave);
             killedCard.localPosition = Vector3.zero;
         }
