@@ -1648,9 +1648,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f44b34d668b583642bc0bc7fcb5282e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 3, y: 3}
+  gridSize: {x: 5, y: 2}
   slotSize: {x: 1, y: 1}
-  slotSpacing: {x: 45, y: 45}
+  slotSpacing: {x: 27, y: 50}
   gridScale: 0.025
 --- !u!65 &604935894
 BoxCollider:

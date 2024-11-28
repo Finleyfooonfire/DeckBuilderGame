@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CardPlayAreaGrid : MonoBehaviour
 {
-    [SerializeField] Vector2 gridSize = new Vector2(3, 3);
+    [SerializeField] Vector2 gridSize = new Vector2(5, 2);
     [SerializeField] Vector2 slotSize = new Vector2(1f, 1f);
-    [SerializeField] Vector2 slotSpacing = new Vector2(45, 45);
+    [SerializeField] Vector2 slotSpacing = new Vector2(27, 50);
     public Dictionary<Vector3, bool> GridSlots { get; private set; } = new Dictionary<Vector3, bool>();
     [SerializeField] float gridScale = 0.025f;
     // public float gridHeightOffset = 0.33f;
