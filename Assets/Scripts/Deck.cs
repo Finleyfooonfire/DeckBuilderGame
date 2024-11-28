@@ -9,6 +9,8 @@ public class Deck : MonoBehaviour
     public Transform handPosition; // Position where cards in hand are displayed
     public bool isPlayerDeck;
 
+    [SerializeField] int maxHandSize;
+
     void Start()
     {
         InitializeDeck();
@@ -44,21 +46,18 @@ public class Deck : MonoBehaviour
 
     public void DrawCard()
     {
-        if (deckCards.Count > 0)
+        if (deckCards.Count > 0 && handCards.Count < maxHandSize)
         {
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
+            deckCards.TrimExcess();
             handCards.Add(drawnCard);
             drawnCard.isInHand = true;
 
             drawnCard.transform.SetParent(handPosition);
 
-            //Keenan addition
             drawnCard.transform.rotation = new Quaternion();
             DistributeHand();
-            //END
-
-            //Keenan remove line: drawnCard.gameObject.SetActive(true);
         }
         else
         {
@@ -66,7 +65,6 @@ public class Deck : MonoBehaviour
         }
     }
 
-    //Keenan addition
     void DistributeHand()
     {
         handCards.RemoveAll(card => card == null);
@@ -77,5 +75,4 @@ public class Deck : MonoBehaviour
             index++;
         }
     }
-    //END
 }
