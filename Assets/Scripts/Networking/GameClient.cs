@@ -17,6 +17,7 @@ public class GameClient : MonoBehaviour
         if (NetworkEndpoint.TryParse(ipInput, 7777, out var endpoint))
         {
             m_Connection = m_Driver.Connect(endpoint);
+            Debug.Log("Connected to " + ipInput+ " on port 7777");
         }
         else
         {
