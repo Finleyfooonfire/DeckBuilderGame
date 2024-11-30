@@ -1,96 +1,36 @@
-using System.Linq;
+//Keenan Addition
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class CardAttack : MonoBehaviour, IPointerClickHandler
 {
-    bool canAttack;
-    int exhaustionTimer;
-
-    private void Start()
+    public void Attack(CardInfo targetCard)
     {
-        exhaustionTimer = 0;
-        canAttack = false;
-        GetComponent<CardInfo>().exhausted = false;
-    }
+        targetCard.defenseValue -= GetComponent<CardInfo>().attackValue;
 
 
-    //Call this at the start of the turn.
-    //Checks to see if the card is exhausted.
-    public void OnUpdateTurn()
-    {
-        if (GetComponent<CardInfo>().isPlayerCard) 
-        { 
-            canAttack = true;
-            GetComponent<CardInfo>().exhausted = exhaustionTimer > 0;
-            exhaustionTimer--;
-            canAttack |= !(GetComponent<CardInfo>().exhausted);//the card can't attack if exhausted
-        }
-    }
-
-    public void Attack(CardAttack targetCard)
-    {
-        if (canAttack)
+        if (targetCard.defenseValue <= 0)
         {
-            targetCard.GetComponent<CardInfo>().defenseValue -= GetComponent<CardInfo>().attackValue;
-            bool killedInRetaliation = false;
-            //Check to see if the target can retaliate
-            if (!targetCard.GetComponent<CardInfo>().exhausted)
-            {
-                GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
-                killedInRetaliation = (GetComponent<CardInfo>().defenseValue <= 0);
-            }
-
-            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
-            {
-                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
-                GameManager.Instance.synch.AddKilledCard(targetCard.gameObject);//The card has been damaged and therefore changed. Keenan addition.
-            }
-            else
-            {
-                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
-                GameManager.Instance.synch.AddChangedCard(targetCard.gameObject);//Keenan addition
-            }
-
-            if (killedInRetaliation)
-            {
-                Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
-                GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
-            }
-            else
-            {
-                Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
-                GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
-            }
-            exhaustionTimer = 1;
+            Debug.Log($"{targetCard.gameObject.name} has been defeated by {gameObject.name}!");
+        }
+        else
+        {
+            Debug.Log($"{targetCard.gameObject.name} now has {targetCard.defenseValue} health remaining.");
         }
     }
 
-    //Selects the card when clicked on.
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (GameManager.Instance.isPlayerTurn)
         {
             //Select the card.
             Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
-            //If they are the player's card, set as an attacking card.
-            if (GetComponent<CardInfo>().isPlayerCard)
-            {
-                if (FindAnyObjectByType<GameManager>().selectedAttackingCard != this)
-                {
-                    FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
-                }
-                else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard && info.transform.parent.gameObject.name.Equals("CardPlayArea"))))//Only attack the enemy directly if no enemy cards are found.
-                {
-                    FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
-                }
-            }
-            //If not, set as the attacked card
-            else
-            {
-                FindAnyObjectByType<GameManager>().Attack(this);
-            }
+            //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
         }
 
     }
 }
+//End

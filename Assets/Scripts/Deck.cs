@@ -49,7 +49,6 @@ public class Deck : MonoBehaviour
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
             handCards.Add(drawnCard);
-            drawnCard.isInHand = true;
 
             drawnCard.transform.SetParent(handPosition);
 
@@ -69,12 +68,10 @@ public class Deck : MonoBehaviour
     //Keenan addition
     void DistributeHand()
     {
-        handCards.RemoveAll(card => card == null);
-        int index = 0;
-        foreach (Card handCard in handCards)
+        int cardsInHand = handCards.Count;
+        for (int i = 0; i < cardsInHand; i++)
         {
-            handCard.transform.localPosition = new Vector3((index - handCards.Count/2f), 0, 0);
-            index++;
+            handCards[i].transform.localPosition = new Vector3((i - cardsInHand/2f), 0, 0);
         }
     }
     //END

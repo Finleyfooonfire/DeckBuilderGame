@@ -1,7 +1,9 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,15 +25,13 @@ public class GameManager : MonoBehaviour
     public int opponentLife = 20;
     public Transform playerField;
     public Transform opponentField;
-    public CardAttack selectedAttackingCard;//Keenan modification
+    public Card selectedAttackingCard;
     private int turnsTaken = 0;
     private int damageDealt = 0;
     //matt additions
     public string OnTable = "";
     //end
-    //Keenan addition
-    public PlayingFieldSynch synch { get; private set; }
-    //END 
+
     void Awake()
     {
         if (Instance == null)
@@ -46,36 +46,25 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        synch = FindAnyObjectByType<PlayingFieldSynch>();
         UpdateLifeUI();
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
+
+        CoinFlip();
     }
 
-    
-
-    //Call this when the client and server are connected.
-    //Keenan modification
-    public void StartGame(bool isHost)
+    void CoinFlip()
     {
-        isPlayerTurn = isHost;
+        //Keenan addition
+        Random.InitState((int)Time.time);
+        //End
+        isPlayerTurn = Random.Range(0, 2) == 0;
         UpdateTurn();
     }
-    //End
-
-    //void CoinFlip()
-    //{
-        //Keenan addition
-        //Random.InitState((int)Time.time);
-        //End
-        //isPlayerTurn = Random.Range(0, 2) == 0;
-        //UpdateTurn();
-   // }
 
     void UpdateTurn()
     {
-        Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -86,12 +75,16 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
-            Debug.Log("YOUR TURN");
         }
         else
         {
+            opponentMana = Mathf.Min(opponentMana + 1, maxMana);
+            UpdateManaUI();
+
+            Deck opponentDeck = GameObject.Find("OpponentDeck").GetComponent<Deck>();
+            opponentDeck.DrawCard();
+
             statusText.text = "Opponent's Turn";
-            Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -101,20 +94,15 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         isPlayerTurn = !isPlayerTurn;
-        Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
-        //UpdateTurn(); //No need to call this twice
+        UpdateTurn();
 
         if (isPlayerTurn)
         {
             DrawCard();
         }
-        else 
-        {
-            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
-            synch.Send();//Keenan addition. Send the update to the other device
-        }
+
         UpdateTurn();
     }
 
@@ -143,41 +131,51 @@ public class GameManager : MonoBehaviour
         opponentLifeText.text = "Life: " + opponentLife;
     }
 
-    //Modified by Keenan
-    public void SelectAttackingCard(CardAttack card)
+    public void SelectAttackingCard(Card card)
     {
-
-        if (selectedAttackingCard == card)
+        if (isPlayerTurn && card.isPlayerCard && !card.isInHand)
         {
-            selectedAttackingCard = null;
+            if (selectedAttackingCard == card)
+            {
+                selectedAttackingCard = null;
+            }
+            else
+            {
+                selectedAttackingCard = card;
+            }
         }
-        else
-        {
-            selectedAttackingCard = card;
-        }
-
     }
 
-    public void Attack(CardAttack targetCard)
+    public void Attack(Card targetCard)
     {
-        if (selectedAttackingCard != null && targetCard != null)
+        if (selectedAttackingCard != null && targetCard != null && !targetCard.isPlayerCard && !targetCard.isInHand)
         {
-            selectedAttackingCard.Attack(targetCard);
+            targetCard.defenseValue -= selectedAttackingCard.attackValue;
+            selectedAttackingCard.defenseValue -= targetCard.attackValue;
+
+            damageDealt += selectedAttackingCard.attackValue;
+
+            if (targetCard.defenseValue <= 0)
+            {
+                Destroy(targetCard.gameObject);
+            }
+            if (selectedAttackingCard.defenseValue <= 0)
+            {
+                Destroy(selectedAttackingCard.gameObject);
+            }
 
             selectedAttackingCard = null;
-            targetCard = null;
         }
     }
-    //END
 
     public void AttackPlayerDirectly()
     {
         if (selectedAttackingCard != null)
         {
-            opponentLife -= selectedAttackingCard.GetComponent<CardInfo>().attackValue;
+            opponentLife -= selectedAttackingCard.attackValue;
             UpdateLifeUI();
 
-            damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
+            damageDealt += selectedAttackingCard.attackValue;
 
             if (opponentLife <= 0)
             {
@@ -195,28 +193,23 @@ public class GameManager : MonoBehaviour
 
 
 
-    // IEnumerator AITurn()
-    //  {
-    // Simple AI logic for testing
-    //  yield return new WaitForSeconds(2f);
+   // IEnumerator AITurn()
+  //  {
+        // Simple AI logic for testing
+      //  yield return new WaitForSeconds(2f);
 
-    //      Debug.Log("AI forfeits its turn.");
+  //      Debug.Log("AI forfeits its turn.");
 
-    //     EndTurn();
-    //  }
+   //     EndTurn();
+  //  }
 
     public void GameOver(bool playerWon)
     {
-        if (playerWon)
-        {
-            synch.GameEnd();
-        }
         PlayerPrefs.SetInt("PlayerWon", playerWon ? 1 : 0);
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
-        //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
-        SceneManager.LoadScene("MainMenu"); //Temporary
+        SceneManager.LoadScene("ScoreboardScene");
     }
 
     //KEENAN: Gets all the cards present.
