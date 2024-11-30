@@ -17,7 +17,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     //End
     [HideInInspector] public string cardFaction;
     public bool isInHand = true;
-<<<<<<< Updated upstream
+
 
     private static Card selectedCard;
     private static GameObject placementIndicator;
@@ -28,7 +28,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private static Card selectedCard;
     private static GameObject placementIndicator;
     private static Vector3 playedScale = new Vector3(1.5f, 1f, 1f);
->>>>>>> Stashed changes
+
     private Transform cardPlayArea;
     //Keenan modification
     [HideInInspector] public Faction faction;
@@ -52,8 +52,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError("CardPlayArea not found in the scene!");
         }
-<<<<<<< Updated upstream
-=======
+
         else
         {
             Debug.LogError("CardPlayArea GameObject not found in the scene.");
@@ -69,8 +68,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
                 cardImage = imageComponent.sprite;
             }
         }
-
->>>>>>> Stashed changes
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -96,18 +93,15 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void CreatePlacementIndicator()
     {
-<<<<<<< Updated upstream
         if (placementIndicator != null)
         {
             Destroy(placementIndicator);
         }
 
         placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
-=======
         if (placementIndicator != null) Destroy(placementIndicator);
 
         placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Quad);
->>>>>>> Stashed changes
         placementIndicator.transform.localScale = playedScale;
 
         Renderer renderer = placementIndicator.GetComponent<Renderer>();
@@ -156,7 +150,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void PlaceCard()
     {
-<<<<<<< Updated upstream
         if (cardPlayArea == null) return;
 
         GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -165,7 +158,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //END
         cardObject.transform.SetParent(cardPlayArea);
         cardObject.transform.position = placementIndicator.transform.position;
-=======
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position);
         cardPlayAreaGrid.Remove(closestSlot);
@@ -176,7 +168,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         closestSlot.y = .1f;
         cardObject.transform.localPosition = closestSlot;
->>>>>>> Stashed changes
         cardObject.transform.localScale = playedScale;
         cardObject.transform.rotation = Quaternion.Euler(90, 0, 0);
 
@@ -211,7 +202,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         //Keenan Addition
         CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
-<<<<<<< Updated upstream
         //End
 
         Renderer cardRenderer = cardObject.GetComponent<Renderer>();
@@ -220,8 +210,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             cardRenderer.material.color = cardImage.color;
         }
-=======
->>>>>>> Stashed changes
 
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
@@ -236,18 +224,15 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Destroy(placementIndicator);
         selectedCard = null;
 
-<<<<<<< Updated upstream
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
-=======
         GameManager.Instance.synch.AddPlayedCard(cardObject);
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
 
 
->>>>>>> Stashed changes
     bool IsPointerOverUIObject()
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
