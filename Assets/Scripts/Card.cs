@@ -98,6 +98,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Quad);
 
         placementIndicator.transform.localScale = playedScale;
+        placementIndicator.transform.rotation = Quaternion.Euler(90, 0, 0);
 
         Renderer renderer = placementIndicator.GetComponent<Renderer>();
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
