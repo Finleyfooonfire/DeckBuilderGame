@@ -151,39 +151,15 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
         cardPlayAreaGrid.Remove(closestSlot, true);
 
-        GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        GameObject cardObject = gameObject;
         cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .1f;
         cardObject.transform.localPosition = closestSlot;
 
-        cardObject.transform.localScale = playedScale;
-        cardObject.transform.rotation = Quaternion.Euler(90, 0, 0);
-
-        Renderer cardRenderer = cardObject.GetComponent<Renderer>();
-        Material cardMaterial = new Material(Shader.Find("Unlit/Texture"));
-
-        if (cardImage != null)
-        {
-            cardMaterial.mainTexture = cardImage.texture;
-        }
-        else
-        {
-            cardMaterial = new Material(Shader.Find("Standard"));
-            Image cardImageComponent = GetComponent<Image>();
-            if (cardImageComponent != null)
-            {
-                cardMaterial.color = cardImageComponent.color;
-            }
-            else
-            {
-                cardMaterial.color = Color.white;
-            }
-        }
-        cardRenderer.material = cardMaterial;
-
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
@@ -203,7 +179,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
             playerDeck.handCards.Remove(this);
         }
 
-        Destroy(gameObject);
+        Destroy(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
