@@ -41,6 +41,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //mattmods
         cardName = stats.description;
         cardFaction = stats.faction.ToString();
+
+        cardImage = stats.cardImage;
+        GetComponentInChildren<SpriteRenderer>().sprite = cardImage;
+
         faction = stats.faction;
         cardType = stats.cardType;
         //end
