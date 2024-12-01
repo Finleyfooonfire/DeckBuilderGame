@@ -22,7 +22,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public Sprite cardImage;
     private static Card selectedCard;
     private static GameObject placementIndicator;
-    private static Vector3 playedScale = new Vector3(1.5f, 1f, 1f);
+    private static Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
     private Transform cardPlayArea;
     //Keenan modification
@@ -95,10 +95,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         if (placementIndicator != null) Destroy(placementIndicator);
 
-        placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
         placementIndicator.transform.localScale = playedScale;
-        placementIndicator.transform.rotation = Quaternion.Euler(90, 0, 0);
+        placementIndicator.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         Renderer renderer = placementIndicator.GetComponent<Renderer>();
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
