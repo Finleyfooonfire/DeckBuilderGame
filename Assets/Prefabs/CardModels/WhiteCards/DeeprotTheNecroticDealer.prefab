@@ -143,7 +143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -180, y: 0, z: -180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00269, y: -0.0117}
+  m_AnchoredPosition: {x: -0.0024, y: -0.0117}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &50697848036619651
@@ -211,8 +211,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Sir Tuppus was always held in high regard by the other reptiles. So now
-    that their home is under attack it\u2019s his job to lead them to victory."
+  m_text: 'Even in death Deeprot has a card up his sleave. Deathrattle: When this
+    creature is destroyed, draw 2 cards.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
   m_sharedMaterial: {fileID: -8433069479399171382, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 1.198966, y: 0, z: 1.799283, w: 0}
+  m_margin: {x: 1.5391874, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -460,7 +460,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 12905e8904bb07542933327244d45eef, type: 2}
+  - {fileID: 2100000, guid: 676062f59f4e1b840b4df639d2ba7946, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -529,16 +529,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3598242270445329081}
-  m_LocalRotation: {x: -0.016735448, y: -0.99986, z: -0, w: -0.0000000018626454}
+  m_LocalRotation: {x: 0.010520017, y: -0.9999447, z: 0.000000029802322, w: -0.0000000041909516}
   m_LocalPosition: {x: 0, y: 0, z: 0.00022}
   m_LocalScale: {x: 0.00078590005, y: 0.00078590005, z: 0.00078590005}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9194931002412069483}
-  m_LocalEulerAnglesHint: {x: -180, y: 0, z: -178.082}
+  m_LocalEulerAnglesHint: {x: -180, y: 0, z: -181.206}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00357, y: 0.02228}
+  m_AnchoredPosition: {x: 0.00358, y: 0.02169}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7602290342544419026
@@ -606,7 +606,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sir Tuppus
+  m_text: Deeprot The Necrotic Dealer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 845941b8e5ce5cb4ea419fd4ca0cf542, type: 2}
   m_sharedMaterial: {fileID: 7402608993104163682, guid: 845941b8e5ce5cb4ea419fd4ca0cf542, type: 2}
@@ -633,8 +633,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.7
-  m_fontSizeBase: 29.7
+  m_fontSize: 22.7
+  m_fontSizeBase: 22.7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1206,7 +1206,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a61fc477e64647d47819f080f68e4496, type: 2}
+  - {fileID: 2100000, guid: 62acf04d342f5f94ba26d55121b42edb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1301,10 +1301,10 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: eb0c757c7ca2f9d4c92369b76d6fb517, type: 2}
+      objectReference: {fileID: 2100000, guid: 12b7ebf7d13a0fb41afe1f98a75cc83f, type: 2}
     - target: {fileID: 919132149155446097, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
       propertyPath: m_Name
-      value: SirTuppus
+      value: DeeprotTheNecroticDealer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -143,7 +143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -180, y: 0, z: -180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0024, y: -0.0117}
+  m_AnchoredPosition: {x: -0.00254, y: -0.01135}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &50697848036619651
@@ -211,7 +211,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Description goes here
+  m_text: The alligator is always the most loyal follower of Sir Tuppus. He even
+    followed him to war.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
   m_sharedMaterial: {fileID: -8433069479399171382, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
@@ -238,8 +239,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 18.7
+  m_fontSizeBase: 18.7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1.544074, y: 0, z: 1.2490358, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -313,8 +314,8 @@ Transform:
   m_GameObject: {fileID: 1589081263368693473}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.00125, y: -0.0136, z: -0.00004}
-  m_LocalScale: {x: 0.0033877022, y: 0.010000002, z: 0.0023124004}
+  m_LocalPosition: {x: -0.00125, y: -0.01549, z: -0.00004}
+  m_LocalScale: {x: 0.0033877022, y: 0.010000002, z: 0.001970697}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9194931002412069483}
@@ -423,7 +424,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0.001, y: 0.0078, z: -0.00005}
-  m_LocalScale: {x: 0.0034661999, y: 0.010000002, z: 0.0023166004}
+  m_LocalScale: {x: 0.0034661999, y: 0.010000002, z: 0.0024159825}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9194931002412069483}
