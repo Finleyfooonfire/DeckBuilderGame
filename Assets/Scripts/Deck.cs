@@ -23,13 +23,14 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             //Keenan modification
-            GameObject cardObj = Instantiate(Resources.Load("CardPrefab"), transform) as GameObject;
+            CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
+            GameObject cardObj = Instantiate<GameObject>(cardStats.cardPrefab, transform);
             
             cardObj.transform.localPosition = new Vector3();
-            cardObj.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            cardObj.transform.localRotation = Quaternion.Euler(90, 180, 0);
             
             Card card = cardObj.AddComponent<Card>();
-            card.stats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
+            card.stats = cardStats;
             //End
             card.isPlayerCard = isPlayerDeck;
             deckCards.Add(card);
@@ -60,7 +61,7 @@ public class Deck : MonoBehaviour
 
             drawnCard.transform.SetParent(handPosition);
 
-            drawnCard.transform.rotation = new Quaternion();
+            drawnCard.transform.rotation = Quaternion.Euler(-90, -180, 0);
             DistributeHand();
         }
         else
