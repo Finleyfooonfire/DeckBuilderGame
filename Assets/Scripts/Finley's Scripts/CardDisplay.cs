@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using System.Collections.Generic;
+using TMPro;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CardDisplay : MonoBehaviour
     public Transform contentPanel; // The content panel inside the ScrollRect (for vertical scroll)
     public string cardFolderPath = "BlueCards"; // Correct folder in Resources where the card prefabs are located (no "Assets/Resources")
     public GameObject factionPanelPrefab; // Prefab for the faction panel (for holding horizontal cards)
+
 
     // Start is called before the first frame update
     private void Start()
@@ -82,33 +84,55 @@ public class CardDisplay : MonoBehaviour
 
             // Create a faction panel for each group (this will be a vertical section of cards)
             GameObject factionPanel = Instantiate(factionPanelPrefab, contentPanel); // Instantiate faction panel
-            Text factionTitle = factionPanel.GetComponentInChildren<Text>(); // Assuming a Text component for the faction name
+            TextMeshProUGUI factionTitle = factionPanel.GetComponentInChildren<TextMeshProUGUI>(); // Assuming a Text component for the faction name
             factionTitle.text = group.Key; // Set the faction name
 
-            // Add each card from the group to the faction panel
-            foreach (CardDetails card in group)
+            // Find or create a Horizontal Layout Group for the scrolling content
+            RectTransform factionPanelRect = factionPanel.GetComponent<RectTransform>();
+            ScrollRect scrollRect = factionPanel.GetComponentInChildren<ScrollRect>();
+
+            if (scrollRect != null)
             {
-                // Instantiate the card prefab (UI card for displaying)
-                GameObject cardInstance = Instantiate(cardPrefab, factionPanel.transform); // Instantiate card prefab
-                Image cardImage = cardInstance.GetComponent<Image>(); // Assuming the card prefab has an Image component for display
+                // Get the content container inside the scroll rect (assuming this exists in the prefab)
+                Transform scrollContent = scrollRect.content;
 
-                if (cardImage != null)
+                // Make sure the content has a HorizontalLayoutGroup
+                HorizontalLayoutGroup horizontalLayoutGroup = scrollContent.GetComponent<HorizontalLayoutGroup>();
+                if (horizontalLayoutGroup == null)
                 {
-                    // If the card has an image (maybe a 2D sprite representing the card), set it
-                    cardImage.sprite = card.cardImage;
-                    Debug.Log($"Set image for card: {card.cardName}");
-                }
-                else
-                {
-                    Debug.LogWarning($"Card prefab for {card.cardName} does not have an Image component.");
+                    horizontalLayoutGroup = scrollContent.gameObject.AddComponent<HorizontalLayoutGroup>();
+                    horizontalLayoutGroup.spacing = 10f; // Optional: Set some spacing between cards
                 }
 
-                // Optional: Add card name or other details to the card instance, e.g., using Text component
-                Text cardNameText = cardInstance.GetComponentInChildren<Text>(); // Assuming each card prefab has a Text component for displaying name
-                if (cardNameText != null)
+                // Add each card from the group to the faction panel's horizontal scrolling content
+                foreach (CardDetails card in group)
                 {
-                    cardNameText.text = card.cardName; // Set the name of the card
+                    // Instantiate the card prefab (UI card for displaying)
+                    GameObject cardInstance = Instantiate(cardPrefab, scrollContent); // Instantiate card prefab
+                    Image cardImage = cardInstance.GetComponent<Image>(); // Assuming the card prefab has an Image component for display
+
+                    if (cardImage != null)
+                    {
+                        // If the card has an image (maybe a 2D sprite representing the card), set it
+                        cardImage.sprite = card.cardImage; // Assuming `card.cardImage` is the generated/rendered image
+                        Debug.Log($"Set image for card: {card.cardName}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Card prefab for {card.cardName} does not have an Image component.");
+                    }
+
+                    // Optional: Add card name or other details to the card instance, e.g., using Text component
+                    TextMeshProUGUI cardNameText = cardInstance.GetComponentInChildren<TextMeshProUGUI>(); // Assuming each card prefab has a Text component for displaying name
+                    if (cardNameText != null)
+                    {
+                        cardNameText.text = card.cardName; // Set the name of the card
+                    }
                 }
+            }
+            else
+            {
+                Debug.LogWarning("No ScrollRect found in the faction panel prefab. Please ensure the prefab is set up correctly.");
             }
         }
     }
