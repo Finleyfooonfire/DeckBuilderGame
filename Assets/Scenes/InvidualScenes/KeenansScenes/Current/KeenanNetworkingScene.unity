@@ -1067,6 +1067,10 @@ MonoBehaviour:
   isPlayerDeck: 0
   maxHandSize: 0
   possibleCards:
+  - {fileID: 11400000, guid: 5fd81c90a5aa27f42a88236917f3c5dd, type: 2}
+  - {fileID: 11400000, guid: 1da7cc3179b556746a63600457d62bf2, type: 2}
+  - {fileID: 11400000, guid: 71d048fe8bcbbee43a746faa0fe9d519, type: 2}
+  - {fileID: 11400000, guid: e7a55792bbebaaa4f9d946bb8ce9166a, type: 2}
   - {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &465736631
 GameObject:
@@ -1299,6 +1303,10 @@ MonoBehaviour:
   isPlayerDeck: 1
   maxHandSize: 6
   possibleCards:
+  - {fileID: 11400000, guid: 5fd81c90a5aa27f42a88236917f3c5dd, type: 2}
+  - {fileID: 11400000, guid: 1da7cc3179b556746a63600457d62bf2, type: 2}
+  - {fileID: 11400000, guid: 71d048fe8bcbbee43a746faa0fe9d519, type: 2}
+  - {fileID: 11400000, guid: e7a55792bbebaaa4f9d946bb8ce9166a, type: 2}
   - {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &644561505
 GameObject:

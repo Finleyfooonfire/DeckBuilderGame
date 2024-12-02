@@ -16,7 +16,7 @@ MonoBehaviour:
   <description>k__BackingField: Sir Tuppus
   <attackValue>k__BackingField: 1
   <defenseValue>k__BackingField: 4
-  <manaCost>k__BackingField: 0
+  <manaCost>k__BackingField: 5
   <manaTypeRequired>k__BackingField: Green
   <cardType>k__BackingField: 0
   <cardImage>k__BackingField: {fileID: 21300000, guid: fd6fd2891944f424ba9b33f798dec76e, type: 3}
