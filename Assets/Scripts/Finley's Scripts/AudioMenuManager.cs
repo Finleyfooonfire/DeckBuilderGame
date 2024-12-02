@@ -44,13 +44,13 @@ public class DynamicMusicController : MonoBehaviour
 
         // Start the dynamic track manager for Main Menu music
         StartCoroutine(DynamicTrackManager());
-        Debug.Log("Main Menu music started dynamically.");
+        //Debug.Log("Main Menu music started dynamically.");
     }
 
     // Coroutine that manages adding and removing tracks at random intervals
     IEnumerator DynamicTrackManager()
     {
-        Debug.Log("Started DynamicTrackManager for music.");
+        //Debug.Log("Started DynamicTrackManager for music.");
 
         while (!isTransitioning)
         {
@@ -94,7 +94,7 @@ public class DynamicMusicController : MonoBehaviour
 
         activeSongs.Add(track);
         StartCoroutine(FadeIn(track));
-        Debug.Log($"Added track {track.name} to active songs and started fading in.");
+        //Debug.Log($"Added track {track.name} to active songs and started fading in.");
     }
 
     // Remove a random active track and fade it out
@@ -108,7 +108,7 @@ public class DynamicMusicController : MonoBehaviour
 
         activeSongs.Remove(track);
         StartCoroutine(FadeOut(track));
-        Debug.Log($"Removed track {track.name} from active songs and started fading out.");
+        //Debug.Log($"Removed track {track.name} from active songs and started fading out.");
     }
 
     // Fade in the selected track
@@ -125,7 +125,7 @@ public class DynamicMusicController : MonoBehaviour
         }
 
         audioSource.volume = 1f;
-        Debug.Log($"Finished fading in track {audioSource.name}. Volume is now 1.");
+        //Debug.Log($"Finished fading in track {audioSource.name}. Volume is now 1.");
     }
 
     // Fade out the selected track
@@ -142,7 +142,7 @@ public class DynamicMusicController : MonoBehaviour
 
         audioSource.volume = 0f;
         audioSource.Stop();
-        Debug.Log($"Finished fading out track {audioSource.name}. Track stopped.");
+        //Debug.Log($"Finished fading out track {audioSource.name}. Track stopped.");
     }
 
     // Load tracks based on the current screen (Main Menu or Lore)
@@ -153,7 +153,7 @@ public class DynamicMusicController : MonoBehaviour
         {
             loadedSongs.Add(track);
         }
-        Debug.Log("Main Menu tracks loaded.");
+        //Debug.Log("Main Menu tracks loaded.");
     }
 
     void LoadLoreMusic()
@@ -163,7 +163,7 @@ public class DynamicMusicController : MonoBehaviour
         {
             loadedSongs.Add(track);
         }
-        Debug.Log("Lore tracks loaded.");
+        //Debug.Log("Lore tracks loaded.");
     }
 
     // Set the active state of a music object (main menu or lore music)
@@ -177,7 +177,7 @@ public class DynamicMusicController : MonoBehaviour
     {
         if (isTransitioning) return;
 
-        Debug.Log("Transitioning to Lore Music...");
+        //Debug.Log("Transitioning to Lore Music...");
         isTransitioning = true;
 
         // Fade out all active tracks from Main Menu music
@@ -195,7 +195,7 @@ public class DynamicMusicController : MonoBehaviour
     {
         if (isTransitioning) return;
 
-        Debug.Log("Transitioning to Main Menu Music...");
+        //Debug.Log("Transitioning to Main Menu Music...");
         isTransitioning = true;
 
         // Fade out all active tracks from Lore music
@@ -244,7 +244,7 @@ public class DynamicMusicController : MonoBehaviour
         string activeSongsNames = string.Join(", ", activeSongs.ConvertAll(track => track.name));
         string loadedSongsNames = string.Join(", ", loadedSongs.ConvertAll(track => track.name));
 
-        Debug.Log($"Active Tracks: {activeSongsNames}");
-        Debug.Log($"Loaded Tracks: {loadedSongsNames}");
+        //Debug.Log($"Active Tracks: {activeSongsNames}");
+        //Debug.Log($"Loaded Tracks: {loadedSongsNames}");
     }
 }
