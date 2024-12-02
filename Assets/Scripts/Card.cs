@@ -1,42 +1,72 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
     public bool isPlayerCard;
-    public CardStats stats;  // Card stats from ScriptableObject
-
+    //Keenan modification
+    public CardStats stats;
     [HideInInspector] public int manaCost;
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
+    //End
+    //matt mods
     [HideInInspector] public string cardName;
+    //End
     [HideInInspector] public string cardFaction;
     public bool isInHand = true;
 
+    public Sprite cardImage;
     private static Card selectedCard;
     private static GameObject placementIndicator;
-    private Transform cardPlayArea;
+    private static Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
+    private Transform cardPlayArea;
+    //Keenan modification
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
 
+    CardPlayAreaGrid cardPlayAreaGrid;
+    //END
     void Start()
     {
-        // Initialize card properties from CardStats
+        //Keenan modification
         manaCost = stats.manaCost;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
+        //End
+        //mattmods
         cardName = stats.description;
         cardFaction = stats.faction.ToString();
+
+        cardImage = stats.cardImage;
+        GetComponentInChildren<SpriteRenderer>().sprite = cardImage;
+
         faction = stats.faction;
         cardType = stats.cardType;
-
-        cardPlayArea = GameObject.Find("CardPlayArea")?.transform;
+        //end
+        cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
             Debug.LogError("CardPlayArea not found in the scene!");
         }
+        
+
+        cardPlayAreaGrid = cardPlayArea.GetComponent<CardPlayAreaGrid>();
+
+        if (cardImage == null)
+        {
+            Image imageComponent = GetComponent<Image>();
+            if (imageComponent != null)
+            {
+                cardImage = imageComponent.sprite;
+            }
+        }
+
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -52,7 +82,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            CreatePlacementIndicator();  // Keeps the indicator for card placement
+            CreatePlacementIndicator();
         }
         else
         {
@@ -62,15 +92,23 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
     void CreatePlacementIndicator()
     {
-        // If you want a placement indicator, use the cube, otherwise, you can remove it
-        if (placementIndicator != null)
-        {
-            Destroy(placementIndicator);
-        }
 
-        placementIndicator = Instantiate(stats.cardPrefab, Vector3.zero, Quaternion.identity);
-        placementIndicator.transform.localScale = new Vector3(1f, 1f, 1f);  // Placeholder for card scale
-        //placementIndicator.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 0.5f);
+        if (placementIndicator != null) Destroy(placementIndicator);
+
+        placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+        placementIndicator.transform.localScale = playedScale;
+        placementIndicator.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        Renderer renderer = placementIndicator.GetComponent<Renderer>();
+        Material material = new Material(Shader.Find("Transparent/Diffuse"));
+        material.color = new Color(1f, 1f, 1f, 0.5f);
+        if (cardImage != null)
+        {
+            material.mainTexture = cardImage.texture;
+        }
+        renderer.material = material;
+
         placementIndicator.transform.SetParent(cardPlayArea);
     }
 
@@ -101,71 +139,75 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (Physics.Raycast(ray, out hit))
         {
             Vector3 targetPosition = hit.point;
-            targetPosition.y = cardPlayArea.position.y + 0.05f;  // Ensure it hovers above the card play area
+            targetPosition.y = cardPlayArea.position.y + 0.05f;
             placementIndicator.transform.position = targetPosition;
         }
     }
 
     void PlaceCard()
     {
-        if (cardPlayArea == null || stats.cardPrefab == null) return;
 
-        // Instantiate the card prefab from CardStats at the position of the placement indicator
-        GameObject cardObject = Instantiate(stats.cardPrefab, placementIndicator.transform.position, Quaternion.identity);
+        if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
+        cardPlayAreaGrid.Remove(closestSlot, true);
+
+        GameObject cardObject = gameObject;
+        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
         cardObject.transform.SetParent(cardPlayArea);
 
-        // Set the name of the card (optional, for easier identification in the hierarchy)
-        cardObject.name = cardName;
+        closestSlot.y = .1f;
+        cardObject.transform.localPosition = closestSlot;
 
-        // Optionally, apply scaling and other adjustments to the card
-        cardObject.transform.localScale = new Vector3(1f, 1f, 1f);  // Adjust the size if necessary
-
-        // Add gameplay components like CardInfo, which are needed for the card's stats and behavior
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
 
-        // Optionally add other gameplay components (e.g., CardAttack)
+        //Keenan Addition
         CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
 
-        // Deduct mana and update UI
+
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        // Remove the card from the player's hand
         Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);
         }
 
-        // Destroy the card from hand and remove the placement indicator
-        Destroy(gameObject);   // Remove the original card object (this card)
-        Destroy(placementIndicator);  // Remove the placement indicator
-        selectedCard = null;   // Reset the selected card
+        Destroy(this);
+        Destroy(placementIndicator);
+        selectedCard = null;
 
+        GameManager.Instance.synch.AddPlayedCard(cardObject);
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
+
+
 
 
     bool IsPointerOverUIObject()
     {
         PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
         eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-
+        //Keenan modification
         List<RaycastResult> hits = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventDataCurrentPosition, hits);
         List<RaycastResult> results = new List<RaycastResult>();
         foreach (var hit in hits)
         {
+            //Only get UI objects and not all objects.
             if (hit.gameObject.layer.Equals(LayerMask.NameToLayer("UI")))
             {
                 results.Add(hit);
             }
         }
+        //END
         return results.Count > 0;
     }
 
@@ -193,3 +235,6 @@ public class Card : MonoBehaviour, IPointerClickHandler
         return cardsOnTable;
     }
 }
+
+//Keenan modification: Moved to other files
+

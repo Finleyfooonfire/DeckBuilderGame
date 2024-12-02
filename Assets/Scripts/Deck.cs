@@ -9,6 +9,9 @@ public class Deck : MonoBehaviour
     public Transform handPosition; // Position where cards in hand are displayed
     public bool isPlayerDeck;
 
+    [SerializeField] int maxHandSize;
+    [SerializeField] CardStats[] possibleCards;//Temporary variable. Set the card for all the cards in the deck here.
+
     void Start()
     {
         InitializeDeck();
@@ -21,10 +24,13 @@ public class Deck : MonoBehaviour
         {
             //Keenan modification
             GameObject cardObj = Instantiate(Resources.Load("CardPrefab"), transform) as GameObject;
+            
             cardObj.transform.localPosition = new Vector3();
             cardObj.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            
+            Card card = cardObj.AddComponent<Card>();
+            card.stats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
             //End
-            Card card = cardObj.GetComponent<Card>();
             card.isPlayerCard = isPlayerDeck;
             deckCards.Add(card);
             //Keenan remove line: cardObj.SetActive(false);
@@ -44,21 +50,18 @@ public class Deck : MonoBehaviour
 
     public void DrawCard()
     {
-        if (deckCards.Count > 0)
+        if (deckCards.Count > 0 && handCards.Count < maxHandSize)
         {
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
+            deckCards.TrimExcess();
             handCards.Add(drawnCard);
             drawnCard.isInHand = true;
 
             drawnCard.transform.SetParent(handPosition);
 
-            //Keenan addition
             drawnCard.transform.rotation = new Quaternion();
             DistributeHand();
-            //END
-
-            //Keenan remove line: drawnCard.gameObject.SetActive(true);
         }
         else
         {
@@ -66,14 +69,14 @@ public class Deck : MonoBehaviour
         }
     }
 
-    //Keenan addition
     void DistributeHand()
     {
-        int cardsInHand = handCards.Count;
-        for (int i = 0; i < cardsInHand; i++)
+        handCards.RemoveAll(card => card == null);
+        int index = 0;
+        foreach (Card handCard in handCards)
         {
-            handCards[i].transform.localPosition = new Vector3((i - cardsInHand/2f), 0, 0);
+            handCard.transform.localPosition = new Vector3((index - handCards.Count/2f), 0, 0);
+            index++;
         }
     }
-    //END
 }

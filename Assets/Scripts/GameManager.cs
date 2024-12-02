@@ -1,9 +1,7 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,7 +30,7 @@ public class GameManager : MonoBehaviour
     public string OnTable = "";
     //end
     //Keenan addition
-    PlayingFieldSynch synch;
+    public PlayingFieldSynch synch { get; private set; }
     //END 
     void Awake()
     {
@@ -53,24 +51,31 @@ public class GameManager : MonoBehaviour
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
-
-        CoinFlip();
     }
 
-    void CoinFlip()
+    
+
+    //Call this when the client and server are connected.
+    //Keenan modification
+    public void StartGame(bool isHost)
     {
-        //Keenan addition
-        Random.InitState((int)Time.time);
-        //End
-        isPlayerTurn = Random.Range(0, 2) == 0;
+        isPlayerTurn = isHost;
         UpdateTurn();
     }
+    //End
+
+    //void CoinFlip()
+    //{
+        //Keenan addition
+        //Random.InitState((int)Time.time);
+        //End
+        //isPlayerTurn = Random.Range(0, 2) == 0;
+        //UpdateTurn();
+   // }
 
     void UpdateTurn()
     {
-        //Keenan addition
-        synch.SendSynchroniseDevices();
-        //END
+        Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -81,16 +86,12 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
+            Debug.Log("YOUR TURN");
         }
         else
         {
-            opponentMana = Mathf.Min(opponentMana + 1, maxMana);
-            UpdateManaUI();
-
-            Deck opponentDeck = GameObject.Find("OpponentDeck").GetComponent<Deck>();
-            opponentDeck.DrawCard();
-
             statusText.text = "Opponent's Turn";
+            Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -100,15 +101,20 @@ public class GameManager : MonoBehaviour
     public void EndTurn()
     {
         isPlayerTurn = !isPlayerTurn;
+        Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
-        UpdateTurn();
+        //UpdateTurn(); //No need to call this twice
 
         if (isPlayerTurn)
         {
             DrawCard();
         }
-
+        else 
+        {
+            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
+            synch.Send();//Keenan addition. Send the update to the other device
+        }
         UpdateTurn();
     }
 
@@ -140,7 +146,7 @@ public class GameManager : MonoBehaviour
     //Modified by Keenan
     public void SelectAttackingCard(CardAttack card)
     {
-        
+
         if (selectedAttackingCard == card)
         {
             selectedAttackingCard = null;
@@ -149,16 +155,17 @@ public class GameManager : MonoBehaviour
         {
             selectedAttackingCard = card;
         }
-        
+
     }
 
     public void Attack(CardAttack targetCard)
     {
         if (selectedAttackingCard != null && targetCard != null)
         {
-            targetCard.Attack(selectedAttackingCard);
+            selectedAttackingCard.Attack(targetCard);
 
             selectedAttackingCard = null;
+            targetCard = null;
         }
     }
     //END
@@ -188,23 +195,28 @@ public class GameManager : MonoBehaviour
 
 
 
-   // IEnumerator AITurn()
-  //  {
-        // Simple AI logic for testing
-      //  yield return new WaitForSeconds(2f);
+    // IEnumerator AITurn()
+    //  {
+    // Simple AI logic for testing
+    //  yield return new WaitForSeconds(2f);
 
-  //      Debug.Log("AI forfeits its turn.");
+    //      Debug.Log("AI forfeits its turn.");
 
-   //     EndTurn();
-  //  }
+    //     EndTurn();
+    //  }
 
     public void GameOver(bool playerWon)
     {
+        if (playerWon)
+        {
+            synch.GameEnd();
+        }
         PlayerPrefs.SetInt("PlayerWon", playerWon ? 1 : 0);
         PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
-        SceneManager.LoadScene("ScoreboardScene");
+        //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
+        SceneManager.LoadScene("MainMenu"); //Temporary
     }
 
     //KEENAN: Gets all the cards present.

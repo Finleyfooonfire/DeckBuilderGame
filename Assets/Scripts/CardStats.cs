@@ -10,6 +10,7 @@ public class CardStats : ScriptableObject
     [field: SerializeField] public int manaCost { get; private set; }
     [field: SerializeField] public string manaTypeRequired { get; private set; }
     [field: SerializeField] public CardType cardType { get; private set; }
+    [field: SerializeField] public Sprite cardImage { get; private set; }
 
     // Add a prefab field to specify the card's prefab in the editor
     [field: SerializeField] public GameObject cardPrefab { get; private set; }
