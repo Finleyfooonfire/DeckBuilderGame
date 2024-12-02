@@ -14,6 +14,9 @@ public class OptionsMenu : MonoBehaviour
     {
         // Load saved settings on start
         LoadSettings();
+
+        // Initialize the volume slider with the saved volume
+        volumeSlider.onValueChanged.AddListener(SetVolume); // Ensure volume is updated when the slider value changes
     }
 
     public void OpenOptionsMenu()
@@ -29,7 +32,9 @@ public class OptionsMenu : MonoBehaviour
     // Method to change the volume based on slider value
     public void SetVolume(float volume)
     {
-        audioMixer.SetFloat("MasterVolume", volume); // Adjust the volume using an Audio Mixer parameter
+        // Adjust the volume using the AudioMixer parameter "MasterVolume"
+        // Map the slider value (0 to 1) to a suitable dB value (-80 to 0)
+        audioMixer.SetFloat("MasterVolume", Mathf.Log10(volume) * 20); // Logarithmic scale for smooth volume changes
     }
 
     // Method to toggle fullscreen mode
@@ -47,7 +52,7 @@ public class OptionsMenu : MonoBehaviour
     // Save the settings (you could use PlayerPrefs or a file)
     public void SaveSettings()
     {
-        PlayerPrefs.SetFloat("Volume", volumeSlider.value);
+        PlayerPrefs.SetFloat("Volume", volumeSlider.value); // Save volume slider value
         PlayerPrefs.SetInt("Fullscreen", fullscreenToggle.isOn ? 1 : 0);
         PlayerPrefs.SetInt("Quality", qualityDropdown.value);
         PlayerPrefs.Save();
@@ -56,14 +61,21 @@ public class OptionsMenu : MonoBehaviour
     // Load settings when the menu is opened
     private void LoadSettings()
     {
+        // Load the volume setting from PlayerPrefs
         if (PlayerPrefs.HasKey("Volume"))
         {
-            volumeSlider.value = PlayerPrefs.GetFloat("Volume");
+            float savedVolume = PlayerPrefs.GetFloat("Volume");
+            volumeSlider.value = savedVolume; // Set the slider value to the saved volume
+            SetVolume(savedVolume); // Adjust the AudioMixer's volume accordingly
         }
+
+        // Load fullscreen toggle setting
         if (PlayerPrefs.HasKey("Fullscreen"))
         {
             fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
         }
+
+        // Load graphics quality setting
         if (PlayerPrefs.HasKey("Quality"))
         {
             qualityDropdown.value = PlayerPrefs.GetInt("Quality");
