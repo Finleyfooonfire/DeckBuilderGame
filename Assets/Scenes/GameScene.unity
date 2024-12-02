@@ -1021,7 +1021,7 @@ MonoBehaviour:
   handPosition: {fileID: 1991629126}
   isPlayerDeck: 1
   maxHandSize: 6
-  temp: {fileID: 11400000, guid: fe2aa748c72061c48b9d3256a1d9840a, type: 2}
+  temp: {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &531943499
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,7 +2039,7 @@ MonoBehaviour:
   handPosition: {fileID: 1716220924}
   isPlayerDeck: 0
   maxHandSize: 0
-  temp: {fileID: 11400000, guid: fe2aa748c72061c48b9d3256a1d9840a, type: 2}
+  temp: {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &1112478896
 GameObject:
   m_ObjectHideFlags: 0

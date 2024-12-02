@@ -69,7 +69,7 @@ public class CardPlayAreaGrid : MonoBehaviour
             {
                 Gizmos.color = Color.green;
             }
-            Debug.Log(slotPosition);
+            //Debug.Log(slotPosition);
             Gizmos.DrawWireCube(transform.TransformPoint(slotPosition), new Vector3(slotSize.x, 0.1f, slotSize.y));
             
         }

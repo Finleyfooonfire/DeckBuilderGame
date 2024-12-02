@@ -165,6 +165,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
 
         //Keenan Addition
         CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
