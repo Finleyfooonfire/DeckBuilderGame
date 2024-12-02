@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio; // Required for Audio Mixer functionality
+using TMPro;
 
 public class OptionsMenu : MonoBehaviour
 {
     public GameObject optionsMenu; // The options menu GameObject
     public Slider volumeSlider; // The slider for volume control
     public Toggle fullscreenToggle; // The toggle for fullscreen
-    public Dropdown qualityDropdown; // The dropdown for quality settings
+    public TMP_Dropdown qualityDropdown; // The dropdown for quality settings
     public AudioMixer audioMixer; // Reference to your AudioMixer
 
     private void Start()
