@@ -1066,7 +1066,8 @@ MonoBehaviour:
   handPosition: {fileID: 1494188399}
   isPlayerDeck: 0
   maxHandSize: 0
-  temp: {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
+  possibleCards:
+  - {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &465736631
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,7 +1298,8 @@ MonoBehaviour:
   handPosition: {fileID: 833224497}
   isPlayerDeck: 1
   maxHandSize: 6
-  temp: {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
+  possibleCards:
+  - {fileID: 11400000, guid: 921e173d23af20d4ba6450f9a1055034, type: 2}
 --- !u!1 &644561505
 GameObject:
   m_ObjectHideFlags: 0

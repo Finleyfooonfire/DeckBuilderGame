@@ -10,7 +10,7 @@ public class Deck : MonoBehaviour
     public bool isPlayerDeck;
 
     [SerializeField] int maxHandSize;
-    [SerializeField] CardStats temp;//Temporary variable. Set the card for all the cards in the deck here.
+    [SerializeField] CardStats[] possibleCards;//Temporary variable. Set the card for all the cards in the deck here.
 
     void Start()
     {
@@ -29,7 +29,7 @@ public class Deck : MonoBehaviour
             cardObj.transform.localRotation = Quaternion.Euler(0, 0, 180);
             
             Card card = cardObj.AddComponent<Card>();
-            card.stats = temp;
+            card.stats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
             //End
             card.isPlayerCard = isPlayerDeck;
             deckCards.Add(card);
