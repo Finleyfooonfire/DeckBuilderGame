@@ -128,6 +128,7 @@ GameObject:
   m_Component:
   - component: {fileID: 611855}
   - component: {fileID: 611856}
+  - component: {fileID: 611857}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -169,10 +170,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 78
+    m_Bottom: 130
   m_ChildAlignment: 4
-  m_Spacing: 12.22
+  m_Spacing: 78.21
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -180,6 +181,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &611857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &7693997
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,6 +2116,7 @@ GameObject:
   - component: {fileID: 419113630}
   - component: {fileID: 419113629}
   - component: {fileID: 419113628}
+  - component: {fileID: 419113631}
   m_Layer: 5
   m_Name: Vertical Sroller
   m_TagString: Untagged
@@ -2196,6 +2212,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419113626}
   m_CullTransparentMesh: 1
+--- !u!114 &419113631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419113626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c53ad15121e1614bacb730c5eb3b51c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollRect: {fileID: 419113628}
+  scrollSpeed: 12.1
 --- !u!1 &426386618
 GameObject:
   m_ObjectHideFlags: 0
