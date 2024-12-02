@@ -102,8 +102,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Choose a creature, that creature can\u2019t be reduced below 1 health
-    until the start of your next turn."
+  m_text: You will hear the footsteps of the Crusaders before you see them, Give
+    all allied creatures +1 attack for the rest of the turn.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
   m_sharedMaterial: {fileID: -8433069479399171382, guid: a58ed0114e7df5f4287beb73723fb97e, type: 2}
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 1.5443163, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -205,7 +205,7 @@ Transform:
   m_GameObject: {fileID: 1703838172338433837}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.0012, y: 0.02213, z: -0.00019}
+  m_LocalPosition: {x: -0.0012, y: 0.0219, z: -0.00011}
   m_LocalScale: {x: 0.0033763773, y: 0.010000002, z: 0.00043393008}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -311,16 +311,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3598242270445329081}
-  m_LocalRotation: {x: -0.0042464947, y: -0.99999106, z: -0, w: -6.9849193e-10}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00011}
+  m_LocalRotation: {x: -0.015105795, y: -0.9998859, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00027}
   m_LocalScale: {x: 0.00078590005, y: 0.00078590005, z: 0.00078590005}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9194931002412069483}
-  m_LocalEulerAnglesHint: {x: -180, y: 0, z: -179.513}
+  m_LocalEulerAnglesHint: {x: -180, y: 0, z: -178.269}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00249, y: 0.02332}
+  m_AnchoredPosition: {x: 0.00282, y: 0.02318}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7602290342544419026
@@ -388,7 +388,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Last Wish Of A Dying Star
+  m_text: March Of Judgment
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 845941b8e5ce5cb4ea419fd4ca0cf542, type: 2}
   m_sharedMaterial: {fileID: 7402608993104163682, guid: 845941b8e5ce5cb4ea419fd4ca0cf542, type: 2}
@@ -415,8 +415,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.4
-  m_fontSizeBase: 24.4
+  m_fontSize: 29.7
+  m_fontSizeBase: 29.7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -453,7 +453,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 1.8983603, z: -10.681222, w: 0}
+  m_margin: {x: 0, y: 1.8983603, z: -9.586978, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -842,7 +842,7 @@ Transform:
   m_GameObject: {fileID: 8837901450045558501}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0.01382, y: -0.00887, z: -0.00003}
+  m_LocalPosition: {x: 0.01393, y: -0.00878, z: -0.00024}
   m_LocalScale: {x: 0.00022285462, y: 0.00022285467, z: 0.00022285467}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -879,7 +879,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1530231dd28df8b4cb16e50270f915c2, type: 2}
+  - {fileID: 2100000, guid: 65ae2c437fe9b664da08801b819bf925, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1031,7 +1031,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3f1fc2b8b91bb4c418ab0f5b7e4faf5b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.00018
+      value: -0.00006
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3f1fc2b8b91bb4c418ab0f5b7e4faf5b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1064,7 +1064,7 @@ PrefabInstance:
     - target: {fileID: -7635826562936255635, guid: 3f1fc2b8b91bb4c418ab0f5b7e4faf5b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: e60987fa3895e7742b8c3faf99b8d9f3, type: 2}
+      objectReference: {fileID: 2100000, guid: 3fff92946c9819343bd5570eb63c0b6e, type: 2}
     - target: {fileID: 919132149155446097, guid: 3f1fc2b8b91bb4c418ab0f5b7e4faf5b, type: 3}
       propertyPath: m_Name
       value: Image1
@@ -1215,7 +1215,7 @@ PrefabInstance:
       objectReference: {fileID: 2095923052007896429, guid: 325f5a14a22d1f04085a5e15e0d96e9b, type: 3}
     - target: {fileID: 919132149155446097, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
       propertyPath: m_Name
-      value: LastWishOfADyingStar
+      value: MarchOfJudgment
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1247,8 +1247,36 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
       insertIndex: -1
       addedObject: {fileID: 423782861628090378}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5738610859609389268}
   m_SourcePrefab: {fileID: 100100000, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
+--- !u!1 &8417550595947178193 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
+  m_PrefabInstance: {fileID: 8651498974710207872}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-5738610859609389268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417550595947178193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29620532f5c3eae4cac4fb0bf5535093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: March of Judgement
+  cardAttack: 0
+  cardHealth: 0
+  cardImage: {fileID: 0}
+  cardMeshRenderer: {fileID: 0}
+  cardType: Spell
+  cardDescription: 
+  cardFaction: Crusaders
 --- !u!4 &9194931002412069483 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}

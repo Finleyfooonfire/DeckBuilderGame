@@ -757,8 +757,36 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 66c654a759e7ed240adf46416fa6428b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8594955249477833295}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 66c654a759e7ed240adf46416fa6428b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -264302887256794677}
   m_SourcePrefab: {fileID: 100100000, guid: 66c654a759e7ed240adf46416fa6428b, type: 3}
+--- !u!1 &2590218569630068640 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 66c654a759e7ed240adf46416fa6428b, type: 3}
+  m_PrefabInstance: {fileID: 3401105854037398257}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-264302887256794677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2590218569630068640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29620532f5c3eae4cac4fb0bf5535093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardName: White Land
+  cardAttack: 0
+  cardHealth: 0
+  cardImage: {fileID: 0}
+  cardMeshRenderer: {fileID: 0}
+  cardType: Land
+  cardDescription: 
+  cardFaction: Rising Dead
 --- !u!4 &2934551164107879706 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 66c654a759e7ed240adf46416fa6428b, type: 3}
