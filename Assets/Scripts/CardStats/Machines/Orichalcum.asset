@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Orichalcum
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: The Old Machines
+  <faction>k__BackingField: 1
   <description>k__BackingField: The Orichalcum Golem of Avonberg
   <attackValue>k__BackingField: 8
   <defenseValue>k__BackingField: 8
   <manaCost>k__BackingField: 12
   <manaTypeRequired>k__BackingField: Blue
+  <cardType>k__BackingField: 0
+  <cardImage>k__BackingField: {fileID: 0}

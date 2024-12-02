@@ -10,6 +10,7 @@ public class Deck : MonoBehaviour
     public bool isPlayerDeck;
 
     [SerializeField] int maxHandSize;
+    [SerializeField] CardStats[] possibleCards;//Temporary variable. Set the card for all the cards in the deck here.
 
     void Start()
     {
@@ -23,10 +24,13 @@ public class Deck : MonoBehaviour
         {
             //Keenan modification
             GameObject cardObj = Instantiate(Resources.Load("CardPrefab"), transform) as GameObject;
+            
             cardObj.transform.localPosition = new Vector3();
             cardObj.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            
+            Card card = cardObj.AddComponent<Card>();
+            card.stats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
             //End
-            Card card = cardObj.GetComponent<Card>();
             card.isPlayerCard = isPlayerDeck;
             deckCards.Add(card);
             //Keenan remove line: cardObj.SetActive(false);

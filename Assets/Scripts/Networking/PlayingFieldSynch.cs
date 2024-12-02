@@ -132,11 +132,10 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
 
-            GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cardObject = Instantiate(Resources.Load<GameObject>("CardPrefab"));
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.localPosition = card.Value.position;
-            cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
             Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false);
@@ -148,6 +147,12 @@ public class PlayingFieldSynch : MonoBehaviour
             cardInfo.defenseValue = card.Value.defenseValue;
             cardInfo.faction = card.Value.faction;
             cardInfo.cardType = card.Value.cardType;
+            cardInfo.cardImage = card.Value.cardImage;
+            if (cardInfo.cardImage == null)
+            {
+                Debug.LogError("Card sprite is null");
+            }
+            cardObject.GetComponentInChildren<SpriteRenderer>().sprite = cardInfo.cardImage;
 
             CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
         }

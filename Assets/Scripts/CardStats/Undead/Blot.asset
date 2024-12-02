@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Blot
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Raised Undead
+  <faction>k__BackingField: 3
   <description>k__BackingField: Blot, Bloodedge's Berserker
   <attackValue>k__BackingField: 6
   <defenseValue>k__BackingField: 4
   <manaCost>k__BackingField: 6
   <manaTypeRequired>k__BackingField: White
+  <cardType>k__BackingField: 0
+  <cardImage>k__BackingField: {fileID: 0}
