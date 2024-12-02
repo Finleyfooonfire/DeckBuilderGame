@@ -4980,7 +4980,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1129547579
 Transform:
   m_ObjectHideFlags: 0
@@ -7088,7 +7088,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 576276095546329665, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
   contentPanel: {fileID: 611855}
-  cardFolderPath: BlueCards
+  cardFolderPath: Cards
   factionPanelPrefab: {fileID: 70993420}
 --- !u!1 &1820970599
 GameObject:
