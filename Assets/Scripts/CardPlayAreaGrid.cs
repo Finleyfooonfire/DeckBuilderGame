@@ -81,7 +81,7 @@ public class CardPlayAreaGrid : MonoBehaviour
         float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key.Key);
         foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
         {
-            if (isPlayerCard != slot.Key.Value || (slot.Value && !findUsedSlots)) continue;//Skip in use slots (unless findUsedSlots is set to true)
+            if (isPlayerCard != slot.Key.Value || (slot.Value ^ findUsedSlots)) continue;//Skip in use slots (unless findUsedSlots is set to true)
             float distance = Vector3.Distance(currentPosition, slot.Key.Key);
             if (distance < shortestDistance)
             {
