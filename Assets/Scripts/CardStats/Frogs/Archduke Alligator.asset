@@ -18,6 +18,6 @@ MonoBehaviour:
   <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 2
   <manaTypeRequired>k__BackingField: Green
-  <cardType>k__BackingField: 0
+  <cardType>k__BackingField: 1
   <cardImage>k__BackingField: {fileID: 21300000, guid: aceae2d3c398a6b4aadaf2bf0d9b9d98, type: 3}
   <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: ebe780bf4d8708c43b2dd456d064bbec, type: 3}
