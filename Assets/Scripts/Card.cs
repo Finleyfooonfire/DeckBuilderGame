@@ -83,16 +83,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            if (selectedCard.cardType == CardType.Spell)
-            {
-                //Spell cards are special
-                throw new NotImplementedException();
-            }
-            else
-            {
-                //Unit and land cards are to be placed normally
-                CreatePlacementIndicator();
-            }
+            CreatePlacementIndicator();
         }
         else
         {
@@ -130,7 +121,18 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
             if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
             {
-                PlaceCard();
+                if (selectedCard.cardType == CardType.Spell)
+                {
+                    //Spell cards are special
+                    Debug.Log("Spell card placed");
+                    PlaceSpellCard();
+                }
+                else
+                {
+                    //Unit and land cards are to be placed normally
+                    Debug.Log(selectedCard.cardType.ToString() + " card placed");
+                    PlaceNonSpellCard();
+                }
             }
         }
     }
@@ -154,7 +156,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    void PlaceCard()
+    void PlaceNonSpellCard()
     {
 
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
@@ -198,7 +200,27 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
+    void PlaceSpellCard()
+    {
+        if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);//Finds the closest slot with a card that can accept spell cards in it.
+        
 
+        GameObject cardObject = gameObject;
+        
+        Deck playerDeck = FindFirstObjectByType<Deck>();
+        if (playerDeck != null)
+        {
+            playerDeck.handCards.Remove(this);
+        }
+
+        Destroy(this);
+        Destroy(placementIndicator);
+        selectedCard = null;
+
+        GameManager.Instance.synch.AddPlayedCard(cardObject);
+        Debug.Log($"Card played successfully at position {cardObject.transform.position}");
+    }
 
 
     bool IsPointerOverUIObject()
