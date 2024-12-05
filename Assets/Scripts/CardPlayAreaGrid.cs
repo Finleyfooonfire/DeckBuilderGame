@@ -75,13 +75,13 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
     }
 
-    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard)
+    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard, bool findUsedSlots = false)
     {
         KeyValuePair<KeyValuePair<Vector3, bool>, bool> closestSlot = GridSlots.First();
         float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key.Key);
         foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
         {
-            if (isPlayerCard != slot.Key.Value || slot.Value) continue;//Skip in use slots
+            if (isPlayerCard != slot.Key.Value || (slot.Value && !findUsedSlots)) continue;//Skip in use slots (unless findUsedSlots is set to true)
             float distance = Vector3.Distance(currentPosition, slot.Key.Key);
             if (distance < shortestDistance)
             {

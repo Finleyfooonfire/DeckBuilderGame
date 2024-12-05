@@ -138,10 +138,12 @@ public class PlayingFieldSynch : MonoBehaviour
             cardObject.transform.localPosition = card.Value.position;
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false);
+            CardInfo cardInfo = cardObject.AddComponent<CardInfo>();//Get the card info so that the card type of the card can be used in card placement.
+
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false, cardInfo.cardType.Equals(CardType.Spell));
             cardPlayAreaGrid.Remove(closestSlot, card.Value.isPlayerCard); // Occupy this slot so no other card uses it
 
-            CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+            
             cardInfo.manaCost = card.Value.manaCost;
             cardInfo.attackValue = card.Value.attackValue;
             cardInfo.defenseValue = card.Value.defenseValue;
