@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public class Deck : MonoBehaviour
     public Transform handPosition; // Position where cards in hand are displayed
     public bool isPlayerDeck;
 
-    [SerializeField] int maxHandSize;
+    [SerializeField] int maxHandSize = 6;
     [SerializeField] CardStats[] possibleCards;//Temporary variable. Set the card for all the cards in the deck here.
 
     void Start()
@@ -25,10 +26,10 @@ public class Deck : MonoBehaviour
             //Keenan modification
             CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
             GameObject cardObj = Instantiate<GameObject>(cardStats.cardPrefab, transform);
-            
+
             cardObj.transform.localPosition = new Vector3();
             cardObj.transform.localRotation = Quaternion.Euler(90, 180, 0);
-            
+
             Card card = cardObj.AddComponent<Card>();
             card.stats = cardStats;
             //End
@@ -51,7 +52,12 @@ public class Deck : MonoBehaviour
 
     public void DrawCard()
     {
-        if (deckCards.Count > 0 && handCards.Count < maxHandSize)
+        if (deckCards.Count == 0)
+        {
+            Debug.Log("No more cards in the deck!");
+            return;
+        }
+        if (handCards.Count < maxHandSize)
         {
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
@@ -66,17 +72,18 @@ public class Deck : MonoBehaviour
         }
         else
         {
-            Debug.Log("No more cards in the deck!");
+            Debug.Log("Hand full");
         }
     }
 
-    void DistributeHand()
+    public void DistributeHand()
     {
         handCards.RemoveAll(card => card == null);
+        Debug.Log("Distributing hand: " + string.Join<Card>(",", handCards.ToArray()));
         int index = 0;
         foreach (Card handCard in handCards)
         {
-            handCard.transform.localPosition = new Vector3((index - handCards.Count/2f), 0, 0);
+            handCard.transform.localPosition = new Vector3((index - handCards.Count / 2f), 0, 0);
             index++;
         }
     }

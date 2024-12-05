@@ -189,6 +189,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);
+            playerDeck.DistributeHand();
         }
 
         Destroy(this);
@@ -196,7 +197,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Card played successfully at position {cardObject.transform.position}");
+        Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
     }
 
     //Places a spell card type card onto a space on the player's side of the board that has a different card on it.
@@ -219,6 +220,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (playerDeck != null)
         {
             playerDeck.handCards.Remove(this);
+            playerDeck.DistributeHand();
         }
 
         Destroy(this);
@@ -226,7 +228,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Card played successfully at position {cardObject.transform.position}");
+        Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
     }
 
 
