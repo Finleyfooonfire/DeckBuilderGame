@@ -1,9 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
@@ -44,7 +43,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardFaction = stats.faction.ToString();
 
         cardImage = stats.cardImage;
-        
+
 
         faction = stats.faction;
         cardType = stats.cardType;
@@ -54,7 +53,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError("CardPlayArea not found in the scene!");
         }
-        
+
 
         cardPlayAreaGrid = cardPlayArea.GetComponent<CardPlayAreaGrid>();
 
@@ -155,7 +154,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
             placementIndicator.transform.position = targetPosition;
         }
     }
-
+    //Places a non-spell card type card into an empty space on the player's side of the board.
     void PlaceNonSpellCard()
     {
 
@@ -200,14 +199,22 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Debug.Log($"Card played successfully at position {cardObject.transform.position}");
     }
 
+    //Places a spell card type card onto a space on the player's side of the board that has a different card on it.
     void PlaceSpellCard()
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
-        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);//Finds the closest slot with a card that can accept spell cards in it.
-        
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true, true);//Finds the closest slot with a card that can accept spell cards in it.
+
 
         GameObject cardObject = gameObject;
-        
+        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.transform.SetParent(cardPlayArea);
+
+        closestSlot.y = .05f;//Place the card physically bellow the card it is modulating
+        cardObject.transform.localPosition = closestSlot;
+
+
+
         Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)
         {
