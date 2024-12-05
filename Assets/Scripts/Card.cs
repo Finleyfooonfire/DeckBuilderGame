@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
@@ -82,7 +83,16 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            CreatePlacementIndicator();
+            if (selectedCard.cardType == CardType.Spell)
+            {
+                //Spell cards are special
+                throw new NotImplementedException();
+            }
+            else
+            {
+                //Unit and land cards are to be placed normally
+                CreatePlacementIndicator();
+            }
         }
         else
         {
