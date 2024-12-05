@@ -10,5 +10,6 @@ public enum Faction
 public enum CardType
 {
     Land,
-    Unit
+    Unit,
+    Spell
 }
