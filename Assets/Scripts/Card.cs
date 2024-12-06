@@ -82,7 +82,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            CreatePlacementIndicator();
+            Debug.Log($"{selectedCard.cardType} card selected");
+
+           CreatePlacementIndicator();
         }
         else
         {
