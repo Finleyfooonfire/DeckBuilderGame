@@ -162,7 +162,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
-        cardPlayAreaGrid.Remove(closestSlot, true);
+        cardPlayAreaGrid.FillSlot(closestSlot, true);
 
         GameObject cardObject = gameObject;
         cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
@@ -207,7 +207,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true, true);//Finds the closest slot with a card that can accept spell cards in it.
-
+        cardPlayAreaGrid.FillSpellSlot(closestSlot, true);
 
         GameObject cardObject = gameObject;
         cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
