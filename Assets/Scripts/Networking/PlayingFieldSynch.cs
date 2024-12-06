@@ -41,7 +41,14 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledCard(GameObject killedCard)
     {
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position, false);
+        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+        {
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, false);
+        }
+        else
+        {
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+        }
         killedCard.transform.parent = opponentGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -49,7 +56,14 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position, true);
+        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+        {
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, true);
+        }
+        else
+        {
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+        }
         killedCard.transform.parent = playerGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -141,7 +155,15 @@ public class PlayingFieldSynch : MonoBehaviour
             CardInfo cardInfo = cardObject.AddComponent<CardInfo>();//Get the card info so that the card type of the card can be used in card placement.
 
             Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false, cardInfo.cardType.Equals(CardType.Spell));
-            cardPlayAreaGrid.Remove(closestSlot, card.Value.isPlayerCard); // Occupy this slot so no other card uses it
+
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FillSpellSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other card uses it
+            }
+            else
+            {
+                cardPlayAreaGrid.FillSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other card uses it
+            }
 
             
             cardInfo.manaCost = card.Value.manaCost;
@@ -171,7 +193,7 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position, true);
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
             killedCard.SetParent(playerGrave);
             killedCard.localPosition = Vector3.zero;
         }
@@ -180,7 +202,7 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledFriendlyCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position, false);
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
             killedCard.SetParent(opponentGrave);
             killedCard.localPosition = Vector3.zero;
         }

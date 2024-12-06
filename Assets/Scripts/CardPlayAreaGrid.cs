@@ -117,28 +117,28 @@ public class CardPlayAreaGrid : MonoBehaviour
     }
 
     //sets the slot's HasCard field to true
-    public void Remove(Vector3 slotToRemove, bool isPlayerSlot)
+    public void FillSlot(Vector3 slotToRemove, bool isPlayerSlot)
     {
         CardPlayAreaSlot slot = GridSlots.Find(x => x.SlotPosition == slotToRemove && x.IsPlayerSlot == isPlayerSlot);
         slot.HasCard = true;
     }
 
     //sets the slot's HasCard field to false
-    public void Free(Vector3 slotToFree, bool isPlayerSlot)
+    public void FreeSlot(Vector3 slotToFree, bool isPlayerSlot)
     {
         CardPlayAreaSlot slot = GridSlots.Find(x => x.SlotPosition == slotToFree && x.IsPlayerSlot == isPlayerSlot);
         slot.HasCard = false;
     }
 
     //sets the slot's HasSpellCard field to true
-    public void RemoveSpell(Vector3 slotToRemove, bool isPlayerSlot)
+    public void FillSpellSlot(Vector3 slotToRemove, bool isPlayerSlot)
     {
         CardPlayAreaSlot slot = GridSlots.Find(x => x.SlotPosition == slotToRemove && x.IsPlayerSlot == isPlayerSlot);
         slot.HasSpellCard = false;
     }
 
     //sets the slot's HasSpellCard field to false
-    public void FreeSpell(Vector3 slotToFree, bool isPlayerSlot)
+    public void FreeSpellSlot(Vector3 slotToFree, bool isPlayerSlot)
     {
         CardPlayAreaSlot slot = GridSlots.Find(x => x.SlotPosition == slotToFree && x.IsPlayerSlot == isPlayerSlot);
         slot.HasSpellCard = false;
