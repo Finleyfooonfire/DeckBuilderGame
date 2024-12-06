@@ -158,7 +158,7 @@ public class PlayingFieldSynch : MonoBehaviour
 
             if (card.Value.cardType.Equals(CardType.Spell))
             {
-                cardPlayAreaGrid.FillSpellSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other card uses it
+                cardPlayAreaGrid.FillSpellSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other spell card uses it
             }
             else
             {
@@ -193,7 +193,14 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, true);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+            }
             killedCard.SetParent(playerGrave);
             killedCard.localPosition = Vector3.zero;
         }
@@ -202,7 +209,14 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledFriendlyCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, false);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+            }
             killedCard.SetParent(opponentGrave);
             killedCard.localPosition = Vector3.zero;
         }
