@@ -98,20 +98,42 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
     }
 
-    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard, bool findUsedSlots = false)
+    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard, bool findSpellSlots = false)
     {
         CardPlayAreaSlot closestSlot = GridSlots.First();
-        float shortestDistance = Vector3.Distance(currentPosition, closestSlot.SlotPosition);
-        foreach (CardPlayAreaSlot slot in GridSlots)
+        float shortestDistance = Mathf.Infinity;
+
+        if (findSpellSlots)
         {
-            if (isPlayerCard != (slot.IsPlayerSlot || (slot.HasCard ^ findUsedSlots))) continue;//Skip in use slots (unless findUsedSlots is set to true)
-            float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
-            if (distance < shortestDistance)
+            foreach (CardPlayAreaSlot slot in GridSlots)
             {
-                closestSlot = slot;
-                shortestDistance = distance;
+                if ((isPlayerCard == slot.IsPlayerSlot) && slot.HasCard && !slot.HasSpellCard)
+                {
+                    float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
+                    if (distance < shortestDistance)
+                    {
+                        closestSlot = slot;
+                        shortestDistance = distance;
+                    }
+                }
             }
         }
+        else
+        {
+            foreach (CardPlayAreaSlot slot in GridSlots)
+            {
+                if ((isPlayerCard == slot.IsPlayerSlot) && !slot.HasCard)
+                {
+                    float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
+                    if (distance < shortestDistance)
+                    {
+                        closestSlot = slot;
+                        shortestDistance = distance;
+                    }
+                }
+            }
+        }
+        Debug.Log($"The closest slot is at {closestSlot.SlotPosition}");
         return closestSlot.SlotPosition;
 
     }
@@ -134,7 +156,7 @@ public class CardPlayAreaGrid : MonoBehaviour
     public void FillSpellSlot(Vector3 slotToRemove, bool isPlayerSlot)
     {
         CardPlayAreaSlot slot = GridSlots.Find(x => x.SlotPosition == slotToRemove && x.IsPlayerSlot == isPlayerSlot);
-        slot.HasSpellCard = false;
+        slot.HasSpellCard = true;
     }
 
     //sets the slot's HasSpellCard field to false
