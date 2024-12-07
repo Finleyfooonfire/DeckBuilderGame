@@ -223,7 +223,10 @@ public class PlayingFieldSynch : MonoBehaviour
         ResetChanges();
         foreach (Transform card in cardPlayArea)
         {
-            card.GetComponent<CardAttack>().OnUpdateTurn();
+            if (card.GetComponent<CardInfo>().cardType.Equals(CardType.Unit))
+            {
+                card.GetComponent<CardAttack>().OnUpdateTurn();
+            }
         }
     }
 

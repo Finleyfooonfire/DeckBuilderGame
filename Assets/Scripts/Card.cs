@@ -216,7 +216,14 @@ public class Card : MonoBehaviour, IPointerClickHandler
         closestSlot.y = .05f;//Place the card physically bellow the card it is modulating
         cardObject.transform.localPosition = closestSlot;
 
-
+        CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
+        cardInfo.manaCost = this.manaCost;
+        cardInfo.attackValue = this.attackValue;
+        cardInfo.defenseValue = this.defenseValue;
+        cardInfo.faction = this.faction;
+        cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
 
         Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)
