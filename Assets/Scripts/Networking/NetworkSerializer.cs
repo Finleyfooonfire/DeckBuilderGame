@@ -159,7 +159,7 @@ class NetworkSerializer
         for (int i = 0; i < cards; i++)
         {
             CardInfoStruct card = new CardInfoStruct();
-            card.isPlayerCard = reader.ReadByte() == 1;
+            card.isPlayerCard = reader.ReadByte() != 1;//Invert the player card flag
             card.manaCost = reader.ReadByte();
             card.attackValue = reader.ReadByte();
             card.defenseValue = reader.ReadByte();
@@ -170,7 +170,7 @@ class NetworkSerializer
             float x = reader.ReadFloat();
             float y = reader.ReadFloat();
             float z = reader.ReadFloat();
-            card.position = new Vector3(-x, y, -z);
+            card.position = new Vector3(-x, y, -z);//Mirror card positions
             string cardPath = "CardTextures/" + card.faction.ToString() + "Cards/" + reader.ReadFixedString32().ToString();
             Debug.Log(cardPath);
             Sprite cardSprite = Resources.Load<Sprite>(cardPath);
