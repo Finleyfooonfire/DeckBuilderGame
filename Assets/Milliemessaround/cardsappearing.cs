@@ -21,11 +21,13 @@ public class cardsappearing : MonoBehaviour
         int cardnumber = Random.Range(0, 5);
         player1card[cardnumber].SetActive(true);
 
+        i = 0;
         while (i < player2card.Length)
         {
             player2card[i].SetActive(false);
             i++;
         }
+        cardnumber = Random.Range(0, 5);
         player2card[cardnumber].SetActive(true);
     }
 
