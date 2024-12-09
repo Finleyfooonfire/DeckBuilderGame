@@ -209,7 +209,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true, true);//Finds the closest slot with a card that can accept spell cards in it.
-        cardPlayAreaGrid.FillSpellSlot(closestSlot, true);
+        cardPlayAreaGrid.FillSpellSlot(closestSlot);
 
         GameObject cardObject = gameObject;
         cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
@@ -238,6 +238,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
                 Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
                 break;
         }
+
+        GameManager.Instance.playerMana -= manaCost;
+        GameManager.Instance.UpdateManaUI();
 
         Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)

@@ -43,7 +43,7 @@ public class PlayingFieldSynch : MonoBehaviour
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
         if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
         {
-            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, false);
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
         }
         else
         {
@@ -58,7 +58,7 @@ public class PlayingFieldSynch : MonoBehaviour
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
         if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
         {
-            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, true);
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
         }
         else
         {
@@ -158,7 +158,7 @@ public class PlayingFieldSynch : MonoBehaviour
 
             if (card.Value.cardType.Equals(CardType.Spell))
             {
-                cardPlayAreaGrid.FillSpellSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other spell card uses it
+                cardPlayAreaGrid.FillSpellSlot(closestSlot);// Occupy this slot so no other spell card uses it
             }
             else
             {
@@ -195,7 +195,7 @@ public class PlayingFieldSynch : MonoBehaviour
             Transform killedCard = cardPlayArea.Find(card.Key);
             if (card.Value.cardType.Equals(CardType.Spell))
             {
-                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, true);
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
             }
             else
             {
@@ -211,7 +211,7 @@ public class PlayingFieldSynch : MonoBehaviour
             Transform killedCard = cardPlayArea.Find(card.Key);
             if (card.Value.cardType.Equals(CardType.Spell))
             {
-                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position, false);
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
             }
             else
             {

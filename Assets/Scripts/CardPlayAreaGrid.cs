@@ -111,7 +111,7 @@ public class CardPlayAreaGrid : MonoBehaviour
             foreach (CardPlayAreaSlot slot in GridSlots)
             {
                 Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
-                if ((isPlayerCard == slot.IsPlayerSlot) && slot.HasCard && !slot.HasSpellCard)
+                if (slot.HasCard && !slot.HasSpellCard)
                 {
                     float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
                     if (distance < shortestDistance)
@@ -170,18 +170,18 @@ public class CardPlayAreaGrid : MonoBehaviour
     }
 
     //sets the slot's HasSpellCard field to true
-    public void FillSpellSlot(Vector3 slotToRemove, bool isPlayerSlot)
+    public void FillSpellSlot(Vector3 slotToRemove)
     {
-        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToRemove && x.IsPlayerSlot == isPlayerSlot);
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToRemove);
         CardPlayAreaSlot slot = GridSlots[i];
         slot.HasSpellCard = true;
         GridSlots[i] = slot;
     }
 
     //sets the slot's HasSpellCard field to false
-    public void FreeSpellSlot(Vector3 slotToFree, bool isPlayerSlot)
+    public void FreeSpellSlot(Vector3 slotToFree)
     {
-        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToFree && x.IsPlayerSlot == isPlayerSlot);
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToFree);
         CardPlayAreaSlot slot = GridSlots[i];
         slot.HasSpellCard = false;
         GridSlots[i] = slot;
