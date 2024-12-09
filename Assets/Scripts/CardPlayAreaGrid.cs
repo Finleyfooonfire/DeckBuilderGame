@@ -192,14 +192,14 @@ public class CardPlayAreaGrid : MonoBehaviour
     {
         CardInfo foundCard = null;
         Collider[] intersecting = new Collider[1];
-        Physics.OverlapSphereNonAlloc(new Vector3(2, 4, 0), 0.01f, intersecting);
+        Physics.OverlapSphereNonAlloc(slotToQuery, 0.01f, intersecting);
         if (intersecting.Length == 0)
         {
             return foundCard;
         }
         else
         {
-            foundCard = intersecting[0].transform.root.GetComponent<CardInfo>();
+            foundCard = intersecting[0].transform.parent.GetComponent<CardInfo>();
         }
         return foundCard;
     }
