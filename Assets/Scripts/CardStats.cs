@@ -14,4 +14,5 @@ public class CardStats : ScriptableObject
 
     // Add a prefab field to specify the card's prefab in the editor
     [field: SerializeField] public GameObject cardPrefab { get; private set; }
+    [field: SerializeField] public CardSpell spell { get; private set; }
 }

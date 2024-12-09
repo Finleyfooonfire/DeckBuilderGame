@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public bool isInHand = true;
 
     public Sprite cardImage;
+
     private static Card selectedCard;
     private static GameObject placementIndicator;
     private static Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
@@ -224,6 +226,18 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
         cardInfo.cardImage = this.cardImage;
+        
+
+        CardSpell cardSpell;
+        switch (cardName)
+        { 
+            case "Poison Drop":
+                cardSpell = cardObject.AddComponent<PoisonDropSpell>();
+                break;
+            default:
+                Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
+                break;
+        }
 
         Deck playerDeck = FindFirstObjectByType<Deck>();
         if (playerDeck != null)

@@ -186,4 +186,21 @@ public class CardPlayAreaGrid : MonoBehaviour
         slot.HasSpellCard = false;
         GridSlots[i] = slot;
     }
+
+    //Finds the CardInfo of the (non-spell) card at the slot
+    public CardInfo FindCardAtSlotPosition(Vector3 slotToQuery)
+    {
+        CardInfo foundCard = null;
+        Collider[] intersecting = new Collider[1];
+        Physics.OverlapSphereNonAlloc(new Vector3(2, 4, 0), 0.01f, intersecting);
+        if (intersecting.Length == 0)
+        {
+            return foundCard;
+        }
+        else
+        {
+            foundCard = intersecting[0].transform.root.GetComponent<CardInfo>();
+        }
+        return foundCard;
+    }
 }
