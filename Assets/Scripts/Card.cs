@@ -311,6 +311,9 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             case "Poison Drop":
                 cardSpell = cardObject.AddComponent<PoisonDropSpell>();
                 break;
+            case "March Of Judgement":
+                cardSpell = cardObject.AddComponent<MarchSpell>();
+                break;
             default:
                 Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
                 break;
