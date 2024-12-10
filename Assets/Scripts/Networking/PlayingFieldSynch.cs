@@ -41,7 +41,14 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledCard(GameObject killedCard)
     {
         killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position, false);
+        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+        {
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+        }
+        else
+        {
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+        }
         killedCard.transform.parent = opponentGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -49,7 +56,14 @@ public class PlayingFieldSynch : MonoBehaviour
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
         killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        cardPlayAreaGrid.Free(killedCard.transform.position, true);
+        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+        {
+            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+        }
+        else
+        {
+            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+        }
         killedCard.transform.parent = playerGrave;
         killedCard.transform.localPosition = new Vector3();
     }
@@ -132,22 +146,37 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
 
-            GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cardObject = Instantiate(Resources.Load<GameObject>("CardPrefab"));
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.localPosition = card.Value.position;
-            cardObject.transform.localScale = new Vector3(0.635f, 0.01f, 0.889f);
             cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false);
-            cardPlayAreaGrid.Remove(closestSlot, card.Value.isPlayerCard); // Occupy this slot so no other card uses it
+            CardInfo cardInfo = cardObject.AddComponent<CardInfo>();//Get the card info so that the card type of the card can be used in card placement.
 
-            CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+            Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(cardObject.transform.position, false, cardInfo.cardType.Equals(CardType.Spell));
+
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FillSpellSlot(closestSlot);// Occupy this slot so no other spell card uses it
+            }
+            else
+            {
+                cardPlayAreaGrid.FillSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other card uses it
+            }
+
+            
             cardInfo.manaCost = card.Value.manaCost;
             cardInfo.attackValue = card.Value.attackValue;
             cardInfo.defenseValue = card.Value.defenseValue;
             cardInfo.faction = card.Value.faction;
             cardInfo.cardType = card.Value.cardType;
+            cardInfo.cardImage = card.Value.cardImage;
+            if (cardInfo.cardImage == null)
+            {
+                Debug.LogError("Card sprite is null");
+            }
+            cardObject.GetComponentInChildren<SpriteRenderer>().sprite = cardInfo.cardImage;
 
             CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
         }
@@ -164,7 +193,14 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position, true);
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+            }
             killedCard.SetParent(playerGrave);
             killedCard.localPosition = Vector3.zero;
         }
@@ -173,14 +209,24 @@ public class PlayingFieldSynch : MonoBehaviour
         foreach (KeyValuePair<string, CardInfoStruct> card in changeIn.KilledFriendlyCards)
         {
             Transform killedCard = cardPlayArea.Find(card.Key);
-            cardPlayAreaGrid.Free(killedCard.transform.position, false);
+            if (card.Value.cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+            }
             killedCard.SetParent(opponentGrave);
             killedCard.localPosition = Vector3.zero;
         }
         ResetChanges();
         foreach (Transform card in cardPlayArea)
         {
-            card.GetComponent<CardAttack>().OnUpdateTurn();
+            if (card.GetComponent<CardInfo>().cardType.Equals(CardType.Unit))
+            {
+                card.GetComponent<CardAttack>().OnUpdateTurn();
+            }
         }
     }
 

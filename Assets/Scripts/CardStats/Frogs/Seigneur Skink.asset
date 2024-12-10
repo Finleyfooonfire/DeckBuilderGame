@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Seigneur Skink
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Frogs
+  <faction>k__BackingField: 0
   <description>k__BackingField: Seigneur Skink
   <attackValue>k__BackingField: 1
   <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 1
   <manaTypeRequired>k__BackingField: Green
+  <cardType>k__BackingField: 1
+  <cardImage>k__BackingField: {fileID: 21300000, guid: ec9615086ff74204e92bf44da63ad606, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: 9a12ebbb70a66844480f52221a77e755, type: 3}

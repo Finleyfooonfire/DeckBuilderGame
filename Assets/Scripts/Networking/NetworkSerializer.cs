@@ -62,6 +62,7 @@ public struct CardInfoStruct
     public CardType cardType;
     public bool exhausted;
     public Vector3 position;
+    public Sprite cardImage;
 }
 
 public struct HealthAndMana
@@ -93,18 +94,7 @@ class NetworkSerializer
         }
     }
 
-    //A dictionary of all the card stats
-    private Dictionary<string, CardStats> cardStatNames = new Dictionary<string, CardStats>();
-
-    NetworkSerializer()
-    {
-        //Populate the dictionary with the CardStats and their names
-        UnityEngine.Object[] foundAssets = Resources.FindObjectsOfTypeAll(typeof(CardStats));
-        foreach (CardStats item in foundAssets)
-        {
-            cardStatNames.Add(item.name, item);
-        }
-    }
+    
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
@@ -133,6 +123,7 @@ class NetworkSerializer
                 writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.x);
                 writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.y);
                 writer.WriteFloat(x[i].Value.gameObject.transform.localPosition.z);
+                writer.WriteFixedString32((FixedString32Bytes)x[i].Value.cardImage.name);
             }
         }
     }
@@ -168,7 +159,7 @@ class NetworkSerializer
         for (int i = 0; i < cards; i++)
         {
             CardInfoStruct card = new CardInfoStruct();
-            card.isPlayerCard = reader.ReadByte() == 1;
+            card.isPlayerCard = reader.ReadByte() != 1;//Invert the player card flag
             card.manaCost = reader.ReadByte();
             card.attackValue = reader.ReadByte();
             card.defenseValue = reader.ReadByte();
@@ -179,7 +170,12 @@ class NetworkSerializer
             float x = reader.ReadFloat();
             float y = reader.ReadFloat();
             float z = reader.ReadFloat();
-            card.position = new Vector3(-x, y, -z);
+            card.position = new Vector3(-x, y, -z);//Mirror card positions
+            string cardPath = "CardTextures/" + card.faction.ToString() + "Cards/" + reader.ReadFixedString32().ToString();
+            Debug.Log(cardPath);
+            Sprite cardSprite = Resources.Load<Sprite>(cardPath);
+            Debug.Log(cardSprite);
+            card.cardImage = (cardSprite);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }
         return cardsAdded;

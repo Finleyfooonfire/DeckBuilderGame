@@ -12,19 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Malachite
   m_EditorClassIdentifier: 
-<<<<<<< HEAD:Assets/Scripts/CardStats/Supreme Lord – Razor Bloodedge, the architect of Death’s legions.asset
-  <faction>k__BackingField: Raised Undead
-  <description>k__BackingField: "Supreme Lord \u2013 Razor Bloodedge, the architect
-    of Death\u2019s legions"
-  <attackValue>k__BackingField: 5
-  <defenseValue>k__BackingField: 7
-  <manaCost>k__BackingField: 8
-  <manaTypeRequired>k__BackingField: White
-=======
-  <faction>k__BackingField: The Old Machines
+  <faction>k__BackingField: 1
   <description>k__BackingField: Malachite Minion
   <attackValue>k__BackingField: 3
   <defenseValue>k__BackingField: 4
   <manaCost>k__BackingField: 5
   <manaTypeRequired>k__BackingField: Blue
->>>>>>> main:Assets/Scripts/CardStats/Machines/Malachite.asset
+  <cardType>k__BackingField: 1
+  <cardImage>k__BackingField: {fileID: 0}
+  <cardPrefab>k__BackingField: {fileID: 0}

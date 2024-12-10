@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (isPlayerTurn) UpdateCards();
         isPlayerTurn = !isPlayerTurn;
         Debug.Log(isPlayerTurn);
         turnsTaken++;
@@ -181,6 +182,18 @@ public class GameManager : MonoBehaviour
 
             selectedAttackingCard = null;
             targetCard = null;
+        }
+    }
+
+    void UpdateCards()
+    {
+        CardSpell spell = null;
+        foreach (var cardInfo in FindObjectsByType<CardInfo>(FindObjectsSortMode.None))
+        {
+            if (cardInfo.gameObject.TryGetComponent<CardSpell>(out spell))
+            {
+                spell.OnUpdateTurn();
+            }
         }
     }
     //END

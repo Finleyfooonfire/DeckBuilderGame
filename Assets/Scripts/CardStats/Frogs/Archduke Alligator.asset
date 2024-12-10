@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Archduke Alligator
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Frogs
+  <faction>k__BackingField: 0
   <description>k__BackingField: Archduke Alligator
   <attackValue>k__BackingField: 2
   <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 2
   <manaTypeRequired>k__BackingField: Green
+  <cardType>k__BackingField: 1
+  <cardImage>k__BackingField: {fileID: 21300000, guid: aceae2d3c398a6b4aadaf2bf0d9b9d98, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: ebe780bf4d8708c43b2dd456d064bbec, type: 3}

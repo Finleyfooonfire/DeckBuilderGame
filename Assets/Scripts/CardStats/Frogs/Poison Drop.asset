@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
   m_Name: Poison Drop
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: Frogs
+  <faction>k__BackingField: 0
   <description>k__BackingField: Poison Drop
   <attackValue>k__BackingField: 0
-  <defenseValue>k__BackingField: 0
+  <defenseValue>k__BackingField: 2
   <manaCost>k__BackingField: 3
   <manaTypeRequired>k__BackingField: Green
+  <cardType>k__BackingField: 2
+  <cardImage>k__BackingField: {fileID: 21300000, guid: d9ad39e8a6308ba428875ace838bdb20, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: 4514c30d7bb96404f901c31433675d31, type: 3}
+  <spell>k__BackingField: {fileID: 0}
