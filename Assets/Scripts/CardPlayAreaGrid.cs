@@ -172,6 +172,7 @@ public class CardPlayAreaGrid : MonoBehaviour
     //sets the slot's HasSpellCard field to true
     public void FillSpellSlot(Vector3 slotToRemove)
     {
+        slotToRemove.y = .1f;
         int i = GridSlots.FindIndex(x => x.SlotPosition == slotToRemove);
         CardPlayAreaSlot slot = GridSlots[i];
         slot.HasSpellCard = true;
@@ -181,6 +182,7 @@ public class CardPlayAreaGrid : MonoBehaviour
     //sets the slot's HasSpellCard field to false
     public void FreeSpellSlot(Vector3 slotToFree)
     {
+        slotToFree.y = .1f;
         int i = GridSlots.FindIndex(x => x.SlotPosition == slotToFree);
         CardPlayAreaSlot slot = GridSlots[i];
         slot.HasSpellCard = false;
