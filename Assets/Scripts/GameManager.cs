@@ -54,12 +54,6 @@ public class GameManager : MonoBehaviour
         synch = FindAnyObjectByType<PlayingFieldSynch>();
         UpdateLifeUI();
         UpdateManaUI();
-
-        endTurnButton.onClick.AddListener(EndTurn);
-
-        synch = FindAnyObjectByType<PlayingFieldSynch>();
-        UpdateLifeUI();
-        UpdateManaUI();
         endTurnButton.onClick.AddListener(EndTurn);
 
         if (gameOverText != null)
