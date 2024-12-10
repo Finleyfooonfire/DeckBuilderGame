@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Swamp
+  - Sir Tuppus
+  - Segnour Skink
+  - Archduke Alligator
+  - Commoner Chameleon
+  - Poison Drop
   layers:
   - Default
   - TransparentFX

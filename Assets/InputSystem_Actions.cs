@@ -117,6 +117,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Snaprighthand"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f920c31-403a-4d4a-bcd4-a3ff8dd0bf80"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Snaplefthand"",
+                    ""type"": ""Button"",
+                    ""id"": ""29b2c808-fa86-4a24-9cb9-da7c165fde84"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -513,6 +531,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dealsnap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1cf72783-a3cc-4a3b-b9a2-e677170cf61e"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Snaprighthand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6493e5d0-979e-499b-a265-e512fb824dc5"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Snaplefthand"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1110,6 +1150,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Dealsnap = m_Player.FindAction("Dealsnap", throwIfNotFound: true);
+        m_Player_Snaprighthand = m_Player.FindAction("Snaprighthand", throwIfNotFound: true);
+        m_Player_Snaplefthand = m_Player.FindAction("Snaplefthand", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1199,6 +1241,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Dealsnap;
+    private readonly InputAction m_Player_Snaprighthand;
+    private readonly InputAction m_Player_Snaplefthand;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -1213,6 +1257,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @Next => m_Wrapper.m_Player_Next;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Dealsnap => m_Wrapper.m_Player_Dealsnap;
+        public InputAction @Snaprighthand => m_Wrapper.m_Player_Snaprighthand;
+        public InputAction @Snaplefthand => m_Wrapper.m_Player_Snaplefthand;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1252,6 +1298,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Dealsnap.started += instance.OnDealsnap;
             @Dealsnap.performed += instance.OnDealsnap;
             @Dealsnap.canceled += instance.OnDealsnap;
+            @Snaprighthand.started += instance.OnSnaprighthand;
+            @Snaprighthand.performed += instance.OnSnaprighthand;
+            @Snaprighthand.canceled += instance.OnSnaprighthand;
+            @Snaplefthand.started += instance.OnSnaplefthand;
+            @Snaplefthand.performed += instance.OnSnaplefthand;
+            @Snaplefthand.canceled += instance.OnSnaplefthand;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1286,6 +1338,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Dealsnap.started -= instance.OnDealsnap;
             @Dealsnap.performed -= instance.OnDealsnap;
             @Dealsnap.canceled -= instance.OnDealsnap;
+            @Snaprighthand.started -= instance.OnSnaprighthand;
+            @Snaprighthand.performed -= instance.OnSnaprighthand;
+            @Snaprighthand.canceled -= instance.OnSnaprighthand;
+            @Snaplefthand.started -= instance.OnSnaplefthand;
+            @Snaplefthand.performed -= instance.OnSnaplefthand;
+            @Snaplefthand.canceled -= instance.OnSnaplefthand;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1478,6 +1536,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnNext(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnDealsnap(InputAction.CallbackContext context);
+        void OnSnaprighthand(InputAction.CallbackContext context);
+        void OnSnaplefthand(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
