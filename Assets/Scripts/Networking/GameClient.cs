@@ -63,6 +63,7 @@ public class GameClient : MonoBehaviour
             if (cmd == NetworkEvent.Type.Connect)
             {
                 Debug.Log("We are now connected to the server.");
+                FindFirstObjectByType<GameNetworkManager>().OnConnectedToOpponent();
                 FindFirstObjectByType<GameManager>().StartGame(false);
             }
             else if (cmd == NetworkEvent.Type.Data)

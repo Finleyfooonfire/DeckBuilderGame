@@ -51,6 +51,7 @@ public class GameServer : MonoBehaviour
         {
             m_Connections.Add(c);
             Debug.Log("Accepted a connection.");
+            FindFirstObjectByType<GameNetworkManager>().OnConnectedToOpponent();
             FindFirstObjectByType<GameManager>().StartGame(true);
         }
 
