@@ -87,19 +87,36 @@ public class PlayingFieldSynch : MonoBehaviour
     }
 
     //Uses the client/server to send data to the other device.
-    public void Send()
+    public void SendCardChange()
     {
         CardsChangeIn changes = GetCardStatus();
         var client = FindAnyObjectByType<GameClient>();
+        Debug.Log("Sending Card Changes: " + changes);
         if (client != null)
         {
             //The client exists so Send data.
-            client.SendToServer(healthChange, changes);
+            client.SendCardChange(changes);
         }
         else
         {
             //It is server. Send data.
-            FindAnyObjectByType<GameServer>().SendToClient(healthChange, changes);
+            FindAnyObjectByType<GameServer>().SendCardChange(changes);
+        }
+    }
+
+    public void SendHealthAndMana()
+    {
+        Debug.Log("Sending Stats Changes: " + healthChange);
+        var client = FindAnyObjectByType<GameClient>();
+        if (client != null)
+        {
+            //The client exists so Send data.
+            client.SendHealthAndMana(healthChange);
+        }
+        else
+        {
+            //It is server. Send data.
+            FindAnyObjectByType<GameServer>().SendHealthAndMana(healthChange);
         }
     }
 
@@ -131,11 +148,13 @@ public class PlayingFieldSynch : MonoBehaviour
     }
 
     //Called by the client/server when data is recieved and acts upon it.
-    public void Recieve((HealthAndMana healthMana, CardsChangeOut recievedCardsUpdate) updates)
+    public void RecieveCards(CardsChangeOut recievedCardsUpdate)
     {
-        SetCardStatus(updates.recievedCardsUpdate);
-        UpdateHealthStatus(updates.healthMana);
-        GameManager.Instance.EndTurn();
+        SetCardStatus(recievedCardsUpdate);
+    }
+    public void RecieveStats(HealthAndMana healthMana)
+    {
+        UpdateHealthStatus(healthMana);
     }
 
     //Updates the board using the changes recieved.
@@ -165,7 +184,7 @@ public class PlayingFieldSynch : MonoBehaviour
                 cardPlayAreaGrid.FillSlot(closestSlot, card.Value.isPlayerCard);// Occupy this slot so no other card uses it
             }
 
-            
+
             cardInfo.manaCost = card.Value.manaCost;
             cardInfo.attackValue = card.Value.attackValue;
             cardInfo.defenseValue = card.Value.defenseValue;

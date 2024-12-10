@@ -115,15 +115,15 @@ public class GameManager : MonoBehaviour
         turnsTaken++;
         selectedAttackingCard = null;
         //UpdateTurn(); //No need to call this twice
-
+        synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
+        synch.SendHealthAndMana();
         if (isPlayerTurn)
         {
             DrawCard();
         }
         else 
         {
-            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
-            synch.Send();//Keenan addition. Send the update to the other device
+            synch.SendCardChange();//Keenan addition. Send the update to the other device
         }
         UpdateTurn();
     }

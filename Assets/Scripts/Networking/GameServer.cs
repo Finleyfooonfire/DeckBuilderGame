@@ -77,7 +77,11 @@ public class GameServer : MonoBehaviour
                             m_Driver.EndSend(writer);
                             break;
                         case NetMessageType.CardChange:
-                            playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                            playingFieldSynch.RecieveCards(NetworkSerializer.Instance.DeserializeCardChange(ref stream));
+                            GameManager.Instance.EndTurn();
+                            break;
+                        case NetMessageType.StatsChange:
+                            playingFieldSynch.RecieveStats(NetworkSerializer.Instance.DeserializeStatsChange(ref stream));
                             break;
                         case NetMessageType.EndGame:
                             Debug.Log("Ending game");
@@ -100,12 +104,21 @@ public class GameServer : MonoBehaviour
 
 
 
-    public void SendToClient(HealthAndMana healthMana, CardsChangeIn cardsChange)
+    public void SendHealthAndMana(HealthAndMana healthMana)
+    {
+        //Send an update to the client.
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
+        writer.WriteByte((byte)NetMessageType.StatsChange);
+        NetworkSerializer.Instance.SerializeStatsChange(healthMana, ref writer);
+        m_Driver.EndSend(writer);
+    }
+    
+    public void SendCardChange(CardsChangeIn cardsChange)
     {
         //Send an update to the client.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
         writer.WriteByte((byte)NetMessageType.CardChange);
-        NetworkSerializer.Instance.Serialize(healthMana, cardsChange, ref writer);
+        NetworkSerializer.Instance.SerializeCardChange(cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }
 

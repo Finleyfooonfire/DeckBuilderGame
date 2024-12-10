@@ -1,4 +1,5 @@
 using Unity.Networking.Transport;
+using Unity.VisualScripting;
 using UnityEngine;
 
 ///TODO: Sending card data between client and host: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
@@ -77,7 +78,11 @@ public class GameClient : MonoBehaviour
                         Debug.Log("Still connected");
                         break;
                     case NetMessageType.CardChange:
-                        playingFieldSynch.Recieve(NetworkSerializer.Instance.Deserialize(ref stream));
+                        playingFieldSynch.RecieveCards(NetworkSerializer.Instance.DeserializeCardChange(ref stream));
+                        GameManager.Instance.EndTurn();
+                        break;
+                    case NetMessageType.StatsChange:
+                        playingFieldSynch.RecieveStats(NetworkSerializer.Instance.DeserializeStatsChange(ref stream));
                         break;
                     case NetMessageType.EndGame:
                         Debug.Log("Ending game");
@@ -96,12 +101,21 @@ public class GameClient : MonoBehaviour
         }
     }
 
-    public void SendToServer(HealthAndMana healthMana, CardsChangeIn cardsChange)
+    public void SendHealthAndMana(HealthAndMana healthMana)
+    {
+        //Send an update to the server.
+        m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
+        writer.WriteByte((byte)NetMessageType.StatsChange);
+        NetworkSerializer.Instance.SerializeStatsChange(healthMana, ref writer);
+        m_Driver.EndSend(writer);
+    }
+
+    public void SendCardChange(CardsChangeIn cardsChange)
     {
         //Send an update to the server.
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
         writer.WriteByte((byte)NetMessageType.CardChange);
-        NetworkSerializer.Instance.Serialize(healthMana, cardsChange, ref writer);
+        NetworkSerializer.Instance.SerializeCardChange(cardsChange, ref writer);
         m_Driver.EndSend(writer);
     }
 
