@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class cardsappearing : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class cardsappearing : MonoBehaviour
         {
             player1card[i].SetActive(false);
             i++;
-            GameObject.Tag = i;
+            //gameObject.tag = player1card[i].tag;
         }
         int cardnumber = Random.Range(0, 5);
         player1card[cardnumber].SetActive(true);
@@ -30,12 +31,12 @@ public class cardsappearing : MonoBehaviour
         {
             player2card[i].SetActive(false);
             i++;
-            GameObject.Tag = i;
+            //gameObject.tag = player2card[i].tag;
         }
         cardnumber = Random.Range(0, 5);
         player2card[cardnumber].SetActive(true);
 
-        if (player1card.gameObject.tag == player2card.gameObject.tag)
+        if (player1card[i].CompareTag(player2card[i].tag))
         {
             widget.SetActive(true);
         }
