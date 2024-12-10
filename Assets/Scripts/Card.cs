@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -127,7 +126,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             selectedCard = this;
             Debug.Log($"{selectedCard.cardType} card selected");
 
-           CreatePlacementIndicator();
+            CreatePlacementIndicator();
         }
         else
         {
@@ -179,7 +178,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
                 }
             }
         }
-    }
+
 
         if (hoveredCard != null)
         {
@@ -304,11 +303,11 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
         cardInfo.cardImage = this.cardImage;
-        
+
 
         CardSpell cardSpell;
         switch (cardName)
-        { 
+        {
             case "Poison Drop":
                 cardSpell = cardObject.AddComponent<PoisonDropSpell>();
                 break;
