@@ -266,14 +266,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
-        if (playerDeck != null)
-        {
-            playerDeck.handCards.Remove(this);
-            playerDeck.DistributeHand();
-        }
-
-        Destroy(this);
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
@@ -322,14 +315,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
-        if (playerDeck != null)
-        {
-            playerDeck.handCards.Remove(this);
-            playerDeck.DistributeHand();
-        }
-
-        Destroy(this);
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
