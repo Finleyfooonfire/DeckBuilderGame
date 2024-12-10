@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,6 +33,10 @@ public class GameManager : MonoBehaviour
     //Keenan addition
     public PlayingFieldSynch synch { get; private set; }
     //END 
+
+    public TextMeshProUGUI gameOverText;
+    private bool isGameEnding = false;
+
     void Awake()
     {
         if (Instance == null)
@@ -51,6 +56,16 @@ public class GameManager : MonoBehaviour
         UpdateManaUI();
 
         endTurnButton.onClick.AddListener(EndTurn);
+
+        synch = FindAnyObjectByType<PlayingFieldSynch>();
+        UpdateLifeUI();
+        UpdateManaUI();
+        endTurnButton.onClick.AddListener(EndTurn);
+
+        if (gameOverText != null)
+        {
+            gameOverText.gameObject.SetActive(false);
+        }
     }
 
     
@@ -207,6 +222,14 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
+        if (isGameEnding) return;
+        isGameEnding = true;
+
+        if (playerWon)
+        {
+            synch.GameEnd();
+        }
+
         if (playerWon)
         {
             synch.GameEnd();
@@ -216,7 +239,26 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
         //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
-        SceneManager.LoadScene("MainMenu"); //Temporary
+        //SceneManager.LoadScene("MainMenu"); //Temporary
+
+        if (gameOverText != null)
+        {
+            gameOverText.text = playerWon ? "You Win!" : "You Lose!";
+            gameOverText.gameObject.SetActive(true);
+        }
+
+        if (endTurnButton != null)
+        {
+            endTurnButton.interactable = false;
+        }
+
+        StartCoroutine(DelayedSceneTransition());
+}
+
+    private IEnumerator DelayedSceneTransition()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("MainMenu");
     }
 
     //KEENAN: Gets all the cards present.

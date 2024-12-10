@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Linq;
 
-public class Card : MonoBehaviour, IPointerClickHandler
+public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public bool isPlayerCard;
     //Keenan modification
@@ -22,12 +22,17 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public Sprite cardImage;
     private static Card selectedCard;
     private static GameObject placementIndicator;
-    private static Vector3 playedScale = new Vector3(1.5f, 1f, 1f);
+    private static Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
 
     private Transform cardPlayArea;
     //Keenan modification
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
+
+    private static GameObject zoomPanel;
+    private static bool isZoomed = false;
+    private static Card hoveredCard;
+    private static Vector3 defaultZoomPosition = new Vector3(0, 0, -5);
 
     CardPlayAreaGrid cardPlayAreaGrid;
     //END
@@ -41,6 +46,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         //mattmods
         cardName = stats.description;
         cardFaction = stats.faction.ToString();
+
+        cardImage = stats.cardImage;
+
+
         faction = stats.faction;
         cardType = stats.cardType;
         //end
@@ -49,7 +58,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError("CardPlayArea not found in the scene!");
         }
-        
+
 
         cardPlayAreaGrid = cardPlayArea.GetComponent<CardPlayAreaGrid>();
 
@@ -62,7 +71,43 @@ public class Card : MonoBehaviour, IPointerClickHandler
             }
         }
 
+        if (zoomPanel == null)
+        {
+            CreateZoomPanel();
+        }
+    }
 
+
+
+    void CreateZoomPanel()
+    {
+        zoomPanel = new GameObject("ZoomPanel");
+        zoomPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        RectTransform rectTransform = zoomPanel.AddComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(300, 400);
+
+        Image image = zoomPanel.AddComponent<Image>();
+        image.raycastTarget = false;
+
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.anchoredPosition = Vector2.zero;
+
+        zoomPanel.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        hoveredCard = this;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (hoveredCard == this)
+        {
+            hoveredCard = null;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -91,9 +136,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         if (placementIndicator != null) Destroy(placementIndicator);
 
-        placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        placementIndicator = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
         placementIndicator.transform.localScale = playedScale;
+        placementIndicator.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         Renderer renderer = placementIndicator.GetComponent<Renderer>();
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
@@ -117,6 +163,48 @@ public class Card : MonoBehaviour, IPointerClickHandler
             {
                 PlaceCard();
             }
+        }
+
+        if (selectedCard == this && placementIndicator != null)
+        {
+            UpdatePlacementIndicator();
+            if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject()) PlaceCard();
+        }
+
+        if (hoveredCard != null)
+        {
+            if (Input.GetMouseButtonDown(1) && !isZoomed)
+            {
+                ShowZoomedCard(hoveredCard);
+            }
+        }
+
+        if (isZoomed && Input.GetMouseButtonDown(0))
+        {
+            HideZoomedCard();
+        }
+    }
+
+    void ShowZoomedCard(Card card)
+    {
+        if (zoomPanel != null)
+        {
+            Image panelImage = zoomPanel.GetComponent<Image>();
+            if (panelImage != null)
+            {
+                panelImage.sprite = card.cardImage;
+                zoomPanel.SetActive(true);
+                isZoomed = true;
+            }
+        }
+    }
+
+    void HideZoomedCard()
+    {
+        if (zoomPanel != null)
+        {
+            zoomPanel.SetActive(false);
+            isZoomed = false;
         }
     }
 
@@ -146,44 +234,21 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
         cardPlayAreaGrid.Remove(closestSlot, true);
 
-        GameObject cardObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        GameObject cardObject = gameObject;
         cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .1f;
         cardObject.transform.localPosition = closestSlot;
 
-        cardObject.transform.localScale = playedScale;
-        cardObject.transform.rotation = Quaternion.Euler(90, 0, 0);
-
-        Renderer cardRenderer = cardObject.GetComponent<Renderer>();
-        Material cardMaterial = new Material(Shader.Find("Unlit/Texture"));
-
-        if (cardImage != null)
-        {
-            cardMaterial.mainTexture = cardImage.texture;
-        }
-        else
-        {
-            cardMaterial = new Material(Shader.Find("Standard"));
-            Image cardImageComponent = GetComponent<Image>();
-            if (cardImageComponent != null)
-            {
-                cardMaterial.color = cardImageComponent.color;
-            }
-            else
-            {
-                cardMaterial.color = Color.white;
-            }
-        }
-        cardRenderer.material = cardMaterial;
-
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
         cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
 
         //Keenan Addition
         CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
@@ -198,7 +263,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
             playerDeck.handCards.Remove(this);
         }
 
-        Destroy(gameObject);
+        Destroy(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
