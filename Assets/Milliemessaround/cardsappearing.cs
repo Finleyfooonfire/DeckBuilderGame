@@ -10,8 +10,8 @@ public class cardsappearing : MonoBehaviour
     public GameObject[] player2card;
     public GameObject widget;
 
-    private string tag1;
-    private string tag2;
+    private GameObject tag1;
+    private GameObject tag2;
 
 
     public void OnDealsnap ()
@@ -30,6 +30,7 @@ public class cardsappearing : MonoBehaviour
         }
         int cardnumber = Random.Range(0, 5);
         player1card[cardnumber].SetActive(true);
+        tag1 = player1card[i];
 
         i = 0;
         while (i < player2card.Length - 1)
@@ -41,8 +42,9 @@ public class cardsappearing : MonoBehaviour
         }
         cardnumber = Random.Range(0, 5);
         player2card[cardnumber].SetActive(true);
+        tag2 = player2card[i];
 
-        if (tag1 == tag2)
+        if (tag1.CompareTag(tag2.tag))
         {
             widget.SetActive(true);
         }
