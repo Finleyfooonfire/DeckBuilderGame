@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PoisonDropSpell : CardSpell
 {
+    //Inflicts poison
+
     int life;
     CardPlayAreaGrid cardGrid;
 

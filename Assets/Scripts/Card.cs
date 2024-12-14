@@ -307,6 +307,9 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             case "March Of Judgement":
                 cardSpell = cardObject.AddComponent<MarchSpell>();
                 break;
+            case "Last wish of a dying star":
+                cardSpell = cardObject.AddComponent<WishSpell>();
+                break;
             default:
                 Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
                 break;

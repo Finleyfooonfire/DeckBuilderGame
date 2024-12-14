@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class MarchSpell : CardSpell
+public class WishSpell : CardSpell
 {
-    //Gives all allies 1 attack buff.
+    //Prevent death for 1 turn
 
     int life;
     CardPlayAreaGrid cardGrid;
@@ -38,7 +38,7 @@ public class MarchSpell : CardSpell
 
     public override void DoMagic()
     {
-        //March Of Judgement: for the rest of the turn
+        //Last wish of a dying star: for the rest of the turn
         //Get the card the spell is attached to.
         Vector3 findCardPosition = transform.position;
         findCardPosition.y = 0.1f;
@@ -46,7 +46,11 @@ public class MarchSpell : CardSpell
         if (card != null)
         {
             //Remove 1 health from the card.
-            card.attackValue++;
+            if (card.defenseValue == 0)
+            {
+                card.defenseValue++;
+                GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//Once used, destroy self.
+            }
         }
         else
         {
