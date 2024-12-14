@@ -26,7 +26,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             //Keenan modification
-            CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
+            CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length)]; 
             GameObject cardObj = Instantiate<GameObject>(cardStats.cardPrefab, transform);
 
             cardObj.transform.localPosition = new Vector3();
