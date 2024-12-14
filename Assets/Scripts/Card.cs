@@ -83,7 +83,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     void CreateZoomPanel()
     {
         zoomPanel = new GameObject("ZoomPanel");
-        zoomPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        zoomPanel.transform.SetParent(GameObject.Find("GameUI").transform, false);
         RectTransform rectTransform = zoomPanel.AddComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(300, 400);
 
