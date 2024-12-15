@@ -15,12 +15,19 @@ public abstract class CardSpell : MonoBehaviour
 
     public virtual void OnUpdateTurn()
     {
-        if (!GetComponent<CardInfo>().isPlayerCard) return;//Don't update if the card isn't owned by the player.
-        //Do the spell update
-        DoMagic();
-        life--;
-        if (life != 0) return;//Using a life of 0 make it invincible.
-        OnDecommissionCard();
+        if (GetComponent<CardInfo>().isPlayerCard) //Don't update if the card isn't owned by the player.
+        {
+            if (life == 0)//Using a life of -1 make it invincible.
+            {
+                OnDecommissionCard();
+            }
+            else
+            {
+                //Do the spell update
+                DoMagic();
+                life--;
+            }
+        }
     }
 
     protected virtual void OnDecommissionCard()
