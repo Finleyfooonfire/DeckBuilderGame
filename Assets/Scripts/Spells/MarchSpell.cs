@@ -12,8 +12,9 @@ public class MarchSpell : CardSpell
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
         if (card != null)
         {
-            //Remove 1 health from the card.
+            //Remove 1 attack from the card.
             card.attackValue--;
+            Debug.Log("March card more attack has ended");
         }
         base.OnDecommissionCard();
     }
@@ -27,8 +28,9 @@ public class MarchSpell : CardSpell
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
         if (card != null)
         {
-            //Remove 1 health from the card.
+            //Add 1 attack to the card
             card.attackValue++;
+            Debug.Log("March card more attack");
         }
         else
         {
