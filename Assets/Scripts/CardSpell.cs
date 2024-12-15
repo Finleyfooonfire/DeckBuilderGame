@@ -15,7 +15,7 @@ public abstract class CardSpell : MonoBehaviour
 
     public virtual void OnUpdateTurn()
     {
-        if (GetComponent<CardInfo>().isPlayerCard) //Don't update if the card isn't owned by the player.
+        if (GetComponent<CardInfo>().isPlayerCard && transform.parent != GameObject.Find("PlayerGrave").transform) //Don't update if the card isn't owned by the player.
         {
             if (life == 0)//Using a life of -1 make it invincible.
             {
