@@ -10,5 +10,6 @@ public class CardInfo : MonoBehaviour
     public CardType cardType;
     public Sprite cardImage;
     public bool exhausted;//Keenan addition
+    public bool invincible;//Keenan addition
     public CardSpell spell;//Keenan addition
 }

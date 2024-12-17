@@ -38,10 +38,10 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
             if (!targetCard.GetComponent<CardInfo>().exhausted)
             {
                 GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
-                killedInRetaliation = (GetComponent<CardInfo>().defenseValue <= 0);
+                killedInRetaliation = ((GetComponent<CardInfo>().defenseValue <= 0) && !GetComponent<CardInfo>().invincible);
             }
 
-            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
+            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0 && !targetCard.GetComponent<CardInfo>().invincible)
             {
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
                 GameManager.Instance.synch.AddKilledCard(targetCard.gameObject);//The card has been damaged and therefore changed. Keenan addition.

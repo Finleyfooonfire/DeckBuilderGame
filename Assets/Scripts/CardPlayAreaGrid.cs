@@ -25,7 +25,6 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
     }
 
-
     [SerializeField] Vector2 gridSize = new Vector2(5, 2);
     [SerializeField] Vector2 slotSize = new Vector2(0.635f, 0.889f);
     [SerializeField] Vector2 slotSpacing = new Vector2(27, 50);
@@ -190,13 +189,36 @@ public class CardPlayAreaGrid : MonoBehaviour
 #nullable enable
     public CardInfo? FindCardAtSlotPosition(Vector3 slotToQuery)
     {
+        const int PossibleCards = 5;
+        slotToQuery.y = 0.1f;
         CardInfo? foundCard = null;
-        Collider[] intersecting = new Collider[1];
+        Collider[] intersecting = new Collider[PossibleCards];
         Physics.OverlapSphereNonAlloc(slotToQuery, 0.01f, intersecting);
-        if (intersecting.Length != 0 && intersecting[0] != null)
+        int i = 0;
+        while (i < PossibleCards)
         {
-            intersecting[0].transform.parent.TryGetComponent<CardInfo>(out foundCard);
+            if (intersecting.Length != 0 && intersecting[i] != null)
+            {
+                intersecting[0].transform.parent.TryGetComponent<CardInfo>(out foundCard);
+                if (foundCard.cardType == CardType.Spell)
+                {
+                    if (i == (PossibleCards-1))
+                    {
+                        foundCard = null;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else { break; }
         }
+        Debug.Log($"Found card {foundCard}");
         return foundCard;
     }
 #nullable restore

@@ -40,33 +40,37 @@ public class PlayingFieldSynch : MonoBehaviour
     //Call this when an enemy card is killed
     public void AddKilledCard(GameObject killedCard)
     {
-        killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+        if (!killedCard.GetComponent<CardInfo>().invincible)
         {
-            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+            killedCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+            if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
+            }
+            killedCard.transform.parent = opponentGrave;
+            killedCard.transform.localPosition = new Vector3();
         }
-        else
-        {
-            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, false);
-        }
-        killedCard.transform.parent = opponentGrave;
-        killedCard.transform.localPosition = new Vector3();
     }
     //Call this when a player's card is killed
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
-        killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
-        if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
-        {
-            cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
-        }
-        else
-        {
-            cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
-        }
-        killedCard.transform.parent = playerGrave;
-        killedCard.transform.localPosition = new Vector3();
-    }
+        if (!killedCard.GetComponent<CardInfo>().invincible) {
+            killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
+            if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
+            {
+                cardPlayAreaGrid.FreeSpellSlot(killedCard.transform.position);
+            }
+            else
+            {
+                cardPlayAreaGrid.FreeSlot(killedCard.transform.position, true);
+            }
+            killedCard.transform.parent = playerGrave;
+            killedCard.transform.localPosition = new Vector3();
+        } }
     //Call this when a card is revived
     public void AddRevivedCard(GameObject revivedCard)
     {

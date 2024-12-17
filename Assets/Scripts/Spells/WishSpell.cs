@@ -12,10 +12,9 @@ public class WishSpell : CardSpell
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
         if (card != null)
         {
-            //If the card the spell card is attached to is dying this turn, use up the spell and keep the card alive.
             if (card.defenseValue <= 0)
             {
-                card.defenseValue = 0;
+                card.invincible = false;
             }
         }
         base.OnDecommissionCard();
@@ -29,12 +28,7 @@ public class WishSpell : CardSpell
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
         if (card != null)
         {
-            //If the card the spell card is attached to is dying this turn, use up the spell and keep the card alive.
-            if (card.defenseValue <= 0)
-            {
-                card.defenseValue = int.MaxValue;
-                life--;//Only destroy the card if the card has been used.
-            }
+            card.invincible = true;
         }
         else
         {
