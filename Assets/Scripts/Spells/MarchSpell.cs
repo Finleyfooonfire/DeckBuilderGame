@@ -52,5 +52,6 @@ public class MarchSpell : CardSpell
                 Debug.Log("March card more attack has started");
             }
         }
+        life--;
     }
 }

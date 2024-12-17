@@ -25,7 +25,6 @@ public abstract class CardSpell : MonoBehaviour
             {
                 //Do the spell update
                 DoMagic();
-                life--;
             }
         }
     }

@@ -21,5 +21,6 @@ public class PoisonDropSpell : CardSpell
             Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
             GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//If there is no card attached, destroy self.
         }
+        life--;
     }
 }
