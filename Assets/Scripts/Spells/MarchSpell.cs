@@ -6,15 +6,20 @@ public class MarchSpell : CardSpell
 
     protected override void OnDecommissionCard() 
     { 
-        //Get the card the spell is attached to.
+        //Get all cards on the same team
         Vector3 findCardPosition = transform.position;
         findCardPosition.y = 0.1f;
-        CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
-        if (card != null)
+        Vector3[] cardPositions = cardGrid.GetSlotPositions(true, false);
+        CardInfo[] cards = new CardInfo[5];
+        for (int i = 0; i < cards.Length; i++)
         {
-            //Remove 1 attack from the card.
-            card.attackValue--;
-            Debug.Log("March card more attack has ended");
+            cards[i] = cardGrid.FindCardAtSlotPosition(cardPositions[i]);
+            if (cards[i] != null)
+            {
+                //Remove 1 attack from the card.
+                cards[i].attackValue--;
+                Debug.Log("March card more attack has ended");
+            }
         }
         base.OnDecommissionCard();
     }
@@ -26,16 +31,24 @@ public class MarchSpell : CardSpell
         Vector3 findCardPosition = transform.position;
         findCardPosition.y = 0.1f;
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
-        if (card != null)
-        {
-            //Add 1 attack to the card
-            card.attackValue++;
-            Debug.Log("March card more attack");
-        }
-        else
+        if (card == null)
         {
             Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
             GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//If there is no card attached, destroy self.
+        }
+
+        //Buff the cards
+        Vector3[] cardPositions = cardGrid.GetSlotPositions(true, false);
+        CardInfo[] cards = new CardInfo[5];
+        for (int i = 0; i < cards.Length; i++)
+        {
+            cards[i] = cardGrid.FindCardAtSlotPosition(cardPositions[i]);
+            if (cards[i] != null)
+            {
+                //Remove 1 attack from the card.
+                cards[i].attackValue++;
+                Debug.Log("March card more attack has started");
+            }
         }
     }
 }

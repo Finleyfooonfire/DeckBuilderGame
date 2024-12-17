@@ -1,7 +1,4 @@
-using NUnit.Framework.Constraints;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CardPlayAreaGrid : MonoBehaviour
@@ -204,5 +201,18 @@ public class CardPlayAreaGrid : MonoBehaviour
             foundCard = intersecting[0].transform.parent.GetComponent<CardInfo>();
         }
         return foundCard;
+    }
+
+    public Vector3[] GetSlotPositions(bool getPlayerPos, bool getOpponentPos)
+    {
+        List<Vector3> slotPositions = new List<Vector3>();
+        foreach (CardPlayAreaSlot slot in GridSlots)
+        {
+            if ((slot.IsPlayerSlot && getPlayerPos) || (!slot.IsPlayerSlot && getOpponentPos))
+            {
+                slotPositions.Add(slot.SlotPosition);
+            }
+        }
+        return slotPositions.ToArray();
     }
 }
