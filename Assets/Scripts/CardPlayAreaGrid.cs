@@ -187,21 +187,19 @@ public class CardPlayAreaGrid : MonoBehaviour
     }
 
     //Finds the CardInfo of the (non-spell) card at the slot
-    public CardInfo FindCardAtSlotPosition(Vector3 slotToQuery)
+#nullable enable
+    public CardInfo? FindCardAtSlotPosition(Vector3 slotToQuery)
     {
-        CardInfo foundCard = null;
+        CardInfo? foundCard = null;
         Collider[] intersecting = new Collider[1];
         Physics.OverlapSphereNonAlloc(slotToQuery, 0.01f, intersecting);
-        if (intersecting.Length == 0)
+        if (intersecting.Length != 0 && intersecting[0] != null)
         {
-            return foundCard;
-        }
-        else
-        {
-            foundCard = intersecting[0].transform.parent.GetComponent<CardInfo>();
+            intersecting[0].transform.parent.TryGetComponent<CardInfo>(out foundCard);
         }
         return foundCard;
     }
+#nullable restore
 
     public Vector3[] GetSlotPositions(bool getPlayerPos, bool getOpponentPos)
     {

@@ -42,7 +42,9 @@ public class MarchSpell : CardSpell
         CardInfo[] cards = new CardInfo[5];
         for (int i = 0; i < cards.Length; i++)
         {
-            cards[i] = cardGrid.FindCardAtSlotPosition(cardPositions[i]);
+            var temp = cardPositions[i];
+            temp.y = .1f;
+            cards[i] = cardGrid.FindCardAtSlotPosition(temp);
             if (cards[i] != null)
             {
                 //Remove 1 attack from the card.
