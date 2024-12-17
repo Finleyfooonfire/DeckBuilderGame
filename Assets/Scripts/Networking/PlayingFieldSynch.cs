@@ -178,7 +178,7 @@ public class PlayingFieldSynch : MonoBehaviour
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.localPosition = card.Value.position;
-            cardObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+            cardObject.transform.rotation = Quaternion.Euler(-90, -180, 0);
 
             CardInfo cardInfo = cardObject.AddComponent<CardInfo>();//Get the card info so that the card type of the card can be used in card placement.
 
