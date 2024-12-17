@@ -10,6 +10,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //Keenan modification
     public CardStats stats;
     [HideInInspector] public int manaCost;
+    [HideInInspector] public string manaColour;
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
     //End
@@ -41,6 +42,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
         //Keenan modification
         manaCost = stats.manaCost;
+        manaColour = stats.manaTypeRequired;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
@@ -244,7 +246,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayAreaGrid.FillSlot(closestSlot, true);
 
         GameObject cardObject = gameObject;
-        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .1f;
@@ -253,6 +255,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
         cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
@@ -282,7 +285,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayAreaGrid.FillSpellSlot(closestSlot);
 
         GameObject cardObject = gameObject;
-        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .05f;//Place the card physically bellow the card it is modulating
@@ -291,6 +294,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
         cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;

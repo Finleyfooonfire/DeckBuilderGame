@@ -58,7 +58,8 @@ public class PlayingFieldSynch : MonoBehaviour
     //Call this when a player's card is killed
     public void AddKilledFriendlyCard(GameObject killedCard)
     {
-        if (!killedCard.GetComponent<CardInfo>().invincible) {
+        if (!killedCard.GetComponent<CardInfo>().invincible)
+        {
             killedFriendlyCards.Add(new KeyValuePair<string, CardInfo>(killedCard.name, killedCard.GetComponent<CardInfo>()));
             if (killedCard.GetComponent<CardInfo>().cardType.Equals(CardType.Spell))
             {
@@ -70,7 +71,8 @@ public class PlayingFieldSynch : MonoBehaviour
             }
             killedCard.transform.parent = playerGrave;
             killedCard.transform.localPosition = new Vector3();
-        } }
+        }
+    }
     //Call this when a card is revived
     public void AddRevivedCard(GameObject revivedCard)
     {
@@ -169,7 +171,10 @@ public class PlayingFieldSynch : MonoBehaviour
         {
             if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
 
-            GameObject cardObject = Instantiate(Resources.Load<GameObject>("CardPrefab"));
+            string colour = card.Value.manaColour;
+            string cardName = card.Key[..card.Key.IndexOf("[ENDOFNAME]")].Replace(" ", string.Empty);
+            Debug.Log("Adding from opponent: " + colour + " " + cardName);
+            GameObject cardObject = Instantiate(Resources.Load<GameObject>("Cards\\" + colour + "Cards\\" + cardName));
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
             cardObject.transform.localPosition = card.Value.position;
@@ -190,6 +195,7 @@ public class PlayingFieldSynch : MonoBehaviour
 
 
             cardInfo.manaCost = card.Value.manaCost;
+            cardInfo.manaColour = card.Value.manaColour;
             cardInfo.attackValue = card.Value.attackValue;
             cardInfo.defenseValue = card.Value.defenseValue;
             cardInfo.faction = card.Value.faction;
@@ -199,7 +205,7 @@ public class PlayingFieldSynch : MonoBehaviour
             {
                 Debug.LogError("Card sprite is null");
             }
-            cardObject.GetComponentInChildren<SpriteRenderer>().sprite = cardInfo.cardImage;
+            //cardObject.GetComponentInChildren<SpriteRenderer>().sprite = cardInfo.cardImage;
 
             CardAttack cardAttack = cardObject.AddComponent<CardAttack>();
         }
