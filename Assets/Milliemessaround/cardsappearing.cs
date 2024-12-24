@@ -58,6 +58,11 @@ public class cardsappearing : MonoBehaviour
             print(tag1.tag);
             print(tag2.tag);
         }
+        
+        else
+        {
+            pair = false;
+        }
 
     }
 
