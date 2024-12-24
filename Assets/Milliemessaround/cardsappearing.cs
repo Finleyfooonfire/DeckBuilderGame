@@ -93,5 +93,9 @@ public class cardsappearing : MonoBehaviour
         SceneManager.LoadScene("Millie");
     }
 
+    public void OpenMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 
 }

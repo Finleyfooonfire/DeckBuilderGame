@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/PERSONALSCENES/Millie.unity
+    guid: 1aa4ba3dd432f4440bc54ff4a4a55d17
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: b1b26480ba718244a99a1c605542e61b
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
