@@ -33,7 +33,7 @@ public class cardsappearing : MonoBehaviour
 
 
         }
-        int cardnumber = Random.Range(0, 5);
+        int cardnumber = Random.Range(0, 9);
         player1card[cardnumber].SetActive(true);
         tag1 = player1card[cardnumber];
         //print(cardnumber);
@@ -46,7 +46,7 @@ public class cardsappearing : MonoBehaviour
             //tag2 = player2card[i];
 
         }
-        cardnumber = Random.Range(0, 5);
+        cardnumber = Random.Range(0, 9);
         player2card[cardnumber].SetActive(true);
         tag2 = player2card[cardnumber];
         //print(cardnumber);

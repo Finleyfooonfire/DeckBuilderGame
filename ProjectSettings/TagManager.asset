@@ -4,12 +4,17 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Swamp
   - Sir Tuppus
   - Segnour Skink
   - Archduke Alligator
   - Commoner Chameleon
   - Poison Drop
+  - Cecelia
+  - bloodedge
+  - deathwhistle
+  - herald
+  - lastwish
+  - malachite
   layers:
   - Default
   - TransparentFX
