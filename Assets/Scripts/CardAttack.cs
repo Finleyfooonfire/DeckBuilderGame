@@ -19,8 +19,8 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
     //Checks to see if the card is exhausted.
     public void OnUpdateTurn()
     {
-        if (GetComponent<CardInfo>().isPlayerCard) 
-        { 
+        if (GetComponent<CardInfo>().isPlayerCard)
+        {
             canAttack = true;
             GetComponent<CardInfo>().exhausted = exhaustionTimer > 0;
             exhaustionTimer--;
@@ -74,8 +74,8 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
         {
             //Select the card.
             Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
-            //If they are the player's card, set as an attacking card.
-            if (GetComponent<CardInfo>().isPlayerCard)
+            //If they are the player's card, set as an attacking card. (And only allow to attack once)
+            if (GetComponent<CardInfo>().isPlayerCard && canAttack)
             {
                 if (FindAnyObjectByType<GameManager>().selectedAttackingCard != this && transform.parent == FindFirstObjectByType<CardPlayAreaGrid>().transform)
                 {
@@ -83,12 +83,9 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 }
                 else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard && info.transform.parent.gameObject.name.Equals("CardPlayArea"))))//Only attack the enemy directly if no enemy cards are found.
                 {
-                    if (canAttack)
-                    {
-                        FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
-                        canAttack = false;
-                        exhaustionTimer = 1;
-                    }
+                    FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
+                    canAttack = false;
+                    exhaustionTimer = 1;
                 }
             }
             //If not, set as the attacked card
