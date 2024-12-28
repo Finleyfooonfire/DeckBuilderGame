@@ -112,6 +112,11 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (opponentLife <= 0)
+        {
+            GameOver(true);
+        }
+
         if (isPlayerTurn) UpdateCards();
         isPlayerTurn = !isPlayerTurn;
         Debug.Log(isPlayerTurn);
@@ -203,12 +208,6 @@ public class GameManager : MonoBehaviour
             UpdateLifeUI();
 
             damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
-
-            if (opponentLife <= 0)
-            {
-                GameOver(true);
-            }
-
             selectedAttackingCard = null;
         }
     }
@@ -261,6 +260,7 @@ public class GameManager : MonoBehaviour
         {
             endTurnButton.interactable = false;
         }
+
 
         StartCoroutine(DelayedSceneTransition());
 }

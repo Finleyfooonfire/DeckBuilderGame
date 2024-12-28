@@ -62,6 +62,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
                 GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
             }
+            canAttack = false;
             exhaustionTimer = 1;
         }
     }
@@ -82,7 +83,12 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 }
                 else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard && info.transform.parent.gameObject.name.Equals("CardPlayArea"))))//Only attack the enemy directly if no enemy cards are found.
                 {
-                    FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
+                    if (canAttack)
+                    {
+                        FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
+                        canAttack = false;
+                        exhaustionTimer = 1;
+                    }
                 }
             }
             //If not, set as the attacked card
