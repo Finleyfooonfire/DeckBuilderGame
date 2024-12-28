@@ -52,6 +52,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         synch = FindAnyObjectByType<PlayingFieldSynch>();
+        playerMana = 5;
+        opponentMana = 5;
+
         UpdateLifeUI();
         UpdateManaUI();
         endTurnButton.onClick.AddListener(EndTurn);
