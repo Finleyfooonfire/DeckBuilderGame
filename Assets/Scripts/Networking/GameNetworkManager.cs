@@ -1,10 +1,6 @@
-using System.Net.Sockets;
-using System.Net;
-using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
-using System.Net.WebSockets;
 using Unity.Networking.Transport;
+using UnityEngine;
 
 public class GameNetworkManager : MonoBehaviour
 {
@@ -12,21 +8,33 @@ public class GameNetworkManager : MonoBehaviour
     [SerializeField] GameObject server;
     [SerializeField] GameObject client;
     [SerializeField] GameObject startButtons;
+    [SerializeField] GameObject startButtonsButtons;
     //[SerializeField] GameObject serverUI;
     //[SerializeField] TMP_Text serverIP;
     //[SerializeField] GameObject clientUI;
     //[SerializeField] GameObject IPButton;
     [SerializeField] TMP_InputField IPInput;
     public bool Turn;
-    
+    bool connected;
+
+    public void OnConnectedToOpponent()
+    {
+        connected = true;
+    }
+
     //What happens when the user clicks on the start as host or start as client buttons.
     public void OnStartGame(bool setHost)
     {
-        startButtons.SetActive(false);
         isHost = setHost;
+        startButtonsButtons.SetActive(false);
         StartUpNetwork();
-       
-    
+    }
+    private void Update()
+    {
+        if (connected)
+        { 
+            startButtons.SetActive(false);
+        }
     }
 
     /*
@@ -49,7 +57,7 @@ public class GameNetworkManager : MonoBehaviour
 
     void StartUpNetwork()
     {
-        
+
         if (isHost)//What happens if the user is a host.
         {
             //The host is the server.

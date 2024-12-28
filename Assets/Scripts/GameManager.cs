@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,6 +33,10 @@ public class GameManager : MonoBehaviour
     //Keenan addition
     public PlayingFieldSynch synch { get; private set; }
     //END 
+
+    public TextMeshProUGUI gameOverText;
+    private bool isGameEnding = false;
+
     void Awake()
     {
         if (Instance == null)
@@ -47,10 +52,17 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         synch = FindAnyObjectByType<PlayingFieldSynch>();
+        playerMana = 5;
+        opponentMana = 5;
+
         UpdateLifeUI();
         UpdateManaUI();
-
         endTurnButton.onClick.AddListener(EndTurn);
+
+        if (gameOverText != null)
+        {
+            gameOverText.gameObject.SetActive(false);
+        }
     }
 
     
@@ -100,20 +112,26 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (opponentLife <= 0)
+        {
+            GameOver(true);
+        }
+
+        if (isPlayerTurn) UpdateCards();
         isPlayerTurn = !isPlayerTurn;
         Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
         //UpdateTurn(); //No need to call this twice
-
+        synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
+        synch.SendHealthAndMana();
         if (isPlayerTurn)
         {
             DrawCard();
         }
         else 
         {
-            synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
-            synch.Send();//Keenan addition. Send the update to the other device
+            synch.SendCardChange();//Keenan addition. Send the update to the other device
         }
         UpdateTurn();
     }
@@ -168,6 +186,18 @@ public class GameManager : MonoBehaviour
             targetCard = null;
         }
     }
+
+    void UpdateCards()
+    {
+        CardSpell spell = null;
+        foreach (var cardInfo in FindObjectsByType<CardInfo>(FindObjectsSortMode.None))
+        {
+            if (cardInfo.gameObject.TryGetComponent<CardSpell>(out spell))
+            {
+                spell.OnUpdateTurn();
+            }
+        }
+    }
     //END
 
     public void AttackPlayerDirectly()
@@ -178,12 +208,6 @@ public class GameManager : MonoBehaviour
             UpdateLifeUI();
 
             damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
-
-            if (opponentLife <= 0)
-            {
-                GameOver(true);
-            }
-
             selectedAttackingCard = null;
         }
     }
@@ -207,6 +231,14 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
+        if (isGameEnding) return;
+        isGameEnding = true;
+
+        if (playerWon)
+        {
+            synch.GameEnd();
+        }
+
         if (playerWon)
         {
             synch.GameEnd();
@@ -216,7 +248,27 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("DamageDealt", damageDealt);
 
         //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
-        SceneManager.LoadScene("MainMenu"); //Temporary
+        //SceneManager.LoadScene("MainMenu"); //Temporary
+
+        if (gameOverText != null)
+        {
+            gameOverText.text = playerWon ? "You Win!" : "You Lose!";
+            gameOverText.gameObject.SetActive(true);
+        }
+
+        if (endTurnButton != null)
+        {
+            endTurnButton.interactable = false;
+        }
+
+
+        StartCoroutine(DelayedSceneTransition());
+}
+
+    private IEnumerator DelayedSceneTransition()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("MainMenu");
     }
 
     //KEENAN: Gets all the cards present.
