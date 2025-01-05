@@ -9,8 +9,9 @@ public class cardsappearing : MonoBehaviour
     public GameObject snapcard;
     public GameObject[] player1card;
     public GameObject[] player2card;
-    public GameObject widget;
-    public GameObject widget2;
+    public GameObject Player1WinScreen;
+    public GameObject Player2WinScreen;
+    public GameObject SnapWidget;
     private bool pair = false;
     private GameObject tag1;
     private GameObject tag2;
@@ -55,6 +56,7 @@ public class cardsappearing : MonoBehaviour
         {
             pair = true;
             //widget.SetActive(true);
+            SnapWidget.SetActive(true);
             print(tag1.tag);
             print(tag2.tag);
         }
@@ -62,6 +64,7 @@ public class cardsappearing : MonoBehaviour
         else
         {
             pair = false;
+            SnapWidget.SetActive(false);
         }
 
     }
@@ -72,13 +75,15 @@ public class cardsappearing : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
-                widget.SetActive(true);
+                Player1WinScreen.SetActive(true);
                 winner = true;
+                SnapWidget.SetActive(false);
             }
             else if (Input.GetKeyDown(KeyCode.RightShift))
             {
-                widget2.SetActive(true);
+                Player2WinScreen.SetActive(true);
                 winner = true;
+                SnapWidget.SetActive(false);
             }
         }
 
