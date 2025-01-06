@@ -56,6 +56,7 @@ public struct CardInfoStruct
 {
     public bool isPlayerCard;
     public int manaCost;
+    public string manaColour;
     public int attackValue;
     public int defenseValue;
     public Faction faction;
@@ -98,13 +99,8 @@ class NetworkSerializer
 
     //Convert changes ingame into a string that can be sent on the network.
     ///TODO: Packaging Card movement data into packet to be sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public void Serialize(HealthAndMana healthMana, CardsChangeIn cardsChange, ref DataStreamWriter writer)
+    public void SerializeCardChange(CardsChangeIn cardsChange, ref DataStreamWriter writer)
     {
-        writer.WriteByte((byte)healthMana.playerMana);
-        writer.WriteByte((byte)healthMana.opponentMana);
-        writer.WriteByte((byte)healthMana.playerLife);
-        writer.WriteByte((byte)healthMana.opponentLife);
-
         foreach (var x in cardsChange)
         {
             //Write the number of cards in the list
@@ -114,6 +110,7 @@ class NetworkSerializer
             {
                 writer.WriteByte((byte)(x[i].Value.isPlayerCard ? 1 : 0));
                 writer.WriteByte((byte)x[i].Value.manaCost);
+                writer.WriteFixedString32((FixedString32Bytes)x[i].Value.manaColour);
                 writer.WriteByte((byte)x[i].Value.attackValue);
                 writer.WriteByte((byte)x[i].Value.defenseValue);
                 writer.WriteFixedString4096((FixedString4096Bytes)x[i].Key);
@@ -127,28 +124,39 @@ class NetworkSerializer
             }
         }
     }
+    
+    public void SerializeStatsChange(HealthAndMana healthMana, ref DataStreamWriter writer)
+    {
+        writer.WriteByte((byte)healthMana.playerMana);
+        writer.WriteByte((byte)healthMana.opponentMana);
+        writer.WriteByte((byte)healthMana.playerLife);
+        writer.WriteByte((byte)healthMana.opponentLife);
+    }
 
 
     ///TODO: Translating Card Data packets that are sent: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
-    public (HealthAndMana healthMana, CardsChangeOut cardsChange) Deserialize(ref DataStreamReader reader)
+    public CardsChangeOut DeserializeCardChange(ref DataStreamReader reader)
     {
-        return (ReadHealthAndMana(ref reader), new CardsChangeOut(
+        return new CardsChangeOut(
             ReadListOfCardInfo(ref reader),//playedCards
             ReadListOfCardInfo(ref reader),//changedCards
             ReadListOfCardInfo(ref reader),//killedCards
             ReadListOfCardInfo(ref reader),//killedFriendlyCards
-            ReadListOfCardInfo(ref reader))//revivedCards
-            );
+            ReadListOfCardInfo(ref reader));//revivedCards
+    }
+    public HealthAndMana DeserializeStatsChange(ref DataStreamReader reader)
+    {
+        return ReadHealthAndMana(ref reader);
     }
 
     HealthAndMana ReadHealthAndMana(ref DataStreamReader reader)
     {
         //The player of one device is the opponent of the other
-        int opponentManaRead = reader.ReadByte();
         int playerManaRead = reader.ReadByte();
-        int opponentLifeRead = reader.ReadByte();
+        int opponentManaRead = reader.ReadByte();
         int playerLifeRead = reader.ReadByte();
-        return new HealthAndMana(playerManaRead, opponentManaRead, playerLifeRead, opponentLifeRead);
+        int opponentLifeRead = reader.ReadByte();
+        return new HealthAndMana(opponentManaRead, playerManaRead, opponentLifeRead, playerLifeRead);
     }
 
     List<KeyValuePair<string, CardInfoStruct>> ReadListOfCardInfo(ref DataStreamReader reader)
@@ -159,8 +167,9 @@ class NetworkSerializer
         for (int i = 0; i < cards; i++)
         {
             CardInfoStruct card = new CardInfoStruct();
-            card.isPlayerCard = reader.ReadByte() == 1;
+            card.isPlayerCard = reader.ReadByte() != 1;//Invert the player card flag
             card.manaCost = reader.ReadByte();
+            card.manaColour = reader.ReadFixedString32().ToString();
             card.attackValue = reader.ReadByte();
             card.defenseValue = reader.ReadByte();
             string name = reader.ReadFixedString4096().ToString();
@@ -170,7 +179,7 @@ class NetworkSerializer
             float x = reader.ReadFloat();
             float y = reader.ReadFloat();
             float z = reader.ReadFloat();
-            card.position = new Vector3(-x, y, -z);
+            card.position = new Vector3(-x, y, -z);//Mirror card positions
             string cardPath = "CardTextures/" + card.faction.ToString() + "Cards/" + reader.ReadFixedString32().ToString();
             Debug.Log(cardPath);
             Sprite cardSprite = Resources.Load<Sprite>(cardPath);

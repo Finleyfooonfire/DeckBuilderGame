@@ -19,8 +19,8 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
     //Checks to see if the card is exhausted.
     public void OnUpdateTurn()
     {
-        if (GetComponent<CardInfo>().isPlayerCard) 
-        { 
+        if (GetComponent<CardInfo>().isPlayerCard)
+        {
             canAttack = true;
             GetComponent<CardInfo>().exhausted = exhaustionTimer > 0;
             exhaustionTimer--;
@@ -38,10 +38,10 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
             if (!targetCard.GetComponent<CardInfo>().exhausted)
             {
                 GetComponent<CardInfo>().defenseValue -= targetCard.GetComponent<CardInfo>().attackValue;
-                killedInRetaliation = (GetComponent<CardInfo>().defenseValue <= 0);
+                killedInRetaliation = ((GetComponent<CardInfo>().defenseValue <= 0) && !GetComponent<CardInfo>().invincible);
             }
 
-            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0)
+            if (targetCard.GetComponent<CardInfo>().defenseValue <= 0 && !targetCard.GetComponent<CardInfo>().invincible)
             {
                 Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
                 GameManager.Instance.synch.AddKilledCard(targetCard.gameObject);//The card has been damaged and therefore changed. Keenan addition.
@@ -62,6 +62,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
                 Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
                 GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
             }
+            canAttack = false;
             exhaustionTimer = 1;
         }
     }
@@ -73,16 +74,18 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
         {
             //Select the card.
             Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
-            //If they are the player's card, set as an attacking card.
-            if (GetComponent<CardInfo>().isPlayerCard)
+            //If they are the player's card, set as an attacking card. (And only allow to attack once)
+            if (GetComponent<CardInfo>().isPlayerCard && canAttack)
             {
-                if (FindAnyObjectByType<GameManager>().selectedAttackingCard != this)
+                if (FindAnyObjectByType<GameManager>().selectedAttackingCard != this && transform.parent == FindFirstObjectByType<CardPlayAreaGrid>().transform)
                 {
                     FindAnyObjectByType<GameManager>().SelectAttackingCard(this);
                 }
                 else if (!(FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Any(info => !info.isPlayerCard && info.transform.parent.gameObject.name.Equals("CardPlayArea"))))//Only attack the enemy directly if no enemy cards are found.
                 {
                     FindAnyObjectByType<GameManager>().AttackPlayerDirectly();
+                    canAttack = false;
+                    exhaustionTimer = 1;
                 }
             }
             //If not, set as the attacked card

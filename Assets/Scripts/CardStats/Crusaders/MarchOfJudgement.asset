@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
+  m_Name: MarchOfJudgement
+  m_EditorClassIdentifier: 
+  <faction>k__BackingField: 4
+  <description>k__BackingField: March Of Judgement
+  <attackValue>k__BackingField: 1
+  <defenseValue>k__BackingField: 1
+  <manaCost>k__BackingField: 2
+  <manaTypeRequired>k__BackingField: Red
+  <cardType>k__BackingField: 2
+  <cardImage>k__BackingField: {fileID: 21300000, guid: 3341e87124c402d48b229f614ec64c87, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: 7674417c6dcb7b94e8cf4c0c8cedabe8, type: 3}
+  <spell>k__BackingField: {fileID: 0}

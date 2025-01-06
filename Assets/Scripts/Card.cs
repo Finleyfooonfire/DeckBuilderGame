@@ -1,15 +1,16 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Linq;
 
-public class Card : MonoBehaviour, IPointerClickHandler
+public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public bool isPlayerCard;
     //Keenan modification
     public CardStats stats;
     [HideInInspector] public int manaCost;
+    [HideInInspector] public string manaColour;
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
     //End
@@ -20,6 +21,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public bool isInHand = true;
 
     public Sprite cardImage;
+
     private static Card selectedCard;
     private static GameObject placementIndicator;
     private static Vector3 playedScale = new Vector3(0.635f, 0.01f, 0.889f);
@@ -29,12 +31,18 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [HideInInspector] public Faction faction;
     [HideInInspector] public CardType cardType;
 
+    private static GameObject zoomPanel;
+    private static bool isZoomed = false;
+    private static Card hoveredCard;
+    private static Vector3 defaultZoomPosition = new Vector3(0, 0, -5);
+
     CardPlayAreaGrid cardPlayAreaGrid;
     //END
     void Start()
     {
         //Keenan modification
         manaCost = stats.manaCost;
+        manaColour = stats.manaTypeRequired;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
@@ -43,7 +51,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         cardFaction = stats.faction.ToString();
 
         cardImage = stats.cardImage;
-        
+
 
         faction = stats.faction;
         cardType = stats.cardType;
@@ -53,7 +61,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError("CardPlayArea not found in the scene!");
         }
-        
+
 
         cardPlayAreaGrid = cardPlayArea.GetComponent<CardPlayAreaGrid>();
 
@@ -66,7 +74,43 @@ public class Card : MonoBehaviour, IPointerClickHandler
             }
         }
 
+        if (zoomPanel == null)
+        {
+            CreateZoomPanel();
+        }
+    }
 
+
+
+    void CreateZoomPanel()
+    {
+        zoomPanel = new GameObject("ZoomPanel");
+        zoomPanel.transform.SetParent(GameObject.Find("GameUI").transform, false);
+        RectTransform rectTransform = zoomPanel.AddComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(300, 400);
+
+        Image image = zoomPanel.AddComponent<Image>();
+        image.raycastTarget = false;
+
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.anchoredPosition = Vector2.zero;
+
+        zoomPanel.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        hoveredCard = this;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (hoveredCard == this)
+        {
+            hoveredCard = null;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -82,6 +126,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
+            Debug.Log($"{selectedCard.cardType} card selected");
+
             CreatePlacementIndicator();
         }
         else
@@ -120,8 +166,56 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
             if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
             {
-                PlaceCard();
+                if (selectedCard.cardType == CardType.Spell)
+                {
+                    //Spell cards are special
+                    Debug.Log("Spell card placed");
+                    PlaceSpellCard();
+                }
+                else
+                {
+                    //Unit and land cards are to be placed normally
+                    Debug.Log(selectedCard.cardType.ToString() + " card placed");
+                    PlaceNonSpellCard();
+                }
             }
+        }
+
+
+        if (hoveredCard != null)
+        {
+            if (Input.GetMouseButtonDown(1) && !isZoomed)
+            {
+                ShowZoomedCard(hoveredCard);
+            }
+        }
+
+        if (isZoomed && Input.GetMouseButtonDown(0))
+        {
+            HideZoomedCard();
+        }
+    }
+
+    void ShowZoomedCard(Card card)
+    {
+        if (zoomPanel != null)
+        {
+            Image panelImage = zoomPanel.GetComponent<Image>();
+            if (panelImage != null)
+            {
+                panelImage.sprite = card.cardImage;
+                zoomPanel.SetActive(true);
+                isZoomed = true;
+            }
+        }
+    }
+
+    void HideZoomedCard()
+    {
+        if (zoomPanel != null)
+        {
+            zoomPanel.SetActive(false);
+            isZoomed = false;
         }
     }
 
@@ -143,16 +237,16 @@ public class Card : MonoBehaviour, IPointerClickHandler
             placementIndicator.transform.position = targetPosition;
         }
     }
-
-    void PlaceCard()
+    //Places a non-spell card type card into an empty space on the player's side of the board.
+    void PlaceNonSpellCard()
     {
 
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
         Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
-        cardPlayAreaGrid.Remove(closestSlot, true);
+        cardPlayAreaGrid.FillSlot(closestSlot, true);
 
         GameObject cardObject = gameObject;
-        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .1f;
@@ -161,6 +255,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
         cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
@@ -174,21 +269,66 @@ public class Card : MonoBehaviour, IPointerClickHandler
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
-        if (playerDeck != null)
-        {
-            playerDeck.handCards.Remove(this);
-        }
-
-        Destroy(this);
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Card played successfully at position {cardObject.transform.position}");
+        Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
     }
 
+    //Places a spell card type card onto a space on the player's side of the board that has a different card on it.
+    void PlaceSpellCard()
+    {
+        if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true, true);//Finds the closest slot with a card that can accept spell cards in it.
+        cardPlayAreaGrid.FillSpellSlot(closestSlot);
 
+        GameObject cardObject = gameObject;
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
+        cardObject.transform.SetParent(cardPlayArea);
+
+        closestSlot.y = .05f;//Place the card physically bellow the card it is modulating
+        cardObject.transform.localPosition = closestSlot;
+
+        CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
+        cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
+        cardInfo.attackValue = this.attackValue;
+        cardInfo.defenseValue = this.defenseValue;
+        cardInfo.faction = this.faction;
+        cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
+
+
+        CardSpell cardSpell;
+        switch (cardName)
+        {
+            case "Poison Drop":
+                cardSpell = cardObject.AddComponent<PoisonDropSpell>();
+                break;
+            case "March Of Judgement":
+                cardSpell = cardObject.AddComponent<MarchSpell>();
+                break;
+            case "Last wish of a dying star":
+                cardSpell = cardObject.AddComponent<WishSpell>();
+                break;
+            default:
+                Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
+                break;
+        }
+
+        GameManager.Instance.playerMana -= manaCost;
+        GameManager.Instance.UpdateManaUI();
+
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
+        Destroy(placementIndicator);
+        selectedCard = null;
+
+        GameManager.Instance.synch.AddPlayedCard(cardObject);
+        Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
+    }
 
 
     bool IsPointerOverUIObject()

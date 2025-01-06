@@ -1,13 +1,34 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CardPlayAreaGrid : MonoBehaviour
 {
+    public struct CardPlayAreaSlot
+    {
+        public CardPlayAreaSlot(Vector3 slotPosition, bool isPlayerSlot, bool hasCard, bool hasSpellCard)
+        {
+            SlotPosition = slotPosition;
+            IsPlayerSlot = isPlayerSlot;
+            HasCard = hasCard;
+            HasSpellCard = hasSpellCard;
+        }
+
+        public Vector3 SlotPosition { get; }
+        public bool IsPlayerSlot { get; }
+        public bool HasCard { get; set; }
+        public bool HasSpellCard { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"{SlotPosition.ToString()} {IsPlayerSlot} {HasCard} {HasSpellCard}";
+        }
+    }
+
     [SerializeField] Vector2 gridSize = new Vector2(5, 2);
     [SerializeField] Vector2 slotSize = new Vector2(0.635f, 0.889f);
     [SerializeField] Vector2 slotSpacing = new Vector2(27, 50);
-    public Dictionary<KeyValuePair<Vector3, bool>, bool> GridSlots { get; private set; } = new Dictionary<KeyValuePair<Vector3, bool>, bool>();
+    public List<CardPlayAreaSlot> GridSlots { get; private set; } = new List<CardPlayAreaSlot>();
     [SerializeField] float gridScale = 0.025f;
     // public float gridHeightOffset = 0.33f;
 
@@ -49,7 +70,7 @@ public class CardPlayAreaGrid : MonoBehaviour
                     col * (slotSize.x + slotSpacing.x) * gridScale,
                     0,
                     row * (slotSize.y + slotSpacing.y) * gridScale);
-                GridSlots.Add(new KeyValuePair<Vector3, bool>(slotPosition, row == 0), false);
+                GridSlots.Add(new CardPlayAreaSlot(slotPosition, row == 0, false, false));
             }
         }
     }
@@ -57,11 +78,11 @@ public class CardPlayAreaGrid : MonoBehaviour
     void OnDrawGizmos()
     {
         if (cardPlayArea == null) return;
-        
-        foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
+
+        foreach (CardPlayAreaSlot slot in GridSlots)
         {
-            Vector3 slotPosition = slot.Key.Key;
-            if (slot.Value)
+            Vector3 slotPosition = slot.SlotPosition;
+            if (slot.HasCard)
             {
                 Gizmos.color = Color.red;
             }
@@ -71,35 +92,147 @@ public class CardPlayAreaGrid : MonoBehaviour
             }
             //Debug.Log(slotPosition);
             Gizmos.DrawWireCube(transform.TransformPoint(slotPosition), new Vector3(slotSize.x, 0.1f, slotSize.y));
-            
+
         }
     }
 
-    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard)
+    //Find the closest legible slots position to the inputted Vector3. If none are found an error is thrown.
+    public Vector3 FindClosestSlot(Vector3 currentPosition, bool isPlayerCard, bool findSpellSlots = false)
     {
-        KeyValuePair<KeyValuePair<Vector3, bool>, bool> closestSlot = GridSlots.First();
-        float shortestDistance = Vector3.Distance(currentPosition, closestSlot.Key.Key);
-        foreach (KeyValuePair<KeyValuePair<Vector3, bool>, bool> slot in GridSlots)
+        CardPlayAreaSlot? closestSlot = null;
+        float shortestDistance = Mathf.Infinity;
+
+        if (findSpellSlots)
         {
-            if (isPlayerCard != slot.Key.Value || slot.Value) continue;//Skip in use slots
-            float distance = Vector3.Distance(currentPosition, slot.Key.Key);
-            if (distance < shortestDistance)
+            foreach (CardPlayAreaSlot slot in GridSlots)
             {
-                closestSlot = slot;
-                shortestDistance = distance;
+                Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
+                if (slot.HasCard && !slot.HasSpellCard)
+                {
+                    float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
+                    if (distance < shortestDistance)
+                    {
+                        closestSlot = slot;
+                        shortestDistance = distance;
+                    }
+                }
             }
         }
-        return closestSlot.Key.Key;
+        else
+        {
+            foreach (CardPlayAreaSlot slot in GridSlots)
+            {
+                if ((isPlayerCard == slot.IsPlayerSlot) && !slot.HasCard)
+                {
+                    float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
+                    if (distance < shortestDistance)
+                    {
+                        closestSlot = slot;
+                        shortestDistance = distance;
+                    }
+                }
+            }
+        }
+
+        if (closestSlot != null)
+        {
+            Debug.Log($"The closest slot is at {(CardPlayAreaSlot)closestSlot}");
+            return ((CardPlayAreaSlot)closestSlot).SlotPosition;
+        }
+        else
+        {
+            Debug.LogError("Unable to find a card slot that matches the requirements. Using default.");
+            return default(CardPlayAreaSlot).SlotPosition;
+        }
 
     }
 
-    public void Remove(Vector3 slotToRemove, bool isPlayerSlot)
+    //sets the slot's HasCard field to true
+    public void FillSlot(Vector3 slotToRemove, bool isPlayerSlot)
     {
-        GridSlots[new KeyValuePair<Vector3, bool>(slotToRemove, isPlayerSlot)] = true;
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToRemove && x.IsPlayerSlot == isPlayerSlot);
+        CardPlayAreaSlot slot = GridSlots[i];
+        slot.HasCard = true;
+        GridSlots[i] = slot;
     }
 
-    public void Free(Vector3 slotToFree, bool isPlayerSlot)
+    //sets the slot's HasCard field to false
+    public void FreeSlot(Vector3 slotToFree, bool isPlayerSlot)
     {
-        GridSlots[new KeyValuePair<Vector3, bool>(slotToFree, isPlayerSlot)] = false;
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToFree && x.IsPlayerSlot == isPlayerSlot);
+        CardPlayAreaSlot slot = GridSlots[i];
+        slot.HasCard = false;
+        GridSlots[i] = slot;
+    }
+
+    //sets the slot's HasSpellCard field to true
+    public void FillSpellSlot(Vector3 slotToRemove)
+    {
+        slotToRemove.y = .1f;
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToRemove);
+        CardPlayAreaSlot slot = GridSlots[i];
+        slot.HasSpellCard = true;
+        GridSlots[i] = slot;
+    }
+
+    //sets the slot's HasSpellCard field to false
+    public void FreeSpellSlot(Vector3 slotToFree)
+    {
+        slotToFree.y = .1f;
+        int i = GridSlots.FindIndex(x => x.SlotPosition == slotToFree);
+        CardPlayAreaSlot slot = GridSlots[i];
+        slot.HasSpellCard = false;
+        GridSlots[i] = slot;
+    }
+
+    //Finds the CardInfo of the (non-spell) card at the slot
+#nullable enable
+    public CardInfo? FindCardAtSlotPosition(Vector3 slotToQuery)
+    {
+        const int PossibleCards = 5;
+        slotToQuery.y = 0.1f;
+        CardInfo? foundCard = null;
+        Collider[] intersecting = new Collider[PossibleCards];
+        Physics.OverlapSphereNonAlloc(slotToQuery, 0.01f, intersecting);
+        int i = 0;
+        while (i < PossibleCards)
+        {
+            if (intersecting.Length != 0 && intersecting[i] != null)
+            {
+                intersecting[0].transform.parent.TryGetComponent<CardInfo>(out foundCard);
+                if (foundCard.cardType == CardType.Spell)
+                {
+                    if (i == (PossibleCards-1))
+                    {
+                        foundCard = null;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else { break; }
+        }
+        Debug.Log($"Found card {foundCard}");
+        return foundCard;
+    }
+#nullable restore
+
+    public Vector3[] GetSlotPositions(bool getPlayerPos, bool getOpponentPos)
+    {
+        List<Vector3> slotPositions = new List<Vector3>();
+        foreach (CardPlayAreaSlot slot in GridSlots)
+        {
+            if ((slot.IsPlayerSlot && getPlayerPos) || (!slot.IsPlayerSlot && getOpponentPos))
+            {
+                slotPositions.Add(slot.SlotPosition);
+            }
+        }
+        return slotPositions.ToArray();
     }
 }
