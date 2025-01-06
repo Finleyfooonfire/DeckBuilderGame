@@ -10,6 +10,8 @@ public class LargeViewController : MonoBehaviour
     public Image largeViewImage; // The Image component for displaying the card image
     public TextMeshProUGUI cardNameText; // Text for the card name
     public TextMeshProUGUI cardDescriptionText; // Text for the card description
+    public GameObject inspectCanvas;  // The canvas with lore content
+    public GameObject CardCanvas;
 
     private void Awake()
     {
@@ -77,5 +79,11 @@ public class LargeViewController : MonoBehaviour
         {
             largeViewCanvas.SetActive(false);
         }
+    }
+
+    public void CloseInspectCanvas()
+    {
+        CardCanvas.SetActive(true); // enables the card canvas
+        inspectCanvas.SetActive(false); //Hides the inspect canvas
     }
 }
