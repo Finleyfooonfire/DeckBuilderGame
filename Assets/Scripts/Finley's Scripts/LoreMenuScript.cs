@@ -13,6 +13,8 @@ public class LoreMenuTrigger : MonoBehaviour
     public GameObject loreHolder;
     public GameObject creditsMenu;
     public Volume volume;
+
+
     [SerializeField] public Camera targetCamera;
 
     public void Start()
@@ -22,6 +24,7 @@ public class LoreMenuTrigger : MonoBehaviour
         {
             Debug.LogError("No Volume component found on the target camera!");
         }
+
     }
 
     // Reference to the animation trigger

@@ -12126,7 +12126,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1568036350}
   m_Layer: 0
-  m_Name: NewScene
+  m_Name: BensArtwork
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

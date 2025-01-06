@@ -20,7 +20,7 @@ public class MainMenu : MonoBehaviour
 
     public void OpenSnap()
     {
-        SceneManager.LoadScene("Millies");
+        SceneManager.LoadScene("Millie");
     }
     //End
 
