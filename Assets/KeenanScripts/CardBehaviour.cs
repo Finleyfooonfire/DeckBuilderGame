@@ -24,11 +24,11 @@ public class CardBehaviour : MonoBehaviour
 
         if (targetCard.health <= 0)
         {
-            Debug.Log($"{targetCard.cardStats.name} has been defeated by {cardStats.name}!");
+            //Debug.Log($"{targetCard.cardStats.name} has been defeated by {cardStats.name}!");
         }
         else
         {
-            Debug.Log($"{targetCard.cardStats.name} now has {targetCard.health} health remaining.");
+            //Debug.Log($"{targetCard.cardStats.name} now has {targetCard.health} health remaining.");
         }
     }
     //end
@@ -36,7 +36,7 @@ public class CardBehaviour : MonoBehaviour
     private void OnMouseDown()
     {
         //Select the card.
-        Debug.Log("The card \"" + cardStats.name + "\" owned by " + player.ToString() +" has been clicked");
+        //Debug.Log("The card \"" + cardStats.name + "\" owned by " + player.ToString() +" has been clicked");
         //FindAnyObjectByType<GameManager>().SelectCard(gameObject);
     }
 }

@@ -10,6 +10,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     //Keenan modification
     public CardStats stats;
     [HideInInspector] public int manaCost;
+    [HideInInspector] public string manaColour;
     [HideInInspector] public int attackValue;
     [HideInInspector] public int defenseValue;
     //End
@@ -41,6 +42,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
         //Keenan modification
         manaCost = stats.manaCost;
+        manaColour = stats.manaTypeRequired;
         attackValue = stats.attackValue;
         defenseValue = stats.defenseValue;
         //End
@@ -57,7 +59,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
-            Debug.LogError("CardPlayArea not found in the scene!");
+            //Debug.LogError("CardPlayArea not found in the scene!");
         }
 
 
@@ -83,7 +85,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     void CreateZoomPanel()
     {
         zoomPanel = new GameObject("ZoomPanel");
-        zoomPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        zoomPanel.transform.SetParent(GameObject.Find("GameUI").transform, false);
         RectTransform rectTransform = zoomPanel.AddComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(300, 400);
 
@@ -124,13 +126,13 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            Debug.Log($"{selectedCard.cardType} card selected");
+            //Debug.Log($"{selectedCard.cardType} card selected");
 
             CreatePlacementIndicator();
         }
         else
         {
-            Debug.Log($"Not enough mana to play card. Required: {manaCost}, Available: {GameManager.Instance.playerMana}");
+            //Debug.Log($"Not enough mana to play card. Required: {manaCost}, Available: {GameManager.Instance.playerMana}");
         }
     }
 
@@ -164,17 +166,22 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
             if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
             {
-                if (selectedCard.cardType == CardType.Spell)
+                switch (selectedCard.cardType)
                 {
-                    //Spell cards are special
-                    Debug.Log("Spell card placed");
-                    PlaceSpellCard();
-                }
-                else
-                {
-                    //Unit and land cards are to be placed normally
-                    Debug.Log(selectedCard.cardType.ToString() + " card placed");
-                    PlaceNonSpellCard();
+                    case CardType.Spell:
+                        //Spell cards are special
+                        //Debug.Log("Spell card placed");
+                        PlaceSpellCard();
+                        break;
+                    case CardType.Unit:
+                        //Unit and land cards are to be placed normally
+                        //Debug.Log(selectedCard.cardType.ToString() + " card placed");
+                        PlaceUnitCard();
+                        break;
+                    case CardType.Land:
+                        //Unit and land cards are to be placed normally
+                        PlaceLandCard();
+                        break;
                 }
             }
         }
@@ -221,7 +228,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
         if (Camera.main == null)
         {
-            Debug.LogError("No main camera found in the scene!");
+            //Debug.LogError("No main camera found in the scene!");
             return;
         }
 
@@ -236,7 +243,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         }
     }
     //Places a non-spell card type card into an empty space on the player's side of the board.
-    void PlaceNonSpellCard()
+    void PlaceUnitCard()
     {
 
         if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
@@ -244,7 +251,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayAreaGrid.FillSlot(closestSlot, true);
 
         GameObject cardObject = gameObject;
-        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .1f;
@@ -253,6 +260,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
         cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
@@ -266,19 +274,12 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
-        if (playerDeck != null)
-        {
-            playerDeck.handCards.Remove(this);
-            playerDeck.DistributeHand();
-        }
-
-        Destroy(this);
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
+        //Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
     }
 
     //Places a spell card type card onto a space on the player's side of the board that has a different card on it.
@@ -289,7 +290,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayAreaGrid.FillSpellSlot(closestSlot);
 
         GameObject cardObject = gameObject;
-        cardObject.name = cardName + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
         cardObject.transform.SetParent(cardPlayArea);
 
         closestSlot.y = .05f;//Place the card physically bellow the card it is modulating
@@ -298,6 +299,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
         cardInfo.isPlayerCard = this.isPlayerCard;
         cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
         cardInfo.attackValue = this.attackValue;
         cardInfo.defenseValue = this.defenseValue;
         cardInfo.faction = this.faction;
@@ -314,27 +316,60 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             case "March Of Judgement":
                 cardSpell = cardObject.AddComponent<MarchSpell>();
                 break;
+            case "Last wish of a dying star":
+                cardSpell = cardObject.AddComponent<WishSpell>();
+                break;
             default:
-                Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
+                //Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
                 break;
         }
 
         GameManager.Instance.playerMana -= manaCost;
         GameManager.Instance.UpdateManaUI();
 
-        Deck playerDeck = FindFirstObjectByType<Deck>();
-        if (playerDeck != null)
-        {
-            playerDeck.handCards.Remove(this);
-            playerDeck.DistributeHand();
-        }
-
-        Destroy(this);
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
         Destroy(placementIndicator);
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
+        //Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
+    }
+
+    void PlaceLandCard()
+    {
+        if (cardPlayArea == null || cardPlayAreaGrid.GridSlots.Count == 0) return;
+        Vector3 closestSlot = cardPlayAreaGrid.FindClosestSlot(placementIndicator.transform.position, true);
+        cardPlayAreaGrid.FillSlot(closestSlot, true);
+
+        GameObject cardObject = gameObject;
+        cardObject.name = cardName + "[ENDOFNAME]" + (FindObjectsByType<CardInfo>(FindObjectsSortMode.None).Count()).ToString() + (FindFirstObjectByType<GameServer>() != null ? "Server" : "Client");//The substring "[ENDOFNAME]" is used in PlayingFieldSynch.cs to isolate the card type name from the individual card name so that the proper prefab can be referenced.
+        cardObject.transform.SetParent(cardPlayArea);
+
+        closestSlot.y = .1f;
+        cardObject.transform.localPosition = closestSlot;
+
+        CardInfo cardInfo = cardObject.AddComponent<CardInfo>();
+        cardInfo.isPlayerCard = this.isPlayerCard;
+        cardInfo.manaCost = this.manaCost;
+        cardInfo.manaColour = this.manaColour;
+        cardInfo.attackValue = this.attackValue;
+        cardInfo.defenseValue = this.defenseValue;
+        cardInfo.faction = this.faction;
+        cardInfo.cardType = this.cardType;
+        cardInfo.cardImage = this.cardImage;
+
+        //Keenan Addition
+        CardGenerate cardAttack = cardObject.AddComponent<CardGenerate>();
+
+
+        GameManager.Instance.playerMana -= manaCost;
+        GameManager.Instance.UpdateManaUI();
+
+        FindObjectsByType<Deck>(FindObjectsSortMode.None).Where(x => x.gameObject.name == "PlayerDeck").ToArray()[0].PlayCard(this);
+        Destroy(placementIndicator);
+        selectedCard = null;
+
+        GameManager.Instance.synch.AddPlayedCard(cardObject);
     }
 
 
@@ -365,7 +400,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             cardPlayArea = GameObject.Find("CardPlayArea")?.transform;
             if (cardPlayArea == null)
             {
-                Debug.LogError("CardPlayArea not found in the scene!");
+                //Debug.LogError("CardPlayArea not found in the scene!");
                 return new List<CardInfo>();
             }
         }

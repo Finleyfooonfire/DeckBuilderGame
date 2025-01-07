@@ -1442,7 +1442,7 @@ MonoBehaviour:
   cardName: ArchdukeAlligator
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 912aa0da789f7f9418a6de882245ea86, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

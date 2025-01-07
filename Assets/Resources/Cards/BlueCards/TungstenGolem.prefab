@@ -1425,7 +1425,7 @@ MonoBehaviour:
   cardName: Tungsten Golem
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 82862f5989f57f0458b05342b7ecb7c7, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

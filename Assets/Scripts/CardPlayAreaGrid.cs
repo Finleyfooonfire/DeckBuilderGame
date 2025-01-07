@@ -1,7 +1,4 @@
-using NUnit.Framework.Constraints;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CardPlayAreaGrid : MonoBehaviour
@@ -28,7 +25,6 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
     }
 
-
     [SerializeField] Vector2 gridSize = new Vector2(5, 2);
     [SerializeField] Vector2 slotSize = new Vector2(0.635f, 0.889f);
     [SerializeField] Vector2 slotSpacing = new Vector2(27, 50);
@@ -47,7 +43,7 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
         else
         {
-            Debug.LogError("CardPlayArea GameObject not found in the scene.");
+            //Debug.LogError("CardPlayArea GameObject not found in the scene.");
         }
 
         InitializeGrid();
@@ -94,7 +90,7 @@ public class CardPlayAreaGrid : MonoBehaviour
             {
                 Gizmos.color = Color.green;
             }
-            //Debug.Log(slotPosition);
+            ////Debug.Log(slotPosition);
             Gizmos.DrawWireCube(transform.TransformPoint(slotPosition), new Vector3(slotSize.x, 0.1f, slotSize.y));
 
         }
@@ -110,7 +106,7 @@ public class CardPlayAreaGrid : MonoBehaviour
         {
             foreach (CardPlayAreaSlot slot in GridSlots)
             {
-                Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
+                //Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
                 if (slot.HasCard && !slot.HasSpellCard)
                 {
                     float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
@@ -140,12 +136,12 @@ public class CardPlayAreaGrid : MonoBehaviour
 
         if (closestSlot != null)
         {
-            Debug.Log($"The closest slot is at {(CardPlayAreaSlot)closestSlot}");
+            //Debug.Log($"The closest slot is at {(CardPlayAreaSlot)closestSlot}");
             return ((CardPlayAreaSlot)closestSlot).SlotPosition;
         }
         else
         {
-            Debug.LogError("Unable to find a card slot that matches the requirements. Using default.");
+            //Debug.LogError("Unable to find a card slot that matches the requirements. Using default.");
             return default(CardPlayAreaSlot).SlotPosition;
         }
 
@@ -190,19 +186,53 @@ public class CardPlayAreaGrid : MonoBehaviour
     }
 
     //Finds the CardInfo of the (non-spell) card at the slot
-    public CardInfo FindCardAtSlotPosition(Vector3 slotToQuery)
+#nullable enable
+    public CardInfo? FindCardAtSlotPosition(Vector3 slotToQuery)
     {
-        CardInfo foundCard = null;
-        Collider[] intersecting = new Collider[1];
+        const int PossibleCards = 5;
+        slotToQuery.y = 0.1f;
+        CardInfo? foundCard = null;
+        Collider[] intersecting = new Collider[PossibleCards];
         Physics.OverlapSphereNonAlloc(slotToQuery, 0.01f, intersecting);
-        if (intersecting.Length == 0)
+        int i = 0;
+        while (i < PossibleCards)
         {
-            return foundCard;
+            if (intersecting.Length != 0 && intersecting[i] != null)
+            {
+                intersecting[0].transform.parent.TryGetComponent<CardInfo>(out foundCard);
+                if (foundCard.cardType == CardType.Spell)
+                {
+                    if (i == (PossibleCards-1))
+                    {
+                        foundCard = null;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else { break; }
         }
-        else
-        {
-            foundCard = intersecting[0].transform.parent.GetComponent<CardInfo>();
-        }
+        //Debug.Log($"Found card {foundCard}");
         return foundCard;
+    }
+#nullable restore
+
+    public Vector3[] GetSlotPositions(bool getPlayerPos, bool getOpponentPos)
+    {
+        List<Vector3> slotPositions = new List<Vector3>();
+        foreach (CardPlayAreaSlot slot in GridSlots)
+        {
+            if ((slot.IsPlayerSlot && getPlayerPos) || (!slot.IsPlayerSlot && getOpponentPos))
+            {
+                slotPositions.Add(slot.SlotPosition);
+            }
+        }
+        return slotPositions.ToArray();
     }
 }

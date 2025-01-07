@@ -52,6 +52,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         synch = FindAnyObjectByType<PlayingFieldSynch>();
+        playerMana = 5;
+        opponentMana = 5;
+
         UpdateLifeUI();
         UpdateManaUI();
         endTurnButton.onClick.AddListener(EndTurn);
@@ -84,7 +87,7 @@ public class GameManager : MonoBehaviour
 
     void UpdateTurn()
     {
-        Debug.Log(isPlayerTurn + "IMANNOYING");
+        //Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
             playerMana = Mathf.Min(playerMana + 1, maxMana);
@@ -95,12 +98,12 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
-            Debug.Log("YOUR TURN");
+            //Debug.Log("YOUR TURN");
         }
         else
         {
             statusText.text = "Opponent's Turn";
-            Debug.Log("OPPONENTS TURN");
+            //Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -109,9 +112,14 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (opponentLife <= 0)
+        {
+            GameOver(true);
+        }
+
         if (isPlayerTurn) UpdateCards();
         isPlayerTurn = !isPlayerTurn;
-        Debug.Log(isPlayerTurn);
+        //Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
         //UpdateTurn(); //No need to call this twice
@@ -137,7 +145,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("PlayerDeck not found!");
+            //Debug.LogError("PlayerDeck not found!");
         }
     }
 
@@ -200,12 +208,6 @@ public class GameManager : MonoBehaviour
             UpdateLifeUI();
 
             damageDealt += selectedAttackingCard.GetComponent<CardInfo>().attackValue;
-
-            if (opponentLife <= 0)
-            {
-                GameOver(true);
-            }
-
             selectedAttackingCard = null;
         }
     }
@@ -222,7 +224,7 @@ public class GameManager : MonoBehaviour
     // Simple AI logic for testing
     //  yield return new WaitForSeconds(2f);
 
-    //      Debug.Log("AI forfeits its turn.");
+    //      //Debug.Log("AI forfeits its turn.");
 
     //     EndTurn();
     //  }
@@ -258,6 +260,7 @@ public class GameManager : MonoBehaviour
         {
             endTurnButton.interactable = false;
         }
+
 
         StartCoroutine(DelayedSceneTransition());
 }

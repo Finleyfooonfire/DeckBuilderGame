@@ -17,6 +17,11 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Settings");
     }
+
+    public void OpenSnap()
+    {
+        SceneManager.LoadScene("Millie");
+    }
     //End
 
     public void ExitGame()

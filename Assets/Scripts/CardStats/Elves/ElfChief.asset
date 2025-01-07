@@ -20,4 +20,5 @@ MonoBehaviour:
   <manaTypeRequired>k__BackingField: Brown
   <cardType>k__BackingField: 1
   <cardImage>k__BackingField: {fileID: 0}
-  <cardPrefab>k__BackingField: {fileID: 0}
+  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: aaad2c056d17da945b45be56863f6875, type: 3}
+  <spell>k__BackingField: {fileID: 0}

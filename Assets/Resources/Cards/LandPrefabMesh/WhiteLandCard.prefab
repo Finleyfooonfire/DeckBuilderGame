@@ -794,7 +794,7 @@ MonoBehaviour:
   cardName: White Land
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: b6d205043ea0ef042a772b3f9b1b0dee, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Land
   cardDescription: 

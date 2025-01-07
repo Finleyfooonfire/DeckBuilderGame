@@ -56,6 +56,7 @@ public struct CardInfoStruct
 {
     public bool isPlayerCard;
     public int manaCost;
+    public string manaColour;
     public int attackValue;
     public int defenseValue;
     public Faction faction;
@@ -109,6 +110,7 @@ class NetworkSerializer
             {
                 writer.WriteByte((byte)(x[i].Value.isPlayerCard ? 1 : 0));
                 writer.WriteByte((byte)x[i].Value.manaCost);
+                writer.WriteFixedString32((FixedString32Bytes)x[i].Value.manaColour);
                 writer.WriteByte((byte)x[i].Value.attackValue);
                 writer.WriteByte((byte)x[i].Value.defenseValue);
                 writer.WriteFixedString4096((FixedString4096Bytes)x[i].Key);
@@ -167,6 +169,7 @@ class NetworkSerializer
             CardInfoStruct card = new CardInfoStruct();
             card.isPlayerCard = reader.ReadByte() != 1;//Invert the player card flag
             card.manaCost = reader.ReadByte();
+            card.manaColour = reader.ReadFixedString32().ToString();
             card.attackValue = reader.ReadByte();
             card.defenseValue = reader.ReadByte();
             string name = reader.ReadFixedString4096().ToString();
@@ -178,9 +181,9 @@ class NetworkSerializer
             float z = reader.ReadFloat();
             card.position = new Vector3(-x, y, -z);//Mirror card positions
             string cardPath = "CardTextures/" + card.faction.ToString() + "Cards/" + reader.ReadFixedString32().ToString();
-            Debug.Log(cardPath);
+            //Debug.Log(cardPath);
             Sprite cardSprite = Resources.Load<Sprite>(cardPath);
-            Debug.Log(cardSprite);
+            //Debug.Log(cardSprite);
             card.cardImage = (cardSprite);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }

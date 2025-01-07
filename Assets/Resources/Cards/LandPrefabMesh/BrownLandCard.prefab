@@ -793,7 +793,7 @@ MonoBehaviour:
   cardName: Brown Land
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 0531b237dbba15146b47c0c36d80a4c5, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Land
   cardDescription: 

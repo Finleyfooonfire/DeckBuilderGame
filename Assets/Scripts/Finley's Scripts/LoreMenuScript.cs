@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI; // For UI components like Button
+using UnityEngine.Rendering;
 
 public class LoreMenuTrigger : MonoBehaviour
 {
@@ -9,6 +11,21 @@ public class LoreMenuTrigger : MonoBehaviour
     public GameObject optionsMenu;
     public GameObject cardMenu;
     public GameObject loreHolder;
+    public GameObject creditsMenu;
+    public Volume volume;
+
+
+    [SerializeField] public Camera targetCamera;
+
+    public void Start()
+    {
+        volume = targetCamera.GetComponent<Volume>();
+        if (volume == null)
+        {
+            Debug.LogError("No Volume component found on the target camera!");
+        }
+
+    }
 
     // Reference to the animation trigger
     public string cubeAnimationTrigger = "MoveCube";  // The trigger name in the Cube Animator
@@ -91,4 +108,28 @@ public class LoreMenuTrigger : MonoBehaviour
         loreHolder.SetActive(true); // Hide the options menu
         cardMenu.SetActive(false); //Hides the active canvas
     }
+
+    public void OpenCreditsMenu()
+    {
+        currentCanvas.SetActive(false); // Hide the options menu
+        creditsMenu.SetActive(true); //Hides the active canvas
+    }
+
+    public void CloseCreditsMenu()
+    {
+        currentCanvas.SetActive(true); // Hide the options menu
+        creditsMenu.SetActive(false); //Hides the active canvas
+    }
+
+    
+
+    public void ToggleVolume()
+    {
+        if (volume != null)
+        {
+            volume.enabled = !volume.enabled;
+        }
+    }
+
+
 }

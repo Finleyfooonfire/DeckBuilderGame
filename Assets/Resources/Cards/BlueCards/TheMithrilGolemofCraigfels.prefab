@@ -1430,7 +1430,7 @@ MonoBehaviour:
   cardName: The Mithril Golem of Craigfels
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 46aaeb54588aaa647a946229f168a638, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

@@ -1,5 +1,7 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Deck : MonoBehaviour
@@ -24,7 +26,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             //Keenan modification
-            CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length - 1)];
+            CardStats cardStats = possibleCards[Random.Range(0, possibleCards.Length)]; 
             GameObject cardObj = Instantiate<GameObject>(cardStats.cardPrefab, transform);
 
             cardObj.transform.localPosition = new Vector3();
@@ -54,7 +56,7 @@ public class Deck : MonoBehaviour
     {
         if (deckCards.Count == 0)
         {
-            Debug.Log("No more cards in the deck!");
+            //Debug.Log("No more cards in the deck!");
             return;
         }
         if (handCards.Count < maxHandSize)
@@ -62,7 +64,14 @@ public class Deck : MonoBehaviour
             Card drawnCard = deckCards[0];
             deckCards.RemoveAt(0);
             deckCards.TrimExcess();
-            handCards.Add(drawnCard);
+            if (handCards.Contains(null))
+            {
+                handCards[handCards.FindIndex(null)] = drawnCard;
+            }
+            else
+            {
+                handCards.Add(drawnCard);
+            }
             drawnCard.isInHand = true;
 
             drawnCard.transform.SetParent(handPosition);
@@ -72,19 +81,32 @@ public class Deck : MonoBehaviour
         }
         else
         {
-            Debug.Log("Hand full");
+            ////Debug.Log("Hand full");
         }
     }
 
     public void DistributeHand()
     {
-        handCards.RemoveAll(card => card == null);
-        Debug.Log("Distributing hand: " + string.Join<Card>(",", handCards.ToArray()));
+        for (int i = handCards.Count - 1; i >= 0; i--)
+        {
+            if (handCards[i] == null)
+            {
+                handCards.RemoveAt(i);
+            }
+        }
+        ////Debug.Log("Distributing hand: " + string.Join<Card>(",", handCards.ToArray()));
         int index = 0;
         foreach (Card handCard in handCards)
         {
             handCard.transform.localPosition = new Vector3((index - handCards.Count / 2f), 0, 0);
             index++;
         }
+    }
+
+    public void PlayCard(Card card)
+    {
+        if (handCards.Remove(card)) ////Debug.Log($"The card {card} has been removed from handCards.");
+        Destroy(card);
+        DistributeHand();
     }
 }

@@ -3,7 +3,27 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Sir Tuppus
+  - Segnour Skink
+  - Archduke Alligator
+  - Commoner Chameleon
+  - Poison Drop
+  - Cecelia
+  - bloodedge
+  - deathwhistle
+  - herald
+  - lastwish
+  - malachite
+  - march
+  - mythril
+  - necrotic
+  - orichalcum
+  - sacrificialghoul
+  - sandstone
+  - supreme
+  - tungsten
+  - warpreists
   layers:
   - Default
   - TransparentFX

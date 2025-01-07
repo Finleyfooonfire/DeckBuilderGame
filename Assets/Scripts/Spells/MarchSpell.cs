@@ -2,36 +2,26 @@ using UnityEngine;
 
 public class MarchSpell : CardSpell
 {
-    int life;
-    CardPlayAreaGrid cardGrid;
+    //Gives all allies 1 attack buff.
 
-    private void Start()
-    {
-        life = GetComponent<CardInfo>().defenseValue;
-        Transform cardPlayArea = GameObject.Find("CardPlayArea").transform;
-        cardGrid = cardPlayArea.gameObject.GetComponent<CardPlayAreaGrid>(); ;
-    }
-
-    public override void OnUpdateTurn()
-    {
-        base.OnUpdateTurn();
-        //Do the spell update
-        DoMagic();
-        life--;
-        if (life == 0)//Using a life of 0 make it invincible.
+    protected override void OnDecommissionCard() 
+    { 
+        //Get all cards on the same team
+        Vector3 findCardPosition = transform.position;
+        findCardPosition.y = 0.1f;
+        Vector3[] cardPositions = cardGrid.GetSlotPositions(true, false);
+        CardInfo[] cards = new CardInfo[5];
+        for (int i = 0; i < cards.Length; i++)
         {
-            //Get the card the spell is attached to.
-            Vector3 findCardPosition = transform.position;
-            findCardPosition.y = 0.1f;
-            CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
-            if (card != null)
+            cards[i] = cardGrid.FindCardAtSlotPosition(cardPositions[i]);
+            if (cards[i] != null)
             {
-                //Remove 1 health from the card.
-                card.attackValue--;
+                //Remove 1 attack from the card.
+                cards[i].attackValue--;
+                //Debug.Log("March card more attack has ended");
             }
-                Debug.Log($"{GetComponent<CardInfo>().name}'s usefulness has ran out. Moving card to graveyard.");
-            GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//Destroy the spell card once its time has ran out.
         }
+        base.OnDecommissionCard();
     }
 
     public override void DoMagic()
@@ -41,15 +31,27 @@ public class MarchSpell : CardSpell
         Vector3 findCardPosition = transform.position;
         findCardPosition.y = 0.1f;
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
-        if (card != null)
+        if (card == null)
         {
-            //Remove 1 health from the card.
-            card.attackValue++;
-        }
-        else
-        {
-            Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
+            //Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
             GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//If there is no card attached, destroy self.
         }
+
+        //Buff the cards
+        Vector3[] cardPositions = cardGrid.GetSlotPositions(true, false);
+        CardInfo[] cards = new CardInfo[5];
+        for (int i = 0; i < cards.Length; i++)
+        {
+            var temp = cardPositions[i];
+            temp.y = .1f;
+            cards[i] = cardGrid.FindCardAtSlotPosition(temp);
+            if (cards[i] != null)
+            {
+                //Remove 1 attack from the card.
+                cards[i].attackValue++;
+                //Debug.Log("March card more attack has started");
+            }
+        }
+        life--;
     }
 }

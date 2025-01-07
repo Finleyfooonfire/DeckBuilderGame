@@ -1377,7 +1377,7 @@ MonoBehaviour:
   cardName: Eye of Sheve'sa
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: d95a6b3f29bc2524c930d7f34d331009, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 
