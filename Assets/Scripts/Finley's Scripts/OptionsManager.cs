@@ -2,15 +2,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
+using UnityEngine.SceneManagement;  // Add this for scene management
 
 public class OptionsMenu : MonoBehaviour
 {
     public GameObject optionsMenu; // The options menu GameObject
     public Slider volumeSlider; // The slider for volume control
     public Toggle fullscreenToggle; // The toggle for fullscreen
-    public Dropdown qualityDropdown; // The dropdown for quality settings
-    public TMP_Dropdown resolutionDropdown;  // The dropdown for resolution settings
+    public TMP_Dropdown qualityDropdown; // The TMP dropdown for quality settings
+    public TMP_Dropdown resolutionDropdown; // The TMP dropdown for resolution settings
     public AudioMixer audioMixer; // Reference to your AudioMixer
+    public Button returnToMainMenuButton; // The button for returning to the main menu
 
     private void Start()
     {
@@ -22,6 +24,26 @@ public class OptionsMenu : MonoBehaviour
 
         // Populate the resolution dropdown with available screen resolutions
         PopulateResolutionDropdown();
+
+        // Add listener for the return to main menu button
+        returnToMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+    }
+
+    private void Update()
+    {
+        // Listen for the Escape key (ESC) to toggle the options menu
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // If the options menu is not already active, open it. Otherwise, close it.
+            if (!optionsMenu.activeSelf)
+            {
+                OpenOptionsMenu();
+            }
+            else
+            {
+                CloseOptionsMenu();
+            }
+        }
     }
 
     public void OpenOptionsMenu()
@@ -65,7 +87,6 @@ public class OptionsMenu : MonoBehaviour
     {
         PlayerPrefs.SetFloat("Volume", volumeSlider.value); // Save volume slider value
         PlayerPrefs.SetInt("Fullscreen", fullscreenToggle.isOn ? 1 : 0);
-        PlayerPrefs.SetInt("Quality", qualityDropdown.value);
         PlayerPrefs.SetInt("Resolution", resolutionDropdown.value); // Save resolution dropdown value
         PlayerPrefs.Save();
     }
@@ -85,12 +106,6 @@ public class OptionsMenu : MonoBehaviour
         if (PlayerPrefs.HasKey("Fullscreen"))
         {
             fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
-        }
-
-        // Load graphics quality setting
-        if (PlayerPrefs.HasKey("Quality"))
-        {
-            qualityDropdown.value = PlayerPrefs.GetInt("Quality");
         }
 
         // Load resolution setting
@@ -131,5 +146,15 @@ public class OptionsMenu : MonoBehaviour
 
         // Add listener to handle selection change
         resolutionDropdown.onValueChanged.AddListener(SetResolution);
+    }
+
+    // New method to return to the main menu
+    public void ReturnToMainMenu()
+    {
+        // Optionally, save settings before returning
+        SaveSettings();
+
+        // Load the main menu scene (replace "MainMenu" with the actual name of your main menu scene)
+        SceneManager.LoadScene("MainMenu");
     }
 }
