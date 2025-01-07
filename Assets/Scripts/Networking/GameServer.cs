@@ -17,7 +17,7 @@ public class GameServer : MonoBehaviour
         var endpoint = NetworkEndpoint.AnyIpv4.WithPort(7777);//Accept connections.
         if (m_Driver.Bind(endpoint) != 0)
         {
-            Debug.LogError("Failed to bind to port 7777.");
+            //Debug.LogError("Failed to bind to port 7777.");
             return;
         }
         m_Driver.Listen();
@@ -50,7 +50,7 @@ public class GameServer : MonoBehaviour
         while ((c = m_Driver.Accept()) != default)
         {
             m_Connections.Add(c);
-            Debug.Log("Accepted a connection.");
+            //Debug.Log("Accepted a connection.");
             FindFirstObjectByType<GameManager>().StartGame(true);
             FindFirstObjectByType<GameNetworkManager>().OnConnectedToOpponent();
         }
@@ -67,7 +67,7 @@ public class GameServer : MonoBehaviour
                 if (cmd == NetworkEvent.Type.Data)
                 {
                     //Get the game updates from the client
-                    Debug.Log("Server recieved data");
+                    //Debug.Log("Server recieved data");
                     NetMessageType msgType = (NetMessageType)stream.ReadByte();
                     switch (msgType)
                     {
@@ -84,17 +84,17 @@ public class GameServer : MonoBehaviour
                             playingFieldSynch.RecieveStats(NetworkSerializer.Instance.DeserializeStatsChange(ref stream));
                             break;
                         case NetMessageType.EndGame:
-                            Debug.Log("Ending game");
+                            //Debug.Log("Ending game");
                             FindFirstObjectByType<GameManager>().GameOver(false);
                             break;
                         default:
-                            Debug.Log("Invalid message type");
+                            //Debug.Log("Invalid message type");
                             break;
                     }
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
-                    Debug.Log("Client disconnected from the server.");
+                    //Debug.Log("Client disconnected from the server.");
                     m_Connections[i] = default;
                     break;
                 }
@@ -124,7 +124,7 @@ public class GameServer : MonoBehaviour
 
     public void SendEndGame()
     {
-        Debug.Log("Sending EndGame");
+        //Debug.Log("Sending EndGame");
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[0], out var writer);
         writer.WriteByte((byte)NetMessageType.EndGame);
         m_Driver.EndSend(writer);

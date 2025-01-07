@@ -97,7 +97,7 @@ public class PlayingFieldSynch : MonoBehaviour
     {
         CardsChangeIn changes = GetCardStatus();
         var client = FindAnyObjectByType<GameClient>();
-        Debug.Log("Sending Card Changes: " + changes);
+        //Debug.Log("Sending Card Changes: " + changes);
         if (client != null)
         {
             //The client exists so Send data.
@@ -112,7 +112,7 @@ public class PlayingFieldSynch : MonoBehaviour
 
     public void SendHealthAndMana()
     {
-        Debug.Log("Sending Stats Changes: " + healthChange);
+        //Debug.Log("Sending Stats Changes: " + healthChange);
         var client = FindAnyObjectByType<GameClient>();
         if (client != null)
         {
@@ -173,7 +173,7 @@ public class PlayingFieldSynch : MonoBehaviour
 
             string colour = card.Value.manaColour;
             string cardName = card.Key[..card.Key.IndexOf("[ENDOFNAME]")].Replace(" ", string.Empty);
-            Debug.Log("Adding from opponent: " + colour + " " + cardName);
+            //Debug.Log("Adding from opponent: " + colour + " " + cardName);
             GameObject cardObject = Instantiate(Resources.Load<GameObject>("Cards\\" + colour + "Cards\\" + cardName));
             cardObject.name = card.Key;
             cardObject.transform.SetParent(cardPlayArea);
@@ -203,7 +203,7 @@ public class PlayingFieldSynch : MonoBehaviour
             cardInfo.cardImage = card.Value.cardImage;
             if (cardInfo.cardImage == null)
             {
-                Debug.LogError("Card sprite is null");
+                //Debug.LogError("Card sprite is null");
             }
             //cardObject.GetComponentInChildren<SpriteRenderer>().sprite = cardInfo.cardImage;
 

@@ -59,7 +59,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
         if (cardPlayArea == null)
         {
-            Debug.LogError("CardPlayArea not found in the scene!");
+            //Debug.LogError("CardPlayArea not found in the scene!");
         }
 
 
@@ -126,13 +126,13 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         if (GameManager.Instance.playerMana >= manaCost)
         {
             selectedCard = this;
-            Debug.Log($"{selectedCard.cardType} card selected");
+            //Debug.Log($"{selectedCard.cardType} card selected");
 
             CreatePlacementIndicator();
         }
         else
         {
-            Debug.Log($"Not enough mana to play card. Required: {manaCost}, Available: {GameManager.Instance.playerMana}");
+            //Debug.Log($"Not enough mana to play card. Required: {manaCost}, Available: {GameManager.Instance.playerMana}");
         }
     }
 
@@ -169,13 +169,13 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
                 if (selectedCard.cardType == CardType.Spell)
                 {
                     //Spell cards are special
-                    Debug.Log("Spell card placed");
+                    //Debug.Log("Spell card placed");
                     PlaceSpellCard();
                 }
                 else
                 {
                     //Unit and land cards are to be placed normally
-                    Debug.Log(selectedCard.cardType.ToString() + " card placed");
+                    //Debug.Log(selectedCard.cardType.ToString() + " card placed");
                     PlaceNonSpellCard();
                 }
             }
@@ -223,7 +223,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     {
         if (Camera.main == null)
         {
-            Debug.LogError("No main camera found in the scene!");
+            //Debug.LogError("No main camera found in the scene!");
             return;
         }
 
@@ -274,7 +274,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
+        //Debug.Log($"Non spell card played successfully at position {cardObject.transform.position}");
     }
 
     //Places a spell card type card onto a space on the player's side of the board that has a different card on it.
@@ -315,7 +315,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
                 cardSpell = cardObject.AddComponent<WishSpell>();
                 break;
             default:
-                Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
+                //Debug.LogError($"NO SPELL TYPE MATCHES GIVEN SPELL: {cardInfo.spell}");
                 break;
         }
 
@@ -327,7 +327,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         selectedCard = null;
 
         GameManager.Instance.synch.AddPlayedCard(cardObject);
-        Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
+        //Debug.Log($"Spell card played successfully at position {cardObject.transform.position}");
     }
 
 
@@ -358,7 +358,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             cardPlayArea = GameObject.Find("CardPlayArea")?.transform;
             if (cardPlayArea == null)
             {
-                Debug.LogError("CardPlayArea not found in the scene!");
+                //Debug.LogError("CardPlayArea not found in the scene!");
                 return new List<CardInfo>();
             }
         }

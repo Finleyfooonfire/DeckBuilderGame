@@ -56,7 +56,7 @@ public class Deck : MonoBehaviour
     {
         if (deckCards.Count == 0)
         {
-            Debug.Log("No more cards in the deck!");
+            //Debug.Log("No more cards in the deck!");
             return;
         }
         if (handCards.Count < maxHandSize)
@@ -81,7 +81,7 @@ public class Deck : MonoBehaviour
         }
         else
         {
-            Debug.Log("Hand full");
+            ////Debug.Log("Hand full");
         }
     }
 
@@ -94,7 +94,7 @@ public class Deck : MonoBehaviour
                 handCards.RemoveAt(i);
             }
         }
-        Debug.Log("Distributing hand: " + string.Join<Card>(",", handCards.ToArray()));
+        ////Debug.Log("Distributing hand: " + string.Join<Card>(",", handCards.ToArray()));
         int index = 0;
         foreach (Card handCard in handCards)
         {
@@ -105,7 +105,7 @@ public class Deck : MonoBehaviour
 
     public void PlayCard(Card card)
     {
-        if (handCards.Remove(card)) Debug.Log($"The card {card} has been removed from handCards.");
+        if (handCards.Remove(card)) ////Debug.Log($"The card {card} has been removed from handCards.");
         Destroy(card);
         DistributeHand();
     }

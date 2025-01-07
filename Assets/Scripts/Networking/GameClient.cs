@@ -18,11 +18,11 @@ public class GameClient : MonoBehaviour
         if (NetworkEndpoint.TryParse(ipInput, 7777, out var endpoint))
         {
             m_Connection = m_Driver.Connect(endpoint);
-            Debug.Log("Connected to " + ipInput+ " on port 7777");
+            //Debug.Log("Connected to " + ipInput+ " on port 7777");
         }
         else
         {
-            Debug.LogError("Unable to connect");
+            //Debug.LogError("Unable to connect");
         }
     }
 
@@ -36,7 +36,7 @@ public class GameClient : MonoBehaviour
     {
         if (Time.realtimeSinceStartup - lastKeepAlive > 15)
         {
-            Debug.Log("Sending KeepAlive");
+            //Debug.Log("Sending KeepAlive");
             m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
             writer.WriteByte((byte)NetMessageType.KeepAlive);
             m_Driver.EndSend(writer);
@@ -51,7 +51,7 @@ public class GameClient : MonoBehaviour
 
         if (!m_Connection.IsCreated)
         {
-            Debug.Log("Lost connection to server");
+            //Debug.Log("Lost connection to server");
             return;
         }
 
@@ -63,19 +63,19 @@ public class GameClient : MonoBehaviour
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
-                Debug.Log("We are now connected to the server.");
+                //Debug.Log("We are now connected to the server.");
                 FindFirstObjectByType<GameManager>().StartGame(false);
                 FindFirstObjectByType<GameNetworkManager>().OnConnectedToOpponent();
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
                 //Get the game updates from the server
-                Debug.Log("Client recieved data");
+                //Debug.Log("Client recieved data");
                 NetMessageType msgType = (NetMessageType)stream.ReadByte();
                 switch (msgType)
                 {
                     case NetMessageType.KeepAlive:
-                        Debug.Log("Still connected");
+                        //Debug.Log("Still connected");
                         break;
                     case NetMessageType.CardChange:
                         playingFieldSynch.RecieveCards(NetworkSerializer.Instance.DeserializeCardChange(ref stream));
@@ -85,17 +85,17 @@ public class GameClient : MonoBehaviour
                         playingFieldSynch.RecieveStats(NetworkSerializer.Instance.DeserializeStatsChange(ref stream));
                         break;
                     case NetMessageType.EndGame:
-                        Debug.Log("Ending game");
+                        //Debug.Log("Ending game");
                         FindFirstObjectByType<GameManager>().GameOver(false);
                         break;
                     default:
-                        Debug.Log("Invalid message type");
+                        //Debug.Log("Invalid message type");
                         break;
                 }
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {
-                Debug.Log("Client got disconnected from server.");
+                //Debug.Log("Client got disconnected from server.");
                 m_Connection = default;
             }
         }
@@ -121,7 +121,7 @@ public class GameClient : MonoBehaviour
 
     public void SendEndGame()
     {
-        Debug.Log("Sending EndGame");
+        //Debug.Log("Sending EndGame");
         m_Driver.BeginSend(NetworkPipeline.Null, m_Connection, out var writer);
         writer.WriteByte((byte)NetMessageType.EndGame);
         m_Driver.EndSend(writer);

@@ -43,23 +43,23 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
 
             if (targetCard.GetComponent<CardInfo>().defenseValue <= 0 && !targetCard.GetComponent<CardInfo>().invincible)
             {
-                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
+                //Debug.Log($"{targetCard.GetComponent<CardInfo>().name} has been defeated by {GetComponent<CardInfo>().name}!");
                 GameManager.Instance.synch.AddKilledCard(targetCard.gameObject);//The card has been damaged and therefore changed. Keenan addition.
             }
             else
             {
-                Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
+                //Debug.Log($"{targetCard.GetComponent<CardInfo>().name} now has {targetCard.GetComponent<CardInfo>().defenseValue} health remaining.");
                 GameManager.Instance.synch.AddChangedCard(targetCard.gameObject);//Keenan addition
             }
 
             if (killedInRetaliation)
             {
-                Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
+                //Debug.Log($"{GetComponent<CardInfo>().name} has been defeated by {targetCard.GetComponent<CardInfo>().name}'s retaliation!");
                 GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//The card has been defeated. Keenan addition.
             }
             else
             {
-                Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
+                //Debug.Log($"{GetComponent<CardInfo>().name} now has {GetComponent<CardInfo>().defenseValue} health remaining.");
                 GameManager.Instance.synch.AddChangedCard(gameObject);//The card has been damaged and therefore changed. Keenan addition.
             }
             canAttack = false;
@@ -73,7 +73,7 @@ public class CardAttack : MonoBehaviour, IPointerClickHandler
         if (GameManager.Instance.isPlayerTurn)
         {
             //Select the card.
-            Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
+            //Debug.Log("The card \"" + gameObject.name + "\" has been clicked");
             //If they are the player's card, set as an attacking card. (And only allow to attack once)
             if (GetComponent<CardInfo>().isPlayerCard && canAttack)
             {

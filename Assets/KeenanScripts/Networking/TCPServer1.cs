@@ -21,7 +21,7 @@ public class TCPServer1 : MonoBehaviour
         
         server = new TcpListener(IPAddress.Any, 7777);
         server.Start();
-        Debug.Log("Server started, waiting for client...");
+        //Debug.Log("Server started, waiting for client...");
 
         // Accept client connection asynchronously
         server.BeginAcceptTcpClient(OnClientConnected, null);
@@ -30,7 +30,7 @@ public class TCPServer1 : MonoBehaviour
     void OnClientConnected(IAsyncResult ar)
     {
         client = server.EndAcceptTcpClient(ar);
-        Debug.Log("Client connected!");
+        //Debug.Log("Client connected!");
 
         stream = client.GetStream();
 
@@ -46,7 +46,7 @@ public class TCPServer1 : MonoBehaviour
         {
             // Convert the byte data into a string
             string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            Debug.Log("Received message: " + message);
+            //Debug.Log("Received message: " + message);
 
             // Update the UI on the main thread
             UnityMainThreadDispatcher.Instance().Enqueue(() =>

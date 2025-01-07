@@ -31,7 +31,7 @@ public abstract class CardSpell : MonoBehaviour
 
     protected virtual void OnDecommissionCard()
     {
-        Debug.Log($"{GetComponent<CardInfo>().name}'s usefulness has ran out. Moving card to graveyard.");
+        //Debug.Log($"{GetComponent<CardInfo>().name}'s usefulness has ran out. Moving card to graveyard.");
         GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//Destroy the spell card once its time has ran out.
     }
 

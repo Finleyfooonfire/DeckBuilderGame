@@ -181,9 +181,9 @@ class NetworkSerializer
             float z = reader.ReadFloat();
             card.position = new Vector3(-x, y, -z);//Mirror card positions
             string cardPath = "CardTextures/" + card.faction.ToString() + "Cards/" + reader.ReadFixedString32().ToString();
-            Debug.Log(cardPath);
+            //Debug.Log(cardPath);
             Sprite cardSprite = Resources.Load<Sprite>(cardPath);
-            Debug.Log(cardSprite);
+            //Debug.Log(cardSprite);
             card.cardImage = (cardSprite);
             cardsAdded.Add(new KeyValuePair<string, CardInfoStruct>(name, card));
         }

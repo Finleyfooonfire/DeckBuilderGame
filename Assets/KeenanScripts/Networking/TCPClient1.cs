@@ -24,14 +24,14 @@ public class TCPClient1 : MonoBehaviour
 
         client = new TcpClient();
         client.BeginConnect(serverIP, 7777, OnConnected, null);  // Non-blocking connect to the server
-        Debug.Log(serverIP);    
+        //Debug.Log(serverIP);    
     }
 
     void OnConnected(IAsyncResult ar)
     {
         if (client.Connected)
         {
-            Debug.Log("Connected to server!");
+            //Debug.Log("Connected to server!");
             ReceiveMessages(); // Start receiving messages
         }
     }
@@ -45,7 +45,7 @@ public class TCPClient1 : MonoBehaviour
         {
             int bytesRead = stream.EndRead(ar);
             string message = Encoding.ASCII.GetString(data, 0, bytesRead);
-            Debug.Log("Received from server: " + message);
+            //Debug.Log("Received from server: " + message);
 
 
 
@@ -63,12 +63,12 @@ public class TCPClient1 : MonoBehaviour
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length); // Send message to server
 
-            Debug.Log("Sent to server: " + messageToSend);
+            //Debug.Log("Sent to server: " + messageToSend);
             inputField.text = ""; // Clear the input field after sending
         }
         else
         {
-            Debug.LogWarning("Client is not connected to the server!");
+            //Debug.LogWarning("Client is not connected to the server!");
         }
     }
 
