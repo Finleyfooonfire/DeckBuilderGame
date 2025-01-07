@@ -17,7 +17,7 @@ MonoBehaviour:
   <attackValue>k__BackingField: 0
   <defenseValue>k__BackingField: -1
   <manaCost>k__BackingField: 0
-  <manaTypeRequired>k__BackingField: 
+  <manaTypeRequired>k__BackingField: Land
   <cardType>k__BackingField: 0
   <cardImage>k__BackingField: {fileID: 21300000, guid: b6d205043ea0ef042a772b3f9b1b0dee, type: 3}
   <cardPrefab>k__BackingField: {fileID: 2590218569630068640, guid: 27a512cef90f9d141b82ef7f9e66220f, type: 3}

@@ -11,6 +11,6 @@ public class CardGenerate : MonoBehaviour
     public void OnUpdateTurn()
     {
         //Generates mana
-        GameManager.Instance.playerMana++;
+        GameManager.Instance.playerMana = Mathf.Min(GameManager.Instance.playerMana + 1, GameManager.Instance.maxMana);
     }
 }
