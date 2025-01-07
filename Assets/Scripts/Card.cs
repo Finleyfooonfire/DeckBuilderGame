@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -98,6 +99,19 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         rectTransform.anchoredPosition = Vector2.zero;
 
         zoomPanel.SetActive(false);
+        // matt additions
+        GameObject textObject = new GameObject("CardText"); 
+        textObject.transform.SetParent(zoomPanel.transform, false); 
+        RectTransform textRect = textObject.AddComponent<RectTransform>(); 
+        textRect.sizeDelta = new Vector2(300, 50); 
+        textRect.anchorMin = new Vector2(0.5f, 0); 
+        textRect.anchorMax = new Vector2(0.5f, 0); 
+        textRect.pivot = new Vector2(0.5f, 0); 
+        textRect.anchoredPosition = new Vector2(0, 25); 
+        TextMeshProUGUI cardText = textObject.AddComponent<TextMeshProUGUI>(); 
+       
+        cardText.color = Color.black;
+        // matt addition end
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -206,11 +220,16 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         if (zoomPanel != null)
         {
             Image panelImage = zoomPanel.GetComponent<Image>();
+            TextMeshProUGUI panelText = zoomPanel.GetComponentInChildren<TextMeshProUGUI>();
             if (panelImage != null)
             {
                 panelImage.sprite = card.cardImage;
                 zoomPanel.SetActive(true);
                 isZoomed = true;
+            }
+            if (panelText != null)
+            {
+                panelText.text = card.cardName;
             }
         }
     }
