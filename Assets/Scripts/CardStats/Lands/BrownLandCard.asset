@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: BrownLandCard
   m_EditorClassIdentifier: 
   <faction>k__BackingField: 2
-  <description>k__BackingField: 
+  <description>k__BackingField: Brown Land Card
   <attackValue>k__BackingField: 0
-  <defenseValue>k__BackingField: 0
+  <defenseValue>k__BackingField: -1
   <manaCost>k__BackingField: 0
   <manaTypeRequired>k__BackingField: 
   <cardType>k__BackingField: 0
