@@ -7,4 +7,10 @@ public class CardGenerate : MonoBehaviour
     {
         
     }
+
+    public void OnUpdateTurn()
+    {
+        //Generates mana
+        GameManager.Instance.playerMana++;
+    }
 }

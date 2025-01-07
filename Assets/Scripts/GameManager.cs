@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         //Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
-            playerMana = Mathf.Min(playerMana + 1, maxMana);
+            playerMana = Mathf.Min(playerMana, maxMana);
             UpdateManaUI();
 
             Deck playerDeck = GameObject.Find("PlayerDeck").GetComponent<Deck>();
@@ -190,11 +190,16 @@ public class GameManager : MonoBehaviour
     void UpdateCards()
     {
         CardSpell spell = null;
+        CardGenerate land = null;
         foreach (var cardInfo in FindObjectsByType<CardInfo>(FindObjectsSortMode.None))
         {
             if (cardInfo.gameObject.TryGetComponent<CardSpell>(out spell))
             {
                 spell.OnUpdateTurn();
+            }
+            else if (cardInfo.gameObject.TryGetComponent<CardGenerate>(out land))
+            {
+                land.OnUpdateTurn();
             }
         }
     }
