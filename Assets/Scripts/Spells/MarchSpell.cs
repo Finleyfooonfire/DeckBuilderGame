@@ -18,7 +18,7 @@ public class MarchSpell : CardSpell
             {
                 //Remove 1 attack from the card.
                 cards[i].attackValue--;
-                Debug.Log("March card more attack has ended");
+                //Debug.Log("March card more attack has ended");
             }
         }
         base.OnDecommissionCard();
@@ -33,7 +33,7 @@ public class MarchSpell : CardSpell
         CardInfo card = cardGrid.FindCardAtSlotPosition(findCardPosition);
         if (card == null)
         {
-            Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
+            //Debug.Log($"{GetComponent<CardInfo>().name} has no parent card. Moving to graveyard.");
             GameManager.Instance.synch.AddKilledFriendlyCard(gameObject);//If there is no card attached, destroy self.
         }
 
@@ -49,7 +49,7 @@ public class MarchSpell : CardSpell
             {
                 //Remove 1 attack from the card.
                 cards[i].attackValue++;
-                Debug.Log("March card more attack has started");
+                //Debug.Log("March card more attack has started");
             }
         }
         life--;

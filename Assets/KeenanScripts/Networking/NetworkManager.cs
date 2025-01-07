@@ -60,7 +60,7 @@ public class NetworkManager : MonoBehaviour
             clientUI.SetActive(true);
             //Get the IP from the input box and attempt to connect
             deviceIP = IPInput.text;
-            Debug.Log(deviceIP);
+            //Debug.Log(deviceIP);
         }
     }
 
@@ -68,7 +68,7 @@ public class NetworkManager : MonoBehaviour
     {
         // Update deviceIP right before connection
         deviceIP = IPInput.text;
-        Debug.Log("Attempting to connect to IP: " + deviceIP);
+        //Debug.Log("Attempting to connect to IP: " + deviceIP);
 
         // Attempt to connect
         client.GetComponent<TCPClient1>().OnAttemptConnectToServer(deviceIP);

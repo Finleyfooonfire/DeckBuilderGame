@@ -68,7 +68,7 @@ public class GameNetworkManager : MonoBehaviour
             /*
             //Get this device IP and use it to show the device's IP
             deviceIP = GetLocalIPAddress();
-            Debug.Log("Your device's IP is: " + deviceIP);
+            //Debug.Log("Your device's IP is: " + deviceIP);
             serverIP.text = "Your device's IP is: " + deviceIP;
             */
         }
@@ -89,7 +89,7 @@ public class GameNetworkManager : MonoBehaviour
             /*
             //Get the IP from the input box and attempt to connect
             deviceIP = IPInput.text;
-            Debug.Log(deviceIP);
+            //Debug.Log(deviceIP);
             */
         }
     }
@@ -99,14 +99,14 @@ public class GameNetworkManager : MonoBehaviour
     {
         // Update deviceIP right before connection
         deviceIP = IPInput.text;
-        Debug.Log("Attempting to connect to Server:" + (deviceIP != "" ? deviceIP : "127.0.0.1"));
+        //Debug.Log("Attempting to connect to Server:" + (deviceIP != "" ? deviceIP : "127.0.0.1"));
 
         
 
         // Hide client connect UI after initiating connection
         clientUI.gameObject.SetActive(false);
         Turn = true;
-        Debug.Log(Turn);
+        //Debug.Log(Turn);
         //SceneManager.LoadScene("GameScene", LoadSceneMode.Additive);
     }
     */

@@ -20,14 +20,20 @@ public class CardInfo : MonoBehaviour
 
     private void Start() //Keenan addition
     {
-        damage = transform.Find("Damage").GetComponent<TMP_Text>();
-        health = transform.Find("Health").GetComponent<TMP_Text>();
+        damage = transform.Find("Damage")?.GetComponent<TMP_Text>();
+        health = transform.Find("Health")?.GetComponent<TMP_Text>();
         UpdateStats();
     }
 
     public void UpdateStats() //Keenan addition
     {
-        damage.text = attackValue.ToString();
-        health.text = defenseValue.ToString();
+        if ( damage != null)
+        {
+            damage.text = attackValue.ToString();
+        }
+        if (health != null)
+        {
+            health.text = defenseValue.ToString();
+        }
     }
 }

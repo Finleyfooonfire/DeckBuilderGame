@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
-  m_Name: BowandArrow
+  m_Name: WhiteLandCard
   m_EditorClassIdentifier: 
-  <faction>k__BackingField: 2
-  <description>k__BackingField: Bow and arrow MAGIC CARD
+  <faction>k__BackingField: 3
+  <description>k__BackingField: White Land Card
   <attackValue>k__BackingField: 0
-  <defenseValue>k__BackingField: 0
-  <manaCost>k__BackingField: 2
-  <manaTypeRequired>k__BackingField: Brown
-  <cardType>k__BackingField: 2
-  <cardImage>k__BackingField: {fileID: 0}
-  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: 2747790d44620434fb9eff8c2233920c, type: 3}
+  <defenseValue>k__BackingField: -1
+  <manaCost>k__BackingField: 0
+  <manaTypeRequired>k__BackingField: Land
+  <cardType>k__BackingField: 0
+  <cardImage>k__BackingField: {fileID: 21300000, guid: b6d205043ea0ef042a772b3f9b1b0dee, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 2590218569630068640, guid: 27a512cef90f9d141b82ef7f9e66220f, type: 3}
   <spell>k__BackingField: {fileID: 0}

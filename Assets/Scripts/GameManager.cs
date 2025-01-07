@@ -87,10 +87,10 @@ public class GameManager : MonoBehaviour
 
     void UpdateTurn()
     {
-        Debug.Log(isPlayerTurn + "IMANNOYING");
+        //Debug.Log(isPlayerTurn + "IMANNOYING");
         if (isPlayerTurn)
         {
-            playerMana = Mathf.Min(playerMana + 1, maxMana);
+            playerMana = Mathf.Min(playerMana, maxMana);
             UpdateManaUI();
 
             Deck playerDeck = GameObject.Find("PlayerDeck").GetComponent<Deck>();
@@ -98,12 +98,12 @@ public class GameManager : MonoBehaviour
 
             statusText.text = "Your Turn";
             endTurnButton.interactable = true;
-            Debug.Log("YOUR TURN");
+            //Debug.Log("YOUR TURN");
         }
         else
         {
             statusText.text = "Opponent's Turn";
-            Debug.Log("OPPONENTS TURN");
+            //Debug.Log("OPPONENTS TURN");
             endTurnButton.interactable = false;
 
             //StartCoroutine(AITurn());
@@ -119,7 +119,7 @@ public class GameManager : MonoBehaviour
 
         if (isPlayerTurn) UpdateCards();
         isPlayerTurn = !isPlayerTurn;
-        Debug.Log(isPlayerTurn);
+        //Debug.Log(isPlayerTurn);
         turnsTaken++;
         selectedAttackingCard = null;
         //UpdateTurn(); //No need to call this twice
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("PlayerDeck not found!");
+            //Debug.LogError("PlayerDeck not found!");
         }
     }
 
@@ -190,11 +190,16 @@ public class GameManager : MonoBehaviour
     void UpdateCards()
     {
         CardSpell spell = null;
+        CardGenerate land = null;
         foreach (var cardInfo in FindObjectsByType<CardInfo>(FindObjectsSortMode.None))
         {
             if (cardInfo.gameObject.TryGetComponent<CardSpell>(out spell))
             {
                 spell.OnUpdateTurn();
+            }
+            else if (cardInfo.gameObject.TryGetComponent<CardGenerate>(out land))
+            {
+                land.OnUpdateTurn();
             }
         }
     }
@@ -224,7 +229,7 @@ public class GameManager : MonoBehaviour
     // Simple AI logic for testing
     //  yield return new WaitForSeconds(2f);
 
-    //      Debug.Log("AI forfeits its turn.");
+    //      //Debug.Log("AI forfeits its turn.");
 
     //     EndTurn();
     //  }

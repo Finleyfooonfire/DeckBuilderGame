@@ -43,7 +43,7 @@ public class CardPlayAreaGrid : MonoBehaviour
         }
         else
         {
-            Debug.LogError("CardPlayArea GameObject not found in the scene.");
+            //Debug.LogError("CardPlayArea GameObject not found in the scene.");
         }
 
         InitializeGrid();
@@ -90,7 +90,7 @@ public class CardPlayAreaGrid : MonoBehaviour
             {
                 Gizmos.color = Color.green;
             }
-            //Debug.Log(slotPosition);
+            ////Debug.Log(slotPosition);
             Gizmos.DrawWireCube(transform.TransformPoint(slotPosition), new Vector3(slotSize.x, 0.1f, slotSize.y));
 
         }
@@ -106,7 +106,7 @@ public class CardPlayAreaGrid : MonoBehaviour
         {
             foreach (CardPlayAreaSlot slot in GridSlots)
             {
-                Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
+                //Debug.Log($"Card properties: Will look at: {isPlayerCard == slot.IsPlayerSlot}. Has card to attach to {slot.HasCard}. Has no spell card: {!slot.HasSpellCard}.");
                 if (slot.HasCard && !slot.HasSpellCard)
                 {
                     float distance = Vector3.Distance(currentPosition, slot.SlotPosition);
@@ -136,12 +136,12 @@ public class CardPlayAreaGrid : MonoBehaviour
 
         if (closestSlot != null)
         {
-            Debug.Log($"The closest slot is at {(CardPlayAreaSlot)closestSlot}");
+            //Debug.Log($"The closest slot is at {(CardPlayAreaSlot)closestSlot}");
             return ((CardPlayAreaSlot)closestSlot).SlotPosition;
         }
         else
         {
-            Debug.LogError("Unable to find a card slot that matches the requirements. Using default.");
+            //Debug.LogError("Unable to find a card slot that matches the requirements. Using default.");
             return default(CardPlayAreaSlot).SlotPosition;
         }
 
@@ -218,7 +218,7 @@ public class CardPlayAreaGrid : MonoBehaviour
             }
             else { break; }
         }
-        Debug.Log($"Found card {foundCard}");
+        //Debug.Log($"Found card {foundCard}");
         return foundCard;
     }
 #nullable restore
