@@ -1373,7 +1373,7 @@ MonoBehaviour:
   cardName: Deeprot The Necrotic Dealer
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 6d128a68b0f820f458da763087f36c11, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

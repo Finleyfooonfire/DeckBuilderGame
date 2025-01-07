@@ -1349,7 +1349,7 @@ MonoBehaviour:
   cardName: Last Wish of a Dying Star
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: ea66df256656985439d829eb545c8e61, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Spell
   cardDescription: 

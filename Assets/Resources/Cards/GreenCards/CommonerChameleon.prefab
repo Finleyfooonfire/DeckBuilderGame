@@ -1438,7 +1438,7 @@ MonoBehaviour:
   cardName: Commoner Chameleon
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: df7c31d4d11b89e4a8e68acae5cb0038, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

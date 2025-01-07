@@ -1426,7 +1426,7 @@ MonoBehaviour:
   cardName: Sandstone Servant
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 61aef23854226464989c06aac9145bd3, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

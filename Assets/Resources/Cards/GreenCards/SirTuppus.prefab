@@ -1438,7 +1438,7 @@ MonoBehaviour:
   cardName: Sir Tuppus
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 7844e571de33a1a40bc29c6c15099622, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

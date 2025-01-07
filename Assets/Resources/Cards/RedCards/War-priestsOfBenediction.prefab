@@ -1373,7 +1373,7 @@ MonoBehaviour:
   cardName: War-priests of Benediction
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: b3741134d224dc843a58dae38e529d8e, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Monster
   cardDescription: 

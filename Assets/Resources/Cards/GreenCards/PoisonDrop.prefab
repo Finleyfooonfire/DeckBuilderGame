@@ -1349,7 +1349,7 @@ MonoBehaviour:
   cardName: Poison Drop
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: af124d0e866fd30498f904c86a202b79, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Spell
   cardDescription: 

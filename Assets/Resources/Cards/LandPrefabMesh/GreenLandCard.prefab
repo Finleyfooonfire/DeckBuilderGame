@@ -794,7 +794,7 @@ MonoBehaviour:
   cardName: Green Land
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: d23746a1ec0131840bff6b89608bbebc, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Land
   cardDescription: 

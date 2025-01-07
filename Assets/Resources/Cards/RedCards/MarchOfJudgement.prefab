@@ -1289,7 +1289,7 @@ PrefabInstance:
       objectReference: {fileID: 2095923052007896429, guid: 325f5a14a22d1f04085a5e15e0d96e9b, type: 3}
     - target: {fileID: 919132149155446097, guid: 0dda90ab0d143674f8793f63aef95188, type: 3}
       propertyPath: m_Name
-      value: MarchOfJudgment
+      value: MarchOfJudgement
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1349,7 +1349,7 @@ MonoBehaviour:
   cardName: March of Judgement
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 0806e17adfd35a5409d1eed8fec033c9, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Spell
   cardDescription: 

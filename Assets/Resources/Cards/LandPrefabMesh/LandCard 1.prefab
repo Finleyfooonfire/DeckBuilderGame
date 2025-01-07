@@ -797,7 +797,7 @@ MonoBehaviour:
   cardName: Red Land
   cardAttack: 0
   cardHealth: 0
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: d433f91f1a5401c49b9ef82ec6852703, type: 3}
   cardMeshRenderer: {fileID: 0}
   cardType: Land
   cardDescription: 
