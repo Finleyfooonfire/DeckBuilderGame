@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e142cfce2e7e834e8757c79487f38cd, type: 3}
-  m_Name: ElfChief
+  m_Name: BrownLandCard
   m_EditorClassIdentifier: 
   <faction>k__BackingField: 2
-  <description>k__BackingField: Elven Chief
-  <attackValue>k__BackingField: 9
-  <defenseValue>k__BackingField: 7
-  <manaCost>k__BackingField: 8
-  <manaTypeRequired>k__BackingField: Brown
-  <cardType>k__BackingField: 1
-  <cardImage>k__BackingField: {fileID: 0}
-  <cardPrefab>k__BackingField: {fileID: 8417550595947178193, guid: aaad2c056d17da945b45be56863f6875, type: 3}
+  <description>k__BackingField: 
+  <attackValue>k__BackingField: 0
+  <defenseValue>k__BackingField: 0
+  <manaCost>k__BackingField: 0
+  <manaTypeRequired>k__BackingField: 
+  <cardType>k__BackingField: 0
+  <cardImage>k__BackingField: {fileID: 21300000, guid: 0531b237dbba15146b47c0c36d80a4c5, type: 3}
+  <cardPrefab>k__BackingField: {fileID: 5406861842688781403, guid: a0483f955bd649040b7af5ec0337c427, type: 3}
   <spell>k__BackingField: {fileID: 0}
