@@ -5,6 +5,9 @@ public class MouseFollow : MonoBehaviour
     // Public reference to the custom camera
     public Camera customCamera;
 
+    // Public reference to the camera as a GameObject (instead of a Cinemachine Virtual Camera)
+    public GameObject cameraObject;
+
     // Custom variable to control the percentage of the screen bounds the cube can move within
     [Range(0f, 1f)] public float movePercentageX = 1f;
     [Range(0f, 1f)] public float movePercentageY = 1f;
@@ -18,8 +21,12 @@ public class MouseFollow : MonoBehaviour
     private float cameraWidth;
 
     public Vector3 startPosition = new Vector3(0f, 0f, 0f);
+    private Vector3 cameraStartPosition;
 
-    void Start()
+    // Variables for smooth transition (resetting)
+    public float resetSpeed = 1f;  // How fast the cube and camera reset
+
+    private void Start()
     {
         // Check if the custom camera is assigned
         if (customCamera == null)
@@ -27,14 +34,21 @@ public class MouseFollow : MonoBehaviour
             Debug.LogError("Custom Camera is not assigned!");
         }
 
-        // Calculate the camera bounds
+        // Check if the camera GameObject is assigned
+        if (cameraObject == null)
+        {
+            Debug.LogError("Camera Object is not assigned!");
+        }
 
+        // Store the starting positions of the cube and camera GameObject
         transform.position = startPosition;
+        cameraStartPosition = cameraObject.transform.position;
 
+        // Update the camera bounds
         UpdateCameraBounds();
     }
 
-    void Update()
+    private void Update()
     {
         // Ensure that the custom camera is assigned before proceeding
         if (customCamera == null)
@@ -59,6 +73,12 @@ public class MouseFollow : MonoBehaviour
 
         // Set the object's position to the calculated and clamped world position
         transform.position = worldPosition;
+
+        // Gradually reset the cube position back to the start position
+        transform.position = Vector3.Lerp(transform.position, startPosition, resetSpeed * Time.deltaTime);
+
+        // Gradually reset the Camera object position back to its start position
+        cameraObject.transform.position = Vector3.Lerp(cameraObject.transform.position, cameraStartPosition, resetSpeed * Time.deltaTime);
     }
 
     // Method to calculate and update the camera's bounds in world space
@@ -75,7 +95,6 @@ public class MouseFollow : MonoBehaviour
     Vector3 ClampPositionWithinBounds(Vector3 targetPosition)
     {
         // Calculate the min and max bounds based on the camera's view size and the movePercentage
-        // Calculate the min and max bounds based on the camera's view size and the movePercentage
         float minX = customCamera.transform.position.x - cameraWidth * movePercentageX;
         float maxX = customCamera.transform.position.x + cameraWidth * movePercentageX;
 
@@ -88,5 +107,4 @@ public class MouseFollow : MonoBehaviour
 
         return targetPosition;
     }
-
-    }
+}
