@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 ///TODO: Relating card Changes from client/host into moves: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
 public class PlayingFieldSynch : MonoBehaviour
@@ -20,6 +23,8 @@ public class PlayingFieldSynch : MonoBehaviour
     List<KeyValuePair<string, CardInfo>> revivedCards = new List<KeyValuePair<string, CardInfo>>();
 
     HealthAndMana healthChange;
+
+    public TextMeshProUGUI gameOverText;
 
     private void Start()
     {
@@ -119,10 +124,15 @@ public class PlayingFieldSynch : MonoBehaviour
             //The client exists so Send data.
             client.SendHealthAndMana(healthChange);
         }
-        else
+        else 
         {
-            //It is server. Send data.
-            FindAnyObjectByType<GameServer>().SendHealthAndMana(healthChange);
+            var server = FindAnyObjectByType<GameServer>();
+            if (server != null)
+            {
+                //It is server. Send data.
+                server.SendHealthAndMana(healthChange);
+
+            }
         }
     }
 
@@ -261,11 +271,9 @@ public class PlayingFieldSynch : MonoBehaviour
 
     void UpdateHealthStatus(HealthAndMana healthChange)
     {
-        GameManager manager = FindFirstObjectByType<GameManager>();
-        if (manager == null) return;
-        manager.playerMana = healthChange.playerMana;
-        manager.opponentMana = healthChange.opponentMana;
-        manager.playerLife = healthChange.playerLife;
-        manager.opponentLife = healthChange.opponentLife;
+        GameManager.Instance.playerMana = healthChange.playerMana;
+        GameManager.Instance.opponentMana = healthChange.opponentMana;
+        GameManager.Instance.playerLife = healthChange.playerLife;
+        GameManager.Instance.opponentLife = healthChange.opponentLife;
     }
 }
