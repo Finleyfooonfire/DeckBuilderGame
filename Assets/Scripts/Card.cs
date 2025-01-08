@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,7 +20,10 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
     [HideInInspector] public string cardName;
     //End
     [HideInInspector] public string cardFaction;
+    [HideInInspector] public string cardDescription;
+    public TextMeshPro descriptionText;
     public bool isInHand = true;
+    private Transform PlayerHand;
 
     public Sprite cardImage;
 
@@ -56,8 +60,10 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
         faction = stats.faction;
         cardType = stats.cardType;
+
         //end
         cardPlayArea = GameObject.Find("CardPlayArea").transform;
+        PlayerHand = GameObject.Find("PlayerHand").transform;
         if (cardPlayArea == null)
         {
             //Debug.LogError("CardPlayArea not found in the scene!");
@@ -79,6 +85,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         {
             CreateZoomPanel();
         }
+        
     }
 
 
@@ -100,16 +107,16 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
         zoomPanel.SetActive(false);
         // matt additions
-        GameObject textObject = new GameObject("CardText"); 
-        textObject.transform.SetParent(zoomPanel.transform, false); 
-        RectTransform textRect = textObject.AddComponent<RectTransform>(); 
-        textRect.sizeDelta = new Vector2(300, 50); 
-        textRect.anchorMin = new Vector2(0.5f, 0); 
-        textRect.anchorMax = new Vector2(0.5f, 0); 
-        textRect.pivot = new Vector2(0.5f, 0); 
-        textRect.anchoredPosition = new Vector2(0, 25); 
-        TextMeshProUGUI cardText = textObject.AddComponent<TextMeshProUGUI>(); 
-       
+        GameObject textObject = new GameObject("CardText");
+        textObject.transform.SetParent(zoomPanel.transform, false);
+        RectTransform textRect = textObject.AddComponent<RectTransform>();
+        textRect.sizeDelta = new Vector2(300, 50);
+        textRect.anchorMin = new Vector2(0.5f, 0);
+        textRect.anchorMax = new Vector2(0.5f, 0);
+        textRect.pivot = new Vector2(0.5f, 0);
+        textRect.anchoredPosition = new Vector2(0, 25);
+        TextMeshProUGUI cardText = textObject.AddComponent<TextMeshProUGUI>();
+
         cardText.color = Color.black;
         // matt addition end
     }
@@ -174,6 +181,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
 
     void Update()
     {
+
         if (selectedCard == this && placementIndicator != null)
         {
             UpdatePlacementIndicator();
@@ -221,20 +229,119 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         {
             Image panelImage = zoomPanel.GetComponent<Image>();
             TextMeshProUGUI panelText = zoomPanel.GetComponentInChildren<TextMeshProUGUI>();
+
+            // Pass the selected card's GameObject to AssignCardDescription
+            AssignCardDescription(card.gameObject);
+
             if (panelImage != null)
             {
                 panelImage.sprite = card.cardImage;
                 zoomPanel.SetActive(true);
                 isZoomed = true;
             }
-            if (panelText != null)
+            if (panelText != null && descriptionText != null)
             {
-                panelText.text = card.cardName;
+                panelText.text = descriptionText.text;
             }
         }
     }
 
-    void HideZoomedCard()
+    public void AssignCardDescription(GameObject selectedCard)
+    {
+        string GetFullPath(Transform obj)
+        {
+            if (obj.parent == null) return obj.name;
+            return $"{GetFullPath(obj.parent)}/{obj.name}";
+        }
+
+        // Find the "Description" GameObject in the selected card
+        GameObject descriptionObject = FindNestedGameObject(selectedCard.transform, "Description");
+
+        if (descriptionObject != null)
+        {
+            Debug.Log($"Found object: {descriptionObject.name}, Path: {GetFullPath(descriptionObject.transform)}");
+
+            Component[] components = descriptionObject.GetComponents<Component>();
+            foreach (var component in components)
+            {
+                Debug.Log($"Component: {component.GetType()}");
+            }
+
+            descriptionText = descriptionObject.GetComponent<TextMeshPro>();
+            if (descriptionText != null)
+            {
+                Debug.Log($"Description Text: {descriptionText.text}");
+
+                // Update Player Deck's Description
+                Transform playerDeckDescription = FindNestedTransform(selectedCard.transform, "Description");
+
+                if (playerDeckDescription != null)
+                {
+                    Debug.Log($"Player Deck Description Name: {playerDeckDescription.name}");
+                    TextMeshPro playerDeckText = playerDeckDescription.GetComponent<TextMeshPro>();
+                    if (playerDeckText != null)
+                    {
+                        Debug.Log($"Player Deck Text: {playerDeckText.text}");
+                        playerDeckText.text = descriptionText.text;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Description child not found in PlayerDeck!");
+                }
+            }
+            else
+            {
+                Debug.LogError("TextMeshProUGUI component not found in Description GameObject!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Description GameObject not found in the selected card!");
+        }
+    }
+
+
+
+    GameObject FindNestedGameObject(Transform parent, string name)
+        {
+            foreach (Transform child in parent)
+            {
+                if (child.name == name)
+                {
+                    return child.gameObject;
+                }
+                GameObject result = FindNestedGameObject(child, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        Transform FindNestedTransform(Transform parent, string name)
+        {
+            foreach (Transform child in parent)
+            {
+                if (child.name == name)
+                {
+                    return child;
+                }
+                Transform result = FindNestedTransform(child, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
+        }
+    
+
+
+
+
+void HideZoomedCard()
     {
         if (zoomPanel != null)
         {
