@@ -124,10 +124,15 @@ public class PlayingFieldSynch : MonoBehaviour
             //The client exists so Send data.
             client.SendHealthAndMana(healthChange);
         }
-        else
+        else 
         {
-            //It is server. Send data.
-            FindAnyObjectByType<GameServer>().SendHealthAndMana(healthChange);
+            var server = FindAnyObjectByType<GameServer>();
+            if (server != null)
+            {
+                //It is server. Send data.
+                server.SendHealthAndMana(healthChange);
+
+            }
         }
     }
 
@@ -266,11 +271,9 @@ public class PlayingFieldSynch : MonoBehaviour
 
     void UpdateHealthStatus(HealthAndMana healthChange)
     {
-        GameManager manager = FindFirstObjectByType<GameManager>();
-        if (manager == null) return;
-        manager.playerMana = healthChange.playerMana;
-        manager.opponentMana = healthChange.opponentMana;
-        manager.playerLife = healthChange.playerLife;
-        manager.opponentLife = healthChange.opponentLife;
+        GameManager.Instance.playerMana = healthChange.playerMana;
+        GameManager.Instance.opponentMana = healthChange.opponentMana;
+        GameManager.Instance.playerLife = healthChange.playerLife;
+        GameManager.Instance.opponentLife = healthChange.opponentLife;
     }
 }

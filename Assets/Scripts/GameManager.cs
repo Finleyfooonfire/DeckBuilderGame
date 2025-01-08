@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
         {
             playerMana = Mathf.Min(playerMana, maxMana);
             UpdateManaUI();
+            UpdateLifeUI();
 
             Deck playerDeck = GameObject.Find("PlayerDeck").GetComponent<Deck>();
             playerDeck.DrawCard();
@@ -238,6 +239,8 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
+        synch.SetHealthStatus(new HealthAndMana(playerMana, opponentMana, playerLife, opponentLife));
+        synch.SendHealthAndMana();
         if (gameOverText != null)
         {
             if (GameManager.Instance.opponentLife <= 0)
