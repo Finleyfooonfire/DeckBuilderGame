@@ -12768,8 +12768,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeDuration: 2
-  minInterval: 3
-  maxInterval: 7
+  minInterval: 7
+  maxInterval: 11
   maxActiveTracks: 4
   mainMenuTracks:
   - {fileID: 8300000, guid: a3906335b1a67684e90b954d611acd6c, type: 3}
