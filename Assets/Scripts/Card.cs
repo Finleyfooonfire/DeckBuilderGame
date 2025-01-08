@@ -229,12 +229,17 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         {
             Image panelImage = zoomPanel.GetComponent<Image>();
             TextMeshProUGUI panelText = zoomPanel.GetComponentInChildren<TextMeshProUGUI>();
+      
 
             // Pass the selected card's GameObject to AssignCardDescription
             AssignCardDescription(card.gameObject);
 
             if (panelImage != null)
             {
+                panelText.enableAutoSizing = true;
+                panelText.fontSizeMin = 10; // Minimum font size
+                panelText.fontSizeMax = 40; // Maximum font size
+                panelText.text = descriptionText.text;
                 panelImage.sprite = card.cardImage;
                 zoomPanel.SetActive(true);
                 isZoomed = true;
@@ -242,6 +247,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
             if (panelText != null && descriptionText != null)
             {
                 panelText.text = descriptionText.text;
+                
             }
         }
     }
