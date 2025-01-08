@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 ///TODO: Relating card Changes from client/host into moves: https://www.notion.so/finleyfooonfire/Decomposition-13c4b7e33ee880389e8be96f21928b4c
 public class PlayingFieldSynch : MonoBehaviour
@@ -20,6 +23,8 @@ public class PlayingFieldSynch : MonoBehaviour
     List<KeyValuePair<string, CardInfo>> revivedCards = new List<KeyValuePair<string, CardInfo>>();
 
     HealthAndMana healthChange;
+
+    public TextMeshProUGUI gameOverText;
 
     private void Start()
     {

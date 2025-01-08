@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI opponentLifeText;
 
     public Button endTurnButton;
+    private static bool isGameEnding = false;
 
     public bool isPlayerTurn;
     public int playerMana = 0;
@@ -35,7 +36,6 @@ public class GameManager : MonoBehaviour
     //END 
 
     public TextMeshProUGUI gameOverText;
-    private bool isGameEnding = false;
 
     void Awake()
     {
@@ -108,6 +108,8 @@ public class GameManager : MonoBehaviour
 
             //StartCoroutine(AITurn());
         }
+
+        CheckLifeTotals();
     }
 
     public void EndTurn()
@@ -231,39 +233,30 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool playerWon)
     {
-        if (isGameEnding) return;
-        isGameEnding = true;
-
-        if (playerWon)
-        {
-            synch.GameEnd();
-        }
-
-        if (playerWon)
-        {
-            synch.GameEnd();
-        }
-        PlayerPrefs.SetInt("PlayerWon", playerWon ? 1 : 0);
-        PlayerPrefs.SetInt("TurnsTaken", turnsTaken);
-        PlayerPrefs.SetInt("DamageDealt", damageDealt);
-
-        //SceneManager.LoadScene("ScoreboardScene"); //Go to scoreboard
-        //SceneManager.LoadScene("MainMenu"); //Temporary
-
         if (gameOverText != null)
         {
-            gameOverText.text = playerWon ? "You Win!" : "You Lose!";
+            if (GameManager.Instance.opponentLife <= 0)
+            {
+                gameOverText.text = "You Win!";
+                if (playerWon)
+                {
+                    GameManager.Instance.synch.GameEnd();
+                }
+            }
+            else
+            {
+                gameOverText.text = "You Lose!";
+            }
             gameOverText.gameObject.SetActive(true);
         }
 
-        if (endTurnButton != null)
+        if (GameManager.Instance.endTurnButton != null)
         {
-            endTurnButton.interactable = false;
+            GameManager.Instance.endTurnButton.interactable = false;
         }
 
-
         StartCoroutine(DelayedSceneTransition());
-}
+    }
 
     private IEnumerator DelayedSceneTransition()
     {
@@ -271,9 +264,44 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    public void OnReceiveGameEnd()
+    {
+        if (!isGameEnding)
+        {
+            isGameEnding = true;
+            if (gameOverText != null)
+            {
+                gameOverText.text = "You Lose!";
+                gameOverText.gameObject.SetActive(true);
+            }
+
+            if (endTurnButton != null)
+            {
+                endTurnButton.interactable = false;
+            }
+
+            StartCoroutine(DelayedSceneTransition());
+        }
+    }
+
     //KEENAN: Gets all the cards present.
     public Card[] GetAllCards()
     {
         return FindObjectsByType<Card>(FindObjectsSortMode.InstanceID);
     }
+
+    private void CheckLifeTotals()
+    {
+        if (playerLife <= 0 || opponentLife <= 0)
+        {
+            if (endTurnButton != null)
+            {
+                endTurnButton.interactable = false;
+            }
+            GameOver(opponentLife <= 0);
+        }
+    }
+
+
+
 }
