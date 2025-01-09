@@ -151,7 +151,7 @@ MonoBehaviour:
   currentCanvas: {fileID: 0}
   cube: {fileID: 0}
   cubeAnimator: {fileID: 0}
-  optionsMenu: {fileID: 0}
+  optionsMenu: {fileID: 1436239540}
   cardMenu: {fileID: 0}
   loreHolder: {fileID: 0}
   creditsMenu: {fileID: 0}
@@ -10341,6 +10341,52 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 012f3f9d48561094f9531857dd2b46ec, type: 3}
+--- !u!1 &1031738828
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1031738830}
+  - component: {fileID: 1031738829}
+  m_Layer: 0
+  m_Name: GlobalVolumr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1031738829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031738828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ed96e6344dae94bb8c840c2eb752c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volume: {fileID: 1173132830}
+  activateKey: 0
+--- !u!4 &1031738830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031738828}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 542.1894, y: -126.867134, z: -427.63492}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1039881610
 GameObject:
   m_ObjectHideFlags: 0
@@ -11580,7 +11626,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1031738829}
         m_TargetAssemblyTypeName: WeirdPostProcessingVolume, Assembly-CSharp
         m_MethodName: RandomizePostProcessing
         m_Mode: 1
@@ -11710,6 +11756,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e523b064f42ec984ea84beeca327500f, type: 3}
   m_PrefabInstance: {fileID: 977573923}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1173132829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1173132831}
+  - component: {fileID: 1173132830}
+  m_Layer: 0
+  m_Name: 'Global Volume '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1173132830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173132829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 5c3261e9436d0984e9df595aabcd957f, type: 2}
+--- !u!4 &1173132831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173132829}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 542.1894, y: -126.867134, z: -427.63492}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1182167028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12239,7 +12334,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 59594}
         m_TargetAssemblyTypeName: LoreMenuTrigger, Assembly-CSharp
         m_MethodName: CloseOptionsMenu
         m_Mode: 1
@@ -14187,7 +14282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1436239541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21884,3 +21979,5 @@ SceneRoots:
   - {fileID: 1432228899}
   - {fileID: 59595}
   - {fileID: 1388424580}
+  - {fileID: 1173132831}
+  - {fileID: 1031738830}
