@@ -10370,8 +10370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ed96e6344dae94bb8c840c2eb752c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: {fileID: 1173132830}
-  activateKey: 0
+  volumeobject: {fileID: 0}
 --- !u!4 &1031738830
 Transform:
   m_ObjectHideFlags: 0
@@ -11290,8 +11289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506a3fcf3619cf0488d45bf9327e0956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionsMenu: {fileID: 1275848335}
-  currentCanvas: {fileID: 1856217529}
+  optionmenu: {fileID: 1275848335}
+  maincanvas: {fileID: 1856217529}
 --- !u!4 &1126868830
 Transform:
   m_ObjectHideFlags: 0
@@ -13753,12 +13752,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionsMenu: {fileID: 1436239540}
-  volumeSlider: {fileID: 298368574}
-  fullscreenToggle: {fileID: 777717118}
-  qualityDropdown: {fileID: 0}
-  resolutionDropdown: {fileID: 1881455683}
-  audioMixer: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
-  returnToMainMenuButton: {fileID: 1093861572}
+  volume: {fileID: 298368574}
+  togglebutton: {fileID: 777717118}
+  qualitydropdown: {fileID: 0}
+  resolutionoptions: {fileID: 1881455683}
+  mainaudiomonitor: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
+  mainmenubutton: {fileID: 1093861572}
 --- !u!222 &1388424579
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -17143,15 +17142,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85e3ced02da85a4e8462fe0f3c4afc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 2
-  minInterval: 3
-  maxInterval: 7
-  maxActiveTracks: 3
-  mainMenuTracks:
+  fadetime: 2
+  minrandomtime: 7
+  maxrandomtime: 11
+  maxtracks: 3
+  maintracks:
   - {fileID: 8300000, guid: dde96a0716dabc14c9ee159b6bd79187, type: 3}
   - {fileID: 8300000, guid: 15fd3e7e03a3e4c4d9bf1a9e528d70c2, type: 3}
   - {fileID: 8300000, guid: 7745ca98ebf1e9b4287f2a7a6a4d7d81, type: 3}
-  gameSceneTracks: []
+  secondarytracks: []
 --- !u!4 &1679045668 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ccf9eb6c60a316f429817432b998e38e, type: 3}

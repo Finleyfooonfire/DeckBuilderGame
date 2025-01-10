@@ -9540,8 +9540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ed96e6344dae94bb8c840c2eb752c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: {fileID: 299393477}
-  activateKey: 0
+  volumeobject: {fileID: 0}
 --- !u!4 &859787032
 Transform:
   m_ObjectHideFlags: 0
@@ -12956,12 +12955,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionsMenu: {fileID: 1015180974}
-  volumeSlider: {fileID: 1713785729}
-  fullscreenToggle: {fileID: 786060795}
-  qualityDropdown: {fileID: 0}
-  resolutionDropdown: {fileID: 1894816799}
-  audioMixer: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
-  returnToMainMenuButton: {fileID: 1407294733}
+  volume: {fileID: 1713785729}
+  togglebutton: {fileID: 786060795}
+  qualitydropdown: {fileID: 0}
+  resolutionoptions: {fileID: 1894816799}
+  mainaudiomonitor: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
+  mainmenubutton: {fileID: 1407294733}
 --- !u!222 &1199531494
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15664,16 +15663,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b85e3ced02da85a4e8462fe0f3c4afc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 2
-  minInterval: 7
-  maxInterval: 11
-  maxActiveTracks: 4
-  mainMenuTracks:
+  fadetime: 2
+  minrandomtime: 7
+  maxrandomtime: 11
+  maxtracks: 4
+  maintracks:
   - {fileID: 8300000, guid: a3906335b1a67684e90b954d611acd6c, type: 3}
   - {fileID: 8300000, guid: b8b38da77a0964d4d87735f907b2abb0, type: 3}
   - {fileID: 8300000, guid: ac2b9129454607d4382db1bf202329a7, type: 3}
   - {fileID: 8300000, guid: 9fc4f578cfe37c647a2c8cb38a639c92, type: 3}
-  gameSceneTracks: []
+  secondarytracks: []
 --- !u!1 &1441619263
 GameObject:
   m_ObjectHideFlags: 0
@@ -21460,8 +21459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506a3fcf3619cf0488d45bf9327e0956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionsMenu: {fileID: 660970531}
-  currentCanvas: {fileID: 1430342444}
+  optionmenu: {fileID: 660970531}
+  maincanvas: {fileID: 1430342444}
 --- !u!4 &2072801049
 Transform:
   m_ObjectHideFlags: 0

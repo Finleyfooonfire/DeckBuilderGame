@@ -685,7 +685,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 16.380066, y: 0}
-  m_SizeDelta: {x: 9.1, y: 0}
+  m_SizeDelta: {x: 9.1, y: 3538.7603}
   m_Pivot: {x: 2.3, y: 0.5}
 --- !u!114 &98273484
 MonoBehaviour:
@@ -765,9 +765,9 @@ RectTransform:
   - {fileID: 1689590994}
   m_Father: {fileID: 98273483}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 4.549988, y: -559.32007}
   m_SizeDelta: {x: 1093.8, y: 358.88}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &102223689
@@ -1382,8 +1382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ed96e6344dae94bb8c840c2eb752c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volume: {fileID: 1872815095}
-  activateKey: 0
+  volumeobject: {fileID: 1872815095}
 --- !u!4 &160959131
 Transform:
   m_ObjectHideFlags: 0
@@ -1742,9 +1741,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1991570445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -94.62}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 495, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!210 &190633964
@@ -2222,9 +2221,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imageTransform: {fileID: 272203235}
-  scrollSpeed: 264.6
-  maxY: 500
-  minY: -700
+  scrollingspeed: 10
+  maxheight: 500
+  minumumheight: -500
   contentPanel: {fileID: 0}
   resetPositionY: 0
 --- !u!114 &272203237
@@ -3393,12 +3392,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a8b6993c55159445addffcbcc97aa59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 1
+  fade: 2
   minInterval: 5
   maxInterval: 10
-  maxActiveTracks: 3
-  mainMenuMusicObject: {fileID: 1458783238}
-  loreMusicObject: {fileID: 75706082}
+  maxtracks: 3
+  mainobject: {fileID: 1458783238}
+  loreobject: {fileID: 75706082}
 --- !u!1 &405942217
 GameObject:
   m_ObjectHideFlags: 0
@@ -3684,8 +3683,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c53ad15121e1614bacb730c5eb3b51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollRect: {fileID: 419113628}
-  scrollSpeed: 12.1
+  scrollingtransform: {fileID: 0}
+  scrollspeed: 1
 --- !u!1 &426386618
 GameObject:
   m_ObjectHideFlags: 0
@@ -3822,6 +3821,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 426386618}
   m_CullTransparentMesh: 1
+--- !u!114 &443784853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 152591393787308406, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
+  m_PrefabInstance: {fileID: 6331645722372124196}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &452519359
 GameObject:
   m_ObjectHideFlags: 0
@@ -3876,7 +3886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &452669622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4211,14 +4221,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26f80df167d197c479516df50aae413a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customCamera: {fileID: 1649128903}
-  cameraObject: {fileID: 957395763}
+  raycastingcamera: {fileID: 1649128903}
+  cinemachinecamera: {fileID: 957395763}
   movePercentageX: 0.062
   movePercentageY: 0.398
   screenPosition: {x: 0, y: 0, z: 0}
   worldPosition: {x: 0, y: 0, z: 0}
-  startPosition: {x: 521.6063, y: -0.00002047095, z: 0}
-  resetSpeed: 1
+  defaultposition: {x: 521.6, y: -2, z: 0}
+  resettingspeed: 1
 --- !u!4 &547207674
 Transform:
   m_ObjectHideFlags: 0
@@ -4290,12 +4300,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   optionsMenu: {fileID: 1872188270}
-  volumeSlider: {fileID: 941518936}
-  fullscreenToggle: {fileID: 611606699}
-  qualityDropdown: {fileID: 0}
-  resolutionDropdown: {fileID: 1507922311}
-  audioMixer: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
-  returnToMainMenuButton: {fileID: 188009227}
+  volume: {fileID: 941518936}
+  togglebutton: {fileID: 611606699}
+  qualitydropdown: {fileID: 0}
+  resolutionoptions: {fileID: 1507922311}
+  mainaudiomonitor: {fileID: 24100000, guid: afde97295c4f8a74a8e83fecc2b939f1, type: 2}
+  mainmenubutton: {fileID: 188009227}
 --- !u!222 &570769754
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5086,12 +5096,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de9ff87d8eca157419898c5d924d7f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  largeViewCanvas: {fileID: 1636453045}
-  largeViewImage: {fileID: 1465010162}
-  cardNameText: {fileID: 0}
-  cardDescriptionText: {fileID: 0}
-  inspectCanvas: {fileID: 1636453045}
-  CardCanvas: {fileID: 7693997}
+  inpectioncanvas: {fileID: 1636453045}
+  inspectionimage: {fileID: 1465010162}
+  cardtextstuff: {fileID: 0}
+  inspectcarddescription: {fileID: 0}
+  otherinspectcanvas: {fileID: 1636453045}
+  thecardcanvas: {fileID: 7693997}
 --- !u!1 &676654086
 GameObject:
   m_ObjectHideFlags: 0
@@ -5121,8 +5131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506a3fcf3619cf0488d45bf9327e0956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionsMenu: {fileID: 1685966461}
-  currentCanvas: {fileID: 1854557762}
+  optionmenu: {fileID: 2001221834}
+  maincanvas: {fileID: 1854557762}
 --- !u!4 &676654088
 Transform:
   m_ObjectHideFlags: 0
@@ -6728,8 +6738,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f3c1f29f7325142b36f9ad5f25bf67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  smoothSpeed: 1
+  target: {fileID: 957395764}
+  speed: 1
 --- !u!1 &960688328
 GameObject:
   m_ObjectHideFlags: 0
@@ -7405,9 +7415,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1991570445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -149.24}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 491, y: 76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1047044221
@@ -7703,9 +7713,9 @@ RectTransform:
   - {fileID: 180593358}
   m_Father: {fileID: 98273483}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 4.549988, y: 93.69995}
   m_SizeDelta: {x: 1094.1, y: 332.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1084053255
@@ -7930,7 +7940,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1113921683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9270,9 +9280,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1991570445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -274.47998}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 490, y: 86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1361907701
@@ -9547,9 +9557,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1991570445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -39}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 495, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1378616416
@@ -12154,8 +12164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c53ad15121e1614bacb730c5eb3b51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollRect: {fileID: 1736974760}
-  scrollSpeed: 1.45
+  scrollingtransform: {fileID: 1736974760}
+  scrollspeed: 1
 --- !u!224 &1739356632 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5910666585554065467, guid: 3af79db68f0228c479d1675b5750bf51, type: 3}
@@ -12499,6 +12509,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1767759567}
   - component: {fileID: 1767759568}
+  - component: {fileID: 1767759569}
   m_Layer: 5
   m_Name: CardPopulationManager
   m_TagString: Untagged
@@ -12538,11 +12549,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 576276095546329665, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
-  contentPanel: {fileID: 611855}
-  cardFolderPath: Cards
-  factionPanelPrefab: {fileID: 70993420}
+  cardpanel: {fileID: 611855}
+  cardpath: Cards
+  factiongroupingpanel: {fileID: 70993420}
   largeViewCanvas: {fileID: 0}
   largeViewImage: {fileID: 0}
+--- !u!114 &1767759569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767759566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c53ad15121e1614bacb730c5eb3b51c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollingtransform: {fileID: 419113628}
+  scrollspeed: 1
 --- !u!1 &1772875755
 GameObject:
   m_ObjectHideFlags: 0
@@ -12632,9 +12657,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imageTransform: {fileID: 1772875756}
-  scrollSpeed: 280
-  maxY: 3000
-  minY: -500
+  scrollingspeed: 10
+  maxheight: 500
+  minumumheight: -500
   contentPanel: {fileID: 98273483}
   resetPositionY: -1800
 --- !u!1 &1820970599
@@ -12885,9 +12910,9 @@ RectTransform:
   - {fileID: 1977614351}
   m_Father: {fileID: 98273483}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 4.549988, y: -226.23999}
   m_SizeDelta: {x: 1093.8, y: 358.88}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1836572773
@@ -12928,6 +12953,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836572771}
   m_CullTransparentMesh: 1
+--- !u!114 &1836904503 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4475274579767972584, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
+  m_PrefabInstance: {fileID: 6331645722372124196}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1845366851
 GameObject:
   m_ObjectHideFlags: 0
@@ -13288,9 +13324,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1991570445}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -209.36}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 491, y: 89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1915744935
@@ -15223,6 +15259,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -51.57
       objectReference: {fileID: 0}
+    - target: {fileID: 9078184171291586336, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
+      propertyPath: cardbutton
+      value: 
+      objectReference: {fileID: 1836904503}
+    - target: {fileID: 9078184171291586336, guid: 64b9fced3321cd0488f07491edc4deb0, type: 3}
+      propertyPath: cardsimage
+      value: 
+      objectReference: {fileID: 443784853}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
