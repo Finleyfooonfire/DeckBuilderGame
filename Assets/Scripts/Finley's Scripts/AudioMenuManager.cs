@@ -135,7 +135,7 @@ public class DynamicMusicController : MonoBehaviour
     {
         musicObject.SetActive(isActive);
     }
-
+    
     public void TransitionToLoreMusic()
     {
         if (isTransitioning) return;

@@ -10370,7 +10370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ed96e6344dae94bb8c840c2eb752c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  volumeobject: {fileID: 0}
+  volumeobject: {fileID: 1173132830}
 --- !u!4 &1031738830
 Transform:
   m_ObjectHideFlags: 0
